@@ -1,0 +1,600 @@
+<title>Velvet &amp; Roulette</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;1,400;1,600&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<style>
+  :root{
+    --ground:#160A10;
+    --surface:#23121B;
+    --surface-2:#2C1721;
+    --edge:#3A1F2C;
+    --rose:#E4587A;
+    --rose-soft:#F08CA5;
+    --gold:#D9A360;
+    --cream:#F0DFE2;
+    --dim:#A98492;
+    --teal:#4FA894;
+    --violet:#B07BD6;
+    --ring-track:#3A1F2C;
+  }
+  *{box-sizing:border-box}
+  html{color-scheme:dark}
+  body{
+    margin:0;
+    background:var(--ground);
+    color:var(--cream);
+    font-family:'Outfit',system-ui,-apple-system,sans-serif;
+    font-weight:300;
+    min-height:100vh;
+    -webkit-tap-highlight-color:transparent;
+  }
+  button{font-family:inherit;cursor:pointer}
+  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
+    outline:2px solid var(--gold);outline-offset:2px;border-radius:4px;
+  }
+
+  .shell{max-width:520px;margin:0 auto;padding:0 20px 120px;position:relative}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:baseline;justify-content:space-between;padding:26px 0 6px}
+  .brand{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:30px;letter-spacing:.01em;color:var(--cream)}
+  .brand .amp{color:var(--rose)}
+  .header-btns{display:flex;gap:6px}
+  .ghost-btn{
+    background:none;border:1px solid var(--edge);color:var(--dim);
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;
+    padding:7px 12px;border-radius:999px;transition:color .2s,border-color .2s;
+  }
+  .ghost-btn:hover{color:var(--cream);border-color:var(--gold)}
+  .tagline{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin:0 0 26px}
+
+  /* ---------- wheel stage ---------- */
+  .stage{position:relative;display:flex;flex-direction:column;align-items:center}
+  .wheel-wrap{position:relative;width:min(88vw,420px);aspect-ratio:1;margin-top:14px}
+  #wheel{width:100%;height:100%;display:block;border-radius:50%;
+    box-shadow:0 0 0 1px var(--edge),0 0 90px rgba(228,88,122,.14),0 24px 60px rgba(0,0,0,.55)}
+  .pointer{
+    position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+    width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;
+    border-top:24px solid var(--gold);filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));z-index:3;
+  }
+  .hub{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:88px;height:88px;border-radius:50%;
+    background:var(--surface);border:1px solid var(--gold);
+    color:var(--gold);font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;
+    display:flex;align-items:center;justify-content:center;z-index:2;
+    box-shadow:0 0 24px rgba(217,163,96,.25), inset 0 0 18px rgba(0,0,0,.5);
+    transition:transform .15s;
+  }
+  .hub:not(:disabled):hover{transform:translate(-50%,-50%) scale(1.05)}
+  .hub:disabled{color:var(--dim);border-color:var(--edge);cursor:default;box-shadow:none}
+  .rounds{margin-top:22px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+  .rounds b{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
+
+  /* ---------- result card ---------- */
+  .card{
+    margin-top:26px;width:100%;background:var(--surface);border:1px solid var(--edge);
+    border-radius:18px;padding:26px 24px 22px;text-align:center;
+    animation:rise .45s cubic-bezier(.2,.9,.3,1);
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .tag{
+    display:inline-block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;
+    padding:5px 12px;border-radius:999px;border:1px solid currentColor;margin-bottom:14px;
+  }
+  .tag.her{color:var(--rose-soft)} .tag.him{color:var(--gold)}
+  .tag.both{color:var(--violet)} .tag.wild{color:var(--teal)}
+  .card h2{font-family:'Cormorant',Georgia,serif;font-weight:600;font-size:30px;line-height:1.15;margin:0 0 10px;text-wrap:balance}
+  .card .note{font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:18px;color:var(--dim);margin:0 0 18px;line-height:1.4}
+  .card .clock-line{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:20px}
+  .card .clock-line b{color:var(--cream);font-family:'DM Mono',monospace;font-variant-numeric:tabular-nums;font-weight:500;letter-spacing:.05em}
+  .card-btns{display:flex;gap:10px;justify-content:center}
+  .primary-btn{
+    background:var(--rose);color:#2A0A14;border:none;border-radius:999px;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
+    padding:14px 26px;transition:transform .15s,box-shadow .2s;
+    box-shadow:0 6px 24px rgba(228,88,122,.35);
+  }
+  .primary-btn:hover{transform:translateY(-1px)}
+  .quiet-btn{
+    background:none;border:1px solid var(--edge);color:var(--dim);border-radius:999px;
+    font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;padding:14px 22px;
+    transition:color .2s,border-color .2s;
+  }
+  .quiet-btn:hover{color:var(--cream);border-color:var(--dim)}
+  .veto-note{margin-top:14px;font-size:12px;color:var(--dim);font-style:italic;font-family:'Cormorant',Georgia,serif;font-size:15px}
+
+  /* ---------- timer overlay ---------- */
+  .overlay{
+    position:fixed;inset:0;background:var(--ground);z-index:40;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:24px;text-align:center;
+  }
+  .t-tag{margin-bottom:6px}
+  .t-name{font-family:'Cormorant',Georgia,serif;font-weight:600;font-size:32px;margin:0 0 26px;max-width:420px;text-wrap:balance;line-height:1.15}
+  .ring-wrap{position:relative;width:min(70vw,300px);aspect-ratio:1}
+  .ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .ring-track{fill:none;stroke:var(--ring-track);stroke-width:6}
+  .ring-fill{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;transition:stroke .4s}
+  .ring-wrap.hot .ring-fill{stroke:var(--rose)}
+  .t-digits{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-family:'DM Mono',monospace;font-variant-numeric:tabular-nums;
+  }
+  .t-digits .big{font-size:56px;font-weight:500;letter-spacing:.02em}
+  .ring-wrap.hot .big{color:var(--rose);animation:pulse 1s infinite}
+  @keyframes pulse{50%{opacity:.55}}
+  .t-hint{margin-top:26px;font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:18px;color:var(--dim);max-width:340px;line-height:1.4}
+  .t-end{margin-top:30px}
+  .stopped h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:54px;color:var(--rose);margin:0 0 8px;animation:pulse 1.2s infinite}
+  .stopped p{color:var(--dim);font-size:15px;margin:0 0 34px}
+
+  /* ---------- gate & rules ---------- */
+  .gate{z-index:60}
+  .gate-inner{max-width:400px}
+  .gate h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:46px;margin:0 0 4px}
+  .gate .amp{color:var(--rose)}
+  .gate .sub{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin:0 0 30px}
+  .rules{list-style:none;margin:0 0 32px;padding:0;text-align:left;display:flex;flex-direction:column;gap:14px}
+  .rules li{display:flex;gap:14px;align-items:baseline;font-size:15px;line-height:1.45;color:var(--cream)}
+  .rules .r-mark{color:var(--gold);font-family:'Cormorant',Georgia,serif;font-style:italic;flex:none}
+  .rules em{color:var(--rose-soft);font-style:normal;font-weight:500}
+
+  /* ---------- finish ---------- */
+  .finish{z-index:50}
+  #confetti{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .finish-inner{position:relative}
+  .finish h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:44px;margin:0 0 10px;color:var(--gold)}
+  .finish p{color:var(--dim);font-size:15px;margin:0 0 6px}
+  .finish .score{font-family:'DM Mono',monospace;color:var(--cream);font-size:15px;margin-bottom:34px}
+
+  /* ---------- editor drawer ---------- */
+  .drawer{
+    position:fixed;inset:0;z-index:55;background:rgba(12,5,9,.72);display:flex;justify-content:flex-end;
+  }
+  .drawer-panel{
+    width:min(94vw,420px);height:100%;background:var(--surface);border-left:1px solid var(--edge);
+    padding:22px 20px;overflow-y:auto;animation:slide .3s cubic-bezier(.2,.9,.3,1);
+  }
+  @keyframes slide{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
+  .drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+  .drawer-head h2{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:26px;margin:0}
+  .drawer-sub{font-size:12px;color:var(--dim);margin:0 0 18px;line-height:1.5}
+  .act-row{
+    display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--edge);
+  }
+  .act-row label{flex:1;font-size:14px;display:flex;align-items:center;gap:12px;cursor:pointer}
+  .act-row input[type=checkbox]{accent-color:var(--rose);width:17px;height:17px;flex:none}
+  .act-row .mins{font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);flex:none;font-variant-numeric:tabular-nums}
+  .act-row .del{background:none;border:none;color:var(--dim);font-size:16px;padding:4px 6px}
+  .act-row .del:hover{color:var(--rose)}
+  .add-form{margin-top:20px;display:flex;flex-direction:column;gap:10px}
+  .add-form input,.add-form select{
+    background:var(--surface-2);border:1px solid var(--edge);color:var(--cream);
+    border-radius:10px;padding:11px 13px;font-family:inherit;font-size:14px;width:100%;
+  }
+  .add-form .duo{display:flex;gap:10px}
+  .drawer-foot{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+  .off label{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(169,132,146,.5)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+</style>
+
+<div class="shell">
+  <header>
+    <div class="brand">Velvet <span class="amp">&amp;</span> Roulette</div>
+    <div class="header-btns">
+      <button class="ghost-btn" id="rulesBtn">Rules</button>
+      <button class="ghost-btn" id="editBtn">Edit</button>
+    </div>
+  </header>
+  <p class="tagline">Two players · One wheel · No arguments</p>
+
+  <div class="stage">
+    <div class="wheel-wrap">
+      <div class="pointer" aria-hidden="true"></div>
+      <canvas id="wheel" aria-label="Activity wheel"></canvas>
+      <button class="hub" id="spinBtn">Spin</button>
+    </div>
+    <p class="rounds">Rounds survived · <b id="roundCount">0</b></p>
+    <div id="resultSlot"></div>
+    <p class="veto-note" style="text-align:center">Either of you can veto any spin — no reason needed, no questions asked.</p>
+    <button class="quiet-btn" id="finishBtn" style="margin-top:26px">Someone finished 🏁</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var STORE_KEY='velvet-roulette-v1';
+  var TAGS={her:'For her',him:'For him',both:'Together',wild:'Wildcard'};
+  var SEG_COLORS=['#7C2447','#471E3E','#96334F','#31142B','#5E2947'];
+  var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* name, short wheel label, tag, min/max minutes, italic flavor note */
+  function defaults(){return [
+    {id:'d1', name:'Slow make-out — hands above the waist', wheel:'Make-out', tag:'both', min:2, max:4, note:'Like the first time, except now you know better.'},
+    {id:'d2', name:'Massage her, head to toe', wheel:'Massage · her', tag:'her', min:5, max:8, note:'Warm hands. No shortcuts.'},
+    {id:'d3', name:'Massage him — shoulders, back, and wherever helps', wheel:'Massage · him', tag:'him', min:4, max:6, note:'He carries a lot of tension. Allegedly.'},
+    {id:'d4', name:'He goes down on her', wheel:'Down on her', tag:'her', min:4, max:8, note:'No clock-watching. Oh wait.'},
+    {id:'d5', name:'She goes down on him', wheel:'Down on him', tag:'him', min:4, max:7, note:'Eye contact optional. Recommended.'},
+    {id:'d6', name:'Sixty-nine until the bell', wheel:'69', tag:'both', min:4, max:6, note:'Teamwork makes the dream work.'},
+    {id:'d7', name:'Toy from the drawer — she picks, he drives', wheel:'Toys · her pick', tag:'her', min:4, max:8, note:'Her drawer, her rules.'},
+    {id:'d8', name:'Toy from the drawer — he picks, she puts on the show', wheel:'The show', tag:'wild', min:3, max:5, note:'He watches. He does not touch. Yet.'},
+    {id:'d9', name:'Blindfold round — receiver blindfolded, giver improvises', wheel:'Blindfold', tag:'wild', min:4, max:6, note:'Inside the rules. Outside expectations.'},
+    {id:'d10', name:'Hands only — no mouths, no toys', wheel:'Hands only', tag:'both', min:3, max:5, note:'Back to basics.'},
+    {id:'d11', name:'Mouths only — hands behind your back', wheel:'Mouths only', tag:'both', min:3, max:5, note:'Harder than it sounds.'},
+    {id:'d12', name:'Dirty talk only — one inch apart, zero touching', wheel:'Just talk', tag:'both', min:1, max:3, note:'The cruelest slice on this wheel.'},
+    {id:'d13', name:'Striptease — whoever spun performs', wheel:'Striptease', tag:'wild', min:2, max:4, note:'Commit to the bit.'},
+    {id:'d14', name:'Edge her — close, closer… then the bell decides', wheel:'Edge · her', tag:'her', min:4, max:7, note:'The bell is a menace.'},
+    {id:'d15', name:'Edge him — and stop means stop', wheel:'Edge · him', tag:'him', min:4, max:7, note:'Revenge, served warm.'},
+    {id:'d16', name:'Doggy until the bell', wheel:'Doggy', tag:'both', min:3, max:6, note:'The bell will feel too soon.'},
+    {id:'d17', name:'Cowgirl — she sets the pace, his hands go where she puts them', wheel:'Cowgirl', tag:'both', min:3, max:6, note:'She is the weather. He is the landscape.'},
+    {id:'d18', name:'Missionary in slow motion — no speeding up allowed', wheel:'Slow motion', tag:'both', min:4, max:6, note:'Half speed. All of it.'},
+    {id:'d19', name:'He kisses her everywhere. Everywhere.', wheel:'Everywhere', tag:'her', min:3, max:5, note:'The one door that only opens his way — see house rules.'},
+    {id:'d20', name:'Ice cube round — temperature play, giver’s choice of target', wheel:'Ice', tag:'wild', min:2, max:4, note:'Freezer first. Squealing later.'},
+    {id:'d21', name:'Spinner’s choice — anything inside the rules', wheel:'Your call', tag:'wild', min:3, max:6, note:'Choose wisely. The bell is still coming.'}
+  ];}
+
+  /* ---------- state ---------- */
+  var acts, rounds=0;
+  function load(){
+    acts=defaults();
+    try{
+      var raw=localStorage.getItem(STORE_KEY);
+      if(raw){
+        var s=JSON.parse(raw);
+        if(s && Array.isArray(s.acts) && s.acts.length) acts=s.acts;
+        if(s && typeof s.rounds==='number') rounds=s.rounds;
+      }
+    }catch(e){}
+  }
+  function save(){
+    try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,rounds:rounds}));}catch(e){}
+  }
+  load();
+
+  function enabled(){return acts.filter(function(a){return a.on!==false;});}
+
+  /* ---------- audio ---------- */
+  var actx=null;
+  function audio(){ if(!actx){ try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return actx; }
+  function tick(){
+    var c=audio(); if(!c) return;
+    var o=c.createOscillator(), g=c.createGain();
+    o.type='square'; o.frequency.value=1600;
+    g.gain.setValueAtTime(.03,c.currentTime);
+    g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.03);
+    o.connect(g).connect(c.destination); o.start(); o.stop(c.currentTime+.035);
+  }
+  function bell(){
+    var c=audio(); if(!c) return;
+    [659.25,987.77,659.25].forEach(function(f,i){
+      var t=c.currentTime+i*.45;
+      var o=c.createOscillator(), g=c.createGain();
+      o.type='sine'; o.frequency.value=f;
+      g.gain.setValueAtTime(.22,t);
+      g.gain.exponentialRampToValueAtTime(.0001,t+.42);
+      o.connect(g).connect(c.destination); o.start(t); o.stop(t+.45);
+    });
+  }
+
+  /* ---------- wheel ---------- */
+  var canvas=document.getElementById('wheel'), ctx=canvas.getContext('2d');
+  var angle=0, spinning=false;
+
+  function sizeCanvas(){
+    var w=canvas.clientWidth, dpr=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=w*dpr; canvas.height=w*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    draw();
+  }
+  function draw(){
+    var list=enabled(), n=list.length, w=canvas.clientWidth, r=w/2;
+    ctx.clearRect(0,0,w,w);
+    if(!n) return;
+    var per=Math.PI*2/n;
+    ctx.save();
+    ctx.translate(r,r);
+    ctx.rotate(angle);
+    for(var i=0;i<n;i++){
+      var a0=i*per-Math.PI/2, a1=a0+per;
+      ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,r-2,a0,a1); ctx.closePath();
+      ctx.fillStyle=SEG_COLORS[i%SEG_COLORS.length];
+      /* avoid same color meeting itself where the circle closes */
+      if(i===n-1 && n%SEG_COLORS.length===1) ctx.fillStyle=SEG_COLORS[2];
+      ctx.fill();
+      ctx.strokeStyle='rgba(217,163,96,.35)'; ctx.lineWidth=1; ctx.stroke();
+      /* label */
+      ctx.save();
+      ctx.rotate(a0+per/2);
+      ctx.textAlign='right'; ctx.textBaseline='middle';
+      ctx.fillStyle='#F0DFE2';
+      var fs=Math.max(9,Math.min(13,r*0.062));
+      ctx.font='500 '+fs+'px Outfit, sans-serif';
+      ctx.fillText(list[i].wheel, r-14, 0);
+      ctx.restore();
+    }
+    ctx.restore();
+    /* rim */
+    ctx.beginPath(); ctx.arc(r,r,r-1.5,0,Math.PI*2);
+    ctx.strokeStyle='rgba(217,163,96,.6)'; ctx.lineWidth=2; ctx.stroke();
+  }
+
+  function spin(){
+    var list=enabled();
+    if(spinning) return;
+    if(list.length<2){ alert('Turn on at least two activities in Edit.'); return; }
+    audio();
+    spinning=true;
+    document.getElementById('spinBtn').disabled=true;
+    clearResult();
+    var n=list.length, per=Math.PI*2/n;
+    var pick=Math.floor(Math.random()*n);
+    /* pointer sits at top; segment i center is at angle (i*per - PI/2 + per/2 + rotation).
+       We want that center at -PI/2 → rotation ≡ -(i*per + per/2) (mod 2π) */
+    var targetMod=((-(pick*per+per/2))%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+    var curMod=((angle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+    var delta=targetMod-curMod; if(delta<=0) delta+=Math.PI*2;
+    var turns=reduced?1:5+Math.floor(Math.random()*3);
+    var total=turns*Math.PI*2+delta;
+    var dur=reduced?700:4200+Math.random()*1200;
+    var start=null, from=angle, lastSeg=-1;
+    function frame(ts){
+      if(!start) start=ts;
+      var t=Math.min(1,(ts-start)/dur);
+      var ease=1-Math.pow(1-t,3);
+      angle=from+total*ease;
+      /* tick when a boundary passes the pointer */
+      var seg=Math.floor(((-angle-Math.PI/2)%(Math.PI*2))/per);
+      if(seg!==lastSeg){ if(!reduced) tick(); lastSeg=seg; }
+      draw();
+      if(t<1){ requestAnimationFrame(frame); }
+      else{
+        spinning=false;
+        document.getElementById('spinBtn').disabled=false;
+        if(navigator.vibrate) try{navigator.vibrate(60);}catch(e){}
+        land(list[pick]);
+      }
+    }
+    requestAnimationFrame(frame);
+  }
+
+  /* ---------- result ---------- */
+  var pending=null;
+  function fmt(sec){
+    var m=Math.floor(sec/60), s=sec%60;
+    return m+':'+(s<10?'0':'')+s;
+  }
+  function rollDuration(a){
+    var lo=Math.round(a.min*60), hi=Math.round(a.max*60);
+    var sec=lo+Math.random()*(hi-lo);
+    return Math.max(30,Math.round(sec/15)*15);
+  }
+  function clearResult(){ document.getElementById('resultSlot').innerHTML=''; pending=null; }
+  function land(a){
+    var sec=rollDuration(a);
+    pending={act:a,sec:sec};
+    var slot=document.getElementById('resultSlot');
+    slot.innerHTML=
+      '<div class="card">'+
+        '<span class="tag '+a.tag+'">'+TAGS[a.tag]+'</span>'+
+        '<h2></h2>'+
+        '<p class="note"></p>'+
+        '<p class="clock-line">The bell rings in <b>'+fmt(sec)+'</b></p>'+
+        '<div class="card-btns">'+
+          '<button class="primary-btn" id="startBtn">Start the clock</button>'+
+          '<button class="quiet-btn" id="vetoBtn">Veto · respin</button>'+
+        '</div>'+
+      '</div>';
+    slot.querySelector('h2').textContent=a.name;
+    slot.querySelector('.note').textContent=a.note||'';
+    document.getElementById('startBtn').addEventListener('click',startTimer);
+    document.getElementById('vetoBtn').addEventListener('click',function(){ clearResult(); spin(); });
+    slot.querySelector('.card').scrollIntoView({behavior:reduced?'auto':'smooth',block:'nearest'});
+  }
+
+  /* ---------- timer ---------- */
+  var timerEl=null, timerInt=null;
+  var RING_R=46, CIRC=2*Math.PI*RING_R;
+  function startTimer(){
+    if(!pending) return;
+    var a=pending.act, total=pending.sec, left=total;
+    clearResult();
+    timerEl=document.createElement('div');
+    timerEl.className='overlay';
+    timerEl.innerHTML=
+      '<span class="tag t-tag '+a.tag+'">'+TAGS[a.tag]+'</span>'+
+      '<h2 class="t-name"></h2>'+
+      '<div class="ring-wrap" id="ringWrap">'+
+        '<svg viewBox="0 0 100 100" aria-hidden="true">'+
+          '<circle class="ring-track" cx="50" cy="50" r="'+RING_R+'"/>'+
+          '<circle class="ring-fill" id="ringFill" cx="50" cy="50" r="'+RING_R+'" stroke-dasharray="'+CIRC+'" stroke-dashoffset="0"/>'+
+        '</svg>'+
+        '<div class="t-digits"><span class="big" id="digits">'+fmt(left)+'</span></div>'+
+      '</div>'+
+      '<p class="t-hint">When the bell rings, everything stops. Everything.</p>'+
+      '<button class="quiet-btn t-end" id="endEarly">Stop early</button>';
+    timerEl.querySelector('.t-name').textContent=a.name;
+    document.body.appendChild(timerEl);
+    document.getElementById('endEarly').addEventListener('click',function(){ closeTimer(false); });
+    var endAt=Date.now()+left*1000, lastShown=left;
+    timerInt=setInterval(function(){
+      left=Math.max(0,Math.round((endAt-Date.now())/1000));
+      if(left!==lastShown){
+        lastShown=left;
+        document.getElementById('digits').textContent=fmt(left);
+        document.getElementById('ringFill').setAttribute('stroke-dashoffset',String(CIRC*(1-left/total)));
+        if(left<=10) document.getElementById('ringWrap').classList.add('hot');
+        if(left<=5 && left>0) tick();
+      }
+      if(left<=0){ bellStop(); }
+    },200);
+  }
+  function bellStop(){
+    clearInterval(timerInt); timerInt=null;
+    bell();
+    if(navigator.vibrate) try{navigator.vibrate([120,80,120]);}catch(e){}
+    rounds++; save();
+    document.getElementById('roundCount').textContent=String(rounds);
+    timerEl.innerHTML=
+      '<div class="stopped">'+
+        '<h1>Stop.</h1>'+
+        '<p>The bell has spoken. Hands where the wheel can see them.</p>'+
+        '<button class="primary-btn" id="againBtn">Back to the wheel</button>'+
+      '</div>';
+    document.getElementById('againBtn').addEventListener('click',function(){ closeTimer(true); });
+  }
+  function closeTimer(){
+    if(timerInt){clearInterval(timerInt); timerInt=null;}
+    if(timerEl){timerEl.remove(); timerEl=null;}
+  }
+
+  /* ---------- consent gate / rules ---------- */
+  function showGate(first){
+    var g=document.createElement('div');
+    g.className='overlay gate';
+    g.innerHTML=
+      '<div class="gate-inner">'+
+        '<h1>Velvet <span class="amp">&amp;</span> Roulette</h1>'+
+        '<p class="sub">House rules · read together</p>'+
+        '<ul class="rules">'+
+          '<li><span class="r-mark">I.</span><span><em>Consent, every round.</em> A veto needs no reason and gets no debate.</span></li>'+
+          '<li><span class="r-mark">II.</span><span>“Stop” means stop — mid-spin, mid-round, mid-anything. The wheel never outranks a person.</span></li>'+
+          '<li><span class="r-mark">III.</span><span>His back door is closed. Permanently. Not up for a vote.</span></li>'+
+          '<li><span class="r-mark">IV.</span><span>Her back door: his lips only, nothing more — and never the other way around.</span></li>'+
+          '<li><span class="r-mark">V.</span><span>When the bell rings, <em>everything stops</em>. Yes, even then. Especially then.</span></li>'+
+          '<li><span class="r-mark">VI.</span><span>No winners, no losers. Except whoever finishes. That’s the winner.</span></li>'+
+        '</ul>'+
+        '<button class="primary-btn" id="gateBtn">'+(first?'We’re both in':'Back to the wheel')+'</button>'+
+      '</div>';
+    document.body.appendChild(g);
+    document.getElementById('gateBtn').addEventListener('click',function(){ audio(); g.remove(); });
+  }
+
+  /* ---------- finish screen ---------- */
+  function showFinish(){
+    var f=document.createElement('div');
+    f.className='overlay finish';
+    f.innerHTML=
+      '<canvas id="confetti"></canvas>'+
+      '<div class="finish-inner">'+
+        '<h1>We have a winner.</h1>'+
+        '<p>No points. No prizes. Just the one rule that matters:</p>'+
+        '<p>the winner is whoever finished.</p>'+
+        '<p class="score" style="margin-top:18px">Rounds survived tonight: '+rounds+'</p>'+
+        '<button class="primary-btn" id="rematchBtn">Rematch</button> '+
+        '<button class="quiet-btn" id="doneBtn">We’re done (for now)</button>'+
+      '</div>';
+    document.body.appendChild(f);
+    var stop=reduced?function(){}:confetti(f.querySelector('#confetti'));
+    function close(reset){
+      stop(); f.remove();
+      if(reset){ rounds=0; save(); document.getElementById('roundCount').textContent='0'; }
+    }
+    document.getElementById('rematchBtn').addEventListener('click',function(){close(true)});
+    document.getElementById('doneBtn').addEventListener('click',function(){close(false)});
+  }
+  function confetti(cv){
+    var c=cv.getContext('2d'), W,H,run=true;
+    function size(){W=cv.width=cv.clientWidth;H=cv.height=cv.clientHeight;}
+    size();
+    var COLS=['#E4587A','#D9A360','#F0DFE2','#B07BD6'];
+    var ps=[]; for(var i=0;i<120;i++)ps.push({
+      x:Math.random()*W,y:-Math.random()*H,r:3+Math.random()*5,
+      vy:1.5+Math.random()*2.5,vx:-1+Math.random()*2,rot:Math.random()*6,vr:-.1+Math.random()*.2,
+      col:COLS[i%COLS.length]
+    });
+    (function loop(){
+      if(!run) return;
+      c.clearRect(0,0,W,H);
+      ps.forEach(function(p){
+        p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;
+        if(p.y>H+10){p.y=-10;p.x=Math.random()*W;}
+        c.save();c.translate(p.x,p.y);c.rotate(p.rot);
+        c.fillStyle=p.col;c.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);
+        c.restore();
+      });
+      requestAnimationFrame(loop);
+    })();
+    return function(){run=false;};
+  }
+
+  /* ---------- editor ---------- */
+  function showEditor(){
+    var d=document.createElement('div');
+    d.className='drawer';
+    var panel=document.createElement('div');
+    panel.className='drawer-panel';
+    d.appendChild(panel);
+    function render(){
+      panel.innerHTML=
+        '<div class="drawer-head"><h2>The menu</h2><button class="ghost-btn" id="closeEd">Done</button></div>'+
+        '<p class="drawer-sub">Untick anything that isn’t on tonight’s menu. Add your own. Saved on this device only.</p>'+
+        '<div id="actList"></div>'+
+        '<form class="add-form" id="addForm">'+
+          '<input name="name" maxlength="80" placeholder="New activity — say it plainly" required>'+
+          '<div class="duo">'+
+            '<input name="wheel" maxlength="14" placeholder="Wheel label" required>'+
+            '<select name="tag"><option value="both">Together</option><option value="her">For her</option><option value="him">For him</option><option value="wild">Wildcard</option></select>'+
+          '</div>'+
+          '<div class="duo">'+
+            '<input name="min" type="number" min="1" max="30" value="3" aria-label="Minimum minutes" required>'+
+            '<input name="max" type="number" min="1" max="30" value="6" aria-label="Maximum minutes" required>'+
+          '</div>'+
+          '<button class="primary-btn" type="submit">Add to the wheel</button>'+
+        '</form>'+
+        '<div class="drawer-foot"><button class="quiet-btn" id="resetEd">Reset to house menu</button></div>';
+      var listEl=panel.querySelector('#actList');
+      acts.forEach(function(a){
+        var row=document.createElement('div');
+        row.className='act-row'+(a.on===false?' off':'');
+        var lab=document.createElement('label');
+        var cb=document.createElement('input');
+        cb.type='checkbox'; cb.checked=a.on!==false;
+        cb.addEventListener('change',function(){ a.on=cb.checked; save(); draw(); row.className='act-row'+(a.on?'':' off'); });
+        var span=document.createElement('span'); span.textContent=a.name;
+        lab.appendChild(cb); lab.appendChild(span);
+        var mins=document.createElement('span'); mins.className='mins'; mins.textContent=a.min+'–'+a.max+'m';
+        row.appendChild(lab); row.appendChild(mins);
+        if(String(a.id).charAt(0)==='c'){
+          var del=document.createElement('button'); del.className='del'; del.textContent='✕'; del.setAttribute('aria-label','Delete '+a.name);
+          del.addEventListener('click',function(){ acts=acts.filter(function(x){return x.id!==a.id;}); save(); draw(); render(); });
+          row.appendChild(del);
+        }
+        listEl.appendChild(row);
+      });
+      panel.querySelector('#closeEd').addEventListener('click',function(){ d.remove(); });
+      panel.querySelector('#resetEd').addEventListener('click',function(){
+        acts=defaults(); save(); draw(); render();
+      });
+      panel.querySelector('#addForm').addEventListener('submit',function(ev){
+        ev.preventDefault();
+        var f=ev.target;
+        var lo=Math.max(1,parseInt(f.min.value,10)||3), hi=Math.max(lo,parseInt(f.max.value,10)||6);
+        acts.push({id:'c'+Date.now(), name:f.name.value.trim(), wheel:f.wheel.value.trim()||f.name.value.trim().slice(0,14),
+          tag:f.tag.value, min:lo, max:hi, note:'House special.', on:true});
+        save(); draw(); render();
+        panel.scrollTop=panel.scrollHeight;
+      });
+    }
+    render();
+    d.addEventListener('click',function(ev){ if(ev.target===d) d.remove(); });
+    document.body.appendChild(d);
+  }
+
+  /* ---------- wire up ---------- */
+  document.getElementById('spinBtn').addEventListener('click',spin);
+  canvas.addEventListener('click',spin);
+  document.getElementById('rulesBtn').addEventListener('click',function(){showGate(false)});
+  document.getElementById('editBtn').addEventListener('click',showEditor);
+  document.getElementById('finishBtn').addEventListener('click',showFinish);
+  document.getElementById('roundCount').textContent=String(rounds);
+  window.addEventListener('resize',sizeCanvas);
+  sizeCanvas();
+  showGate(true);
+})();
+</script>
