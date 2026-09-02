@@ -1,7 +1,7 @@
 <title>Velvet &amp; Roulette</title>
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;1,400;1,600&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
 <style>
   :root{
     --ground:#160A10;
@@ -11,11 +11,15 @@
     --rose:#E4587A;
     --rose-soft:#F08CA5;
     --gold:#D9A360;
+    --gold-bright:#F2C57C;
     --cream:#F0DFE2;
     --dim:#A98492;
     --teal:#4FA894;
     --violet:#B07BD6;
+    --ember:#E8643C;
     --ring-track:#3A1F2C;
+    --heat:#D9A360;
+    --charge:0;
   }
   *{box-sizing:border-box}
   html{color-scheme:dark}
@@ -27,69 +31,124 @@
     font-weight:300;
     min-height:100vh;
     -webkit-tap-highlight-color:transparent;
+    overflow-x:hidden;
   }
   button{font-family:inherit;cursor:pointer}
-  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{
+  button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
     outline:2px solid var(--gold);outline-offset:2px;border-radius:4px;
   }
+  small{display:block;font-size:12px;color:var(--dim);font-weight:300;margin-top:2px}
 
   .shell{max-width:520px;margin:0 auto;padding:0 20px 120px;position:relative}
 
   /* ---------- header ---------- */
-  header{display:flex;align-items:baseline;justify-content:space-between;padding:26px 0 6px}
-  .brand{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:30px;letter-spacing:.01em;color:var(--cream)}
+  header{display:flex;align-items:center;justify-content:space-between;padding:24px 0 4px;gap:10px}
+  .brand{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:30px;letter-spacing:.01em;color:var(--cream);line-height:1}
   .brand .amp{color:var(--rose)}
-  .header-btns{display:flex;gap:6px}
+  .header-btns{display:flex;gap:6px;flex:none}
   .ghost-btn{
     background:none;border:1px solid var(--edge);color:var(--dim);
     font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;
     padding:7px 12px;border-radius:999px;transition:color .2s,border-color .2s;
   }
   .ghost-btn:hover{color:var(--cream);border-color:var(--gold)}
-  .tagline{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);margin:0 0 26px}
+
+  .heatbar{display:flex;align-items:center;justify-content:space-between;margin:14px 0 22px;gap:12px}
+  .heat{display:flex;align-items:center;gap:10px}
+  .pips{display:flex;gap:5px;align-items:flex-end}
+  .pip{width:9px;height:12px;border-radius:5px 5px 6px 6px;background:var(--edge);transition:background .4s,box-shadow .4s,height .4s}
+  .pip:nth-child(2){height:15px}.pip:nth-child(3){height:18px}.pip:nth-child(4){height:21px}
+  .pip.on{background:var(--heat);box-shadow:0 0 12px var(--heat)}
+  .heat-label{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+  .heat-label b{color:var(--heat);font-weight:600;transition:color .4s}
+  .heat-next{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);text-align:right}
+
+  /* ---------- turn chip ---------- */
+  .turn{
+    align-self:center;background:var(--surface);border:1px solid var(--edge);color:var(--cream);
+    border-radius:999px;padding:8px 16px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;
+    display:flex;gap:10px;align-items:center;transition:border-color .2s;
+  }
+  .turn:hover{border-color:var(--gold)}
+  .turn .dot{width:8px;height:8px;border-radius:50%;background:var(--rose)}
+  .turn.him .dot{background:var(--gold)}
+  .turn small{display:inline;color:var(--dim);letter-spacing:.08em;text-transform:none;font-size:11px;margin:0}
 
   /* ---------- wheel stage ---------- */
   .stage{position:relative;display:flex;flex-direction:column;align-items:center}
-  .wheel-wrap{position:relative;width:min(88vw,420px);aspect-ratio:1;margin-top:14px}
-  #wheel{width:100%;height:100%;display:block;border-radius:50%;
-    box-shadow:0 0 0 1px var(--edge),0 0 90px rgba(228,88,122,.14),0 24px 60px rgba(0,0,0,.55)}
+  .wheel-wrap{position:relative;width:min(88vw,420px);aspect-ratio:1;margin-top:22px;user-select:none;-webkit-user-select:none}
+  .halo{position:absolute;inset:-14%;border-radius:50%;pointer-events:none;filter:blur(22px);opacity:.9;transition:background 1s}
+  .halo.flicker{animation:flicker 3.2s ease-in-out infinite}
+  @keyframes flicker{0%,100%{opacity:.75;transform:scale(1)}40%{opacity:1;transform:scale(1.03)}70%{opacity:.85;transform:scale(.99)}}
+  #wheel{position:relative;width:100%;height:100%;display:block;border-radius:50%;
+    box-shadow:0 0 0 1px var(--edge),0 24px 60px rgba(0,0,0,.55)}
+  #sparks{position:absolute;left:-20%;top:-20%;width:140%;height:140%;pointer-events:none;z-index:4}
   .pointer{
     position:absolute;top:-9px;left:50%;transform:translateX(-50%);
     width:0;height:0;border-left:13px solid transparent;border-right:13px solid transparent;
     border-top:24px solid var(--gold);filter:drop-shadow(0 3px 6px rgba(0,0,0,.6));z-index:3;
+  }
+  .charge-ring{
+    position:absolute;top:50%;left:50%;width:106px;height:106px;transform:translate(-50%,-50%);
+    border-radius:50%;z-index:2;pointer-events:none;
+    background:conic-gradient(var(--gold-bright) calc(var(--charge) * 360deg), transparent 0);
+    -webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
+    mask:radial-gradient(farthest-side,transparent calc(100% - 6px),#000 calc(100% - 5px));
   }
   .hub{
     position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
     width:88px;height:88px;border-radius:50%;
     background:var(--surface);border:1px solid var(--gold);
     color:var(--gold);font-size:12px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;
-    display:flex;align-items:center;justify-content:center;z-index:2;
+    display:flex;align-items:center;justify-content:center;z-index:3;
     box-shadow:0 0 24px rgba(217,163,96,.25), inset 0 0 18px rgba(0,0,0,.5);
-    transition:transform .15s;
+    transition:transform .12s,box-shadow .3s;
+    touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
   }
-  .hub:not(:disabled):hover{transform:translate(-50%,-50%) scale(1.05)}
   .hub:disabled{color:var(--dim);border-color:var(--edge);cursor:default;box-shadow:none}
-  .rounds{margin-top:22px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+  .hint{margin-top:16px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);text-align:center}
+  .rounds{margin-top:8px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
   .rounds b{color:var(--gold);font-weight:600;font-variant-numeric:tabular-nums}
 
   /* ---------- result card ---------- */
   .card{
     margin-top:26px;width:100%;background:var(--surface);border:1px solid var(--edge);
     border-radius:18px;padding:26px 24px 22px;text-align:center;
-    animation:rise .45s cubic-bezier(.2,.9,.3,1);
+    animation:rise .45s cubic-bezier(.2,.9,.3,1);position:relative;overflow:hidden;
   }
+  .card.jackpot{border-color:var(--gold);box-shadow:0 0 50px rgba(217,163,96,.25)}
+  .card.mystery{border-color:#000;background:#0E0A0E;box-shadow:0 0 50px rgba(0,0,0,.6)}
   @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
   .tag{
     display:inline-block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;font-weight:600;
-    padding:5px 12px;border-radius:999px;border:1px solid currentColor;margin-bottom:14px;
+    padding:5px 12px;border-radius:999px;border:1px solid currentColor;
   }
   .tag.her{color:var(--rose-soft)} .tag.him{color:var(--gold)}
   .tag.both{color:var(--violet)} .tag.wild{color:var(--teal)}
+  .tag.mystery{color:var(--dim)} .tag.jackpot{color:var(--gold-bright);background:rgba(217,163,96,.12)}
+  .tag.confession{color:#CFA0E0} .tag.dare{color:#F08A6A}
+  .tag.spinner{color:var(--dim);border-style:dashed}
   .card h2{font-family:'Cormorant',Georgia,serif;font-weight:600;font-size:30px;line-height:1.15;margin:0 0 10px;text-wrap:balance}
-  .card .note{font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:18px;color:var(--dim);margin:0 0 18px;line-height:1.4}
+  .card.jackpot.pick h2{color:var(--gold-bright);font-size:44px;letter-spacing:.04em;font-style:italic}
+  .card.mystery h2{font-size:54px;color:var(--gold);letter-spacing:.2em}
+  .card .note{font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:18px;color:var(--dim);margin:0 0 16px;line-height:1.4}
+  .extras{display:flex;flex-direction:column;gap:8px;margin:0 0 18px}
+  .twist{
+    background:var(--surface-2);border:1px solid var(--ember);color:var(--cream);border-radius:12px;padding:10px 14px;
+    font-size:14px;animation:flip .55s cubic-bezier(.2,.9,.3,1);transform-origin:top;
+  }
+  .twist b{color:var(--ember);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:10px;display:block;margin-bottom:3px}
+  @keyframes flip{from{opacity:0;transform:perspective(500px) rotateX(-70deg)}to{opacity:1;transform:none}}
+  .focus{font-size:13px;color:var(--dim);letter-spacing:.06em}
+  .focus b{color:var(--gold);font-weight:500}
   .card .clock-line{font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:20px}
   .card .clock-line b{color:var(--cream);font-family:'DM Mono',monospace;font-variant-numeric:tabular-nums;font-weight:500;letter-spacing:.05em}
-  .card-btns{display:flex;gap:10px;justify-content:center}
+  .card-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .card select{
+    width:100%;background:var(--surface-2);border:1px solid var(--edge);color:var(--cream);
+    border-radius:10px;padding:12px 13px;font-family:inherit;font-size:14px;margin-bottom:16px;
+  }
   .primary-btn{
     background:var(--rose);color:#2A0A14;border:none;border-radius:999px;
     font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
@@ -97,38 +156,71 @@
     box-shadow:0 6px 24px rgba(228,88,122,.35);
   }
   .primary-btn:hover{transform:translateY(-1px)}
+  .primary-btn.gold{background:var(--gold);box-shadow:0 6px 24px rgba(217,163,96,.35)}
   .quiet-btn{
     background:none;border:1px solid var(--edge);color:var(--dim);border-radius:999px;
     font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;padding:14px 22px;
     transition:color .2s,border-color .2s;
   }
   .quiet-btn:hover{color:var(--cream);border-color:var(--dim)}
-  .veto-note{margin-top:14px;font-size:12px;color:var(--dim);font-style:italic;font-family:'Cormorant',Georgia,serif;font-size:15px}
+  .veto-note{margin-top:14px;color:var(--dim);font-style:italic;font-family:'Cormorant',Georgia,serif;font-size:15px;text-align:center}
 
   /* ---------- timer overlay ---------- */
   .overlay{
     position:fixed;inset:0;background:var(--ground);z-index:40;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:24px;text-align:center;
+    padding:24px;text-align:center;overflow-y:auto;
   }
-  .t-tag{margin-bottom:6px}
-  .t-name{font-family:'Cormorant',Georgia,serif;font-weight:600;font-size:32px;margin:0 0 26px;max-width:420px;text-wrap:balance;line-height:1.15}
-  .ring-wrap{position:relative;width:min(70vw,300px);aspect-ratio:1}
+  .overlay.flash{animation:flash .6s ease-out}
+  @keyframes flash{0%{background:#5A1A2C}100%{background:var(--ground)}}
+  .t-label{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px}
+  .t-name{font-family:'Cormorant',Georgia,serif;font-weight:600;font-size:30px;margin:0 0 14px;max-width:440px;text-wrap:balance;line-height:1.15}
+  .t-extras{display:flex;flex-direction:column;gap:6px;margin-bottom:22px;max-width:380px}
+  .ring-wrap{position:relative;width:min(70vw,300px);aspect-ratio:1;flex:none}
   .ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
   .ring-track{fill:none;stroke:var(--ring-track);stroke-width:6}
   .ring-fill{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;transition:stroke .4s}
   .ring-wrap.hot .ring-fill{stroke:var(--rose)}
+  .ring-wrap.veiled .ring-fill{stroke-dasharray:6 14 !important;stroke-dashoffset:0 !important;animation:crawl 2.4s linear infinite;stroke:var(--dim)}
+  @keyframes crawl{to{stroke-dashoffset:-40}}
   .t-digits{
     position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
     font-family:'DM Mono',monospace;font-variant-numeric:tabular-nums;
   }
   .t-digits .big{font-size:56px;font-weight:500;letter-spacing:.02em}
+  .t-digits .veil{font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:22px;color:var(--dim);max-width:180px;line-height:1.3}
   .ring-wrap.hot .big{color:var(--rose);animation:pulse 1s infinite}
   @keyframes pulse{50%{opacity:.55}}
-  .t-hint{margin-top:26px;font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:18px;color:var(--dim);max-width:340px;line-height:1.4}
-  .t-end{margin-top:30px}
-  .stopped h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:54px;color:var(--rose);margin:0 0 8px;animation:pulse 1.2s infinite}
-  .stopped p{color:var(--dim);font-size:15px;margin:0 0 34px}
+  .t-hint{margin-top:24px;font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:18px;color:var(--dim);max-width:340px;line-height:1.4}
+  .t-end{margin-top:26px}
+  .stopped{max-width:420px}
+  .stopped h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:60px;color:var(--rose);margin:0 0 8px;animation:pulse 1.2s infinite}
+  .stopped p{color:var(--dim);font-size:15px;margin:0 0 26px}
+  .heat-up{
+    background:var(--surface);border:1px solid var(--heat);border-radius:14px;padding:14px 18px;margin:0 0 24px;
+    box-shadow:0 0 40px rgba(232,100,60,.2);animation:rise .5s;
+  }
+  .heat-up b{display:block;color:var(--heat);font-size:11px;letter-spacing:.28em;text-transform:uppercase;margin-bottom:4px}
+  .heat-up span{font-family:'Cormorant',Georgia,serif;font-size:20px;font-style:italic}
+  .gamble{background:var(--surface);border:1px solid var(--edge);border-radius:16px;padding:20px;margin-bottom:8px;animation:rise .5s}
+  .gamble h3{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:28px;margin:0 0 6px;color:var(--gold)}
+  .gamble p{margin:0 0 16px;font-size:14px;color:var(--dim)}
+  .coin{width:92px;height:92px;margin:6px auto 18px;position:relative;transform-style:preserve-3d;transition:transform 1.7s cubic-bezier(.2,.8,.2,1)}
+  .coin .face{position:absolute;inset:0;border-radius:50%;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;-webkit-backface-visibility:hidden;font-family:'Cormorant',Georgia,serif;font-weight:700;font-size:20px;letter-spacing:.1em;border:2px solid rgba(0,0,0,.3)}
+  .coin .front{background:var(--gold);color:#2A0A14}
+  .coin .back{background:var(--rose);color:#2A0A14;transform:rotateY(180deg)}
+  .result{font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:22px;margin:0 0 16px;min-height:1.4em}
+
+  /* ---------- plot-twist banner ---------- */
+  .banner{
+    position:fixed;left:50%;top:16px;transform:translateX(-50%) translateY(-160%);
+    transition:transform .45s cubic-bezier(.2,.9,.3,1);z-index:80;
+    background:var(--ember);color:#1A0806;padding:14px 20px;border-radius:14px;max-width:min(92vw,440px);text-align:center;
+    box-shadow:0 12px 40px rgba(0,0,0,.5);
+  }
+  .banner.show{transform:translateX(-50%) translateY(0)}
+  .banner b{display:block;font-size:10px;letter-spacing:.3em;text-transform:uppercase;margin-bottom:4px;font-weight:700}
+  .banner span{font-family:'Cormorant',Georgia,serif;font-weight:700;font-size:22px;line-height:1.2}
 
   /* ---------- gate & rules ---------- */
   .gate{z-index:60}
@@ -136,50 +228,71 @@
   .gate h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:46px;margin:0 0 4px}
   .gate .amp{color:var(--rose)}
   .gate .sub{font-size:12px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin:0 0 30px}
-  .rules{list-style:none;margin:0 0 32px;padding:0;text-align:left;display:flex;flex-direction:column;gap:14px}
+  .rules{list-style:none;margin:0 0 32px;padding:0;text-align:left;display:flex;flex-direction:column;gap:13px}
   .rules li{display:flex;gap:14px;align-items:baseline;font-size:15px;line-height:1.45;color:var(--cream)}
-  .rules .r-mark{color:var(--gold);font-family:'Cormorant',Georgia,serif;font-style:italic;flex:none}
+  .rules .r-mark{color:var(--gold);font-family:'Cormorant',Georgia,serif;font-style:italic;flex:none;min-width:22px}
   .rules em{color:var(--rose-soft);font-style:normal;font-weight:500}
 
-  /* ---------- finish ---------- */
+  /* ---------- finish / night report ---------- */
   .finish{z-index:50}
   #confetti{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-  .finish-inner{position:relative}
-  .finish h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:44px;margin:0 0 10px;color:var(--gold)}
-  .finish p{color:var(--dim);font-size:15px;margin:0 0 6px}
-  .finish .score{font-family:'DM Mono',monospace;color:var(--cream);font-size:15px;margin-bottom:34px}
+  .finish-inner{position:relative;max-width:440px;width:100%}
+  .finish h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:44px;margin:0 0 6px;color:var(--gold)}
+  .finish .lede{color:var(--dim);font-size:15px;margin:0 0 22px;line-height:1.5}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin-bottom:16px}
+  .stat{background:var(--surface);border:1px solid var(--edge);border-radius:12px;padding:12px 14px}
+  .stat b{display:block;font-family:'DM Mono',monospace;font-size:22px;color:var(--gold);font-weight:500;font-variant-numeric:tabular-nums}
+  .stat span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .aftercare{background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:16px 18px;margin-bottom:22px;text-align:left}
+  .aftercare b{display:block;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--rose-soft);margin-bottom:6px}
+  .aftercare p{margin:0;font-family:'Cormorant',Georgia,serif;font-size:19px;font-style:italic;line-height:1.4}
 
-  /* ---------- editor drawer ---------- */
-  .drawer{
-    position:fixed;inset:0;z-index:55;background:rgba(12,5,9,.72);display:flex;justify-content:flex-end;
-  }
+  /* ---------- settings drawer ---------- */
+  .drawer{position:fixed;inset:0;z-index:55;background:rgba(12,5,9,.72);display:flex;justify-content:flex-end}
   .drawer-panel{
-    width:min(94vw,420px);height:100%;background:var(--surface);border-left:1px solid var(--edge);
-    padding:22px 20px;overflow-y:auto;animation:slide .3s cubic-bezier(.2,.9,.3,1);
+    width:min(94vw,440px);height:100%;background:var(--surface);border-left:1px solid var(--edge);
+    padding:22px 20px 60px;overflow-y:auto;animation:slide .3s cubic-bezier(.2,.9,.3,1);
   }
   @keyframes slide{from{transform:translateX(40px);opacity:0}to{transform:none;opacity:1}}
   .drawer-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
   .drawer-head h2{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:26px;margin:0}
-  .drawer-sub{font-size:12px;color:var(--dim);margin:0 0 18px;line-height:1.5}
-  .act-row{
-    display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--edge);
-  }
-  .act-row label{flex:1;font-size:14px;display:flex;align-items:center;gap:12px;cursor:pointer}
-  .act-row input[type=checkbox]{accent-color:var(--rose);width:17px;height:17px;flex:none}
-  .act-row .mins{font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);flex:none;font-variant-numeric:tabular-nums}
-  .act-row .del{background:none;border:none;color:var(--dim);font-size:16px;padding:4px 6px}
-  .act-row .del:hover{color:var(--rose)}
-  .add-form{margin-top:20px;display:flex;flex-direction:column;gap:10px}
-  .add-form input,.add-form select{
+  .drawer-sub{font-size:12px;color:var(--dim);margin:0 0 6px;line-height:1.5}
+  .sec-title{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin:26px 0 10px;font-weight:600}
+  .seg{display:flex;border:1px solid var(--edge);border-radius:999px;overflow:hidden}
+  .seg button{flex:1;background:none;border:none;color:var(--dim);padding:10px 4px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:500}
+  .seg button.on{background:var(--rose);color:#2A0A14;font-weight:600}
+  .field{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+  .field label{font-size:12px;color:var(--dim);letter-spacing:.06em}
+  .drawer input[type=text],.drawer input[type=number],.drawer select,.drawer textarea{
     background:var(--surface-2);border:1px solid var(--edge);color:var(--cream);
     border-radius:10px;padding:11px 13px;font-family:inherit;font-size:14px;width:100%;
   }
-  .add-form .duo{display:flex;gap:10px}
-  .drawer-foot{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+  .drawer textarea{min-height:76px;resize:vertical;line-height:1.4}
+  .duo{display:flex;gap:10px}
+  .tog{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid var(--edge);font-size:14px;cursor:pointer}
+  .tog b{font-weight:500}
+  .tog input{accent-color:var(--rose);width:18px;height:18px;flex:none}
+  .act-row{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px solid var(--edge)}
+  .act-row label{flex:1;font-size:14px;display:flex;align-items:center;gap:12px;cursor:pointer;line-height:1.3}
+  .act-row input[type=checkbox]{accent-color:var(--rose);width:17px;height:17px;flex:none}
+  .act-row .meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);flex:none;font-variant-numeric:tabular-nums;text-align:right;line-height:1.5}
+  .act-row .meta i{font-style:normal;color:var(--ember);letter-spacing:-2px}
+  .act-row .del{background:none;border:none;color:var(--dim);font-size:16px;padding:4px 6px}
+  .act-row .del:hover{color:var(--rose)}
   .off label{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(169,132,146,.5)}
+  .add-form{margin-top:14px;display:flex;flex-direction:column;gap:10px}
+  .drawer-foot{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);opacity:0;
+    background:var(--surface-2);border:1px solid var(--edge);color:var(--cream);padding:12px 18px;border-radius:999px;
+    font-size:13px;z-index:90;transition:transform .3s,opacity .3s;pointer-events:none;max-width:90vw;text-align:center;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
+    .halo.flicker{animation:none}
   }
 </style>
 
@@ -188,398 +301,732 @@
     <div class="brand">Velvet <span class="amp">&amp;</span> Roulette</div>
     <div class="header-btns">
       <button class="ghost-btn" id="rulesBtn">Rules</button>
-      <button class="ghost-btn" id="editBtn">Edit</button>
+      <button class="ghost-btn" id="editBtn">Menu</button>
     </div>
   </header>
-  <p class="tagline">Two players · One wheel · No arguments</p>
+
+  <div class="heatbar">
+    <div class="heat">
+      <div class="pips" aria-hidden="true"><span class="pip"></span><span class="pip"></span><span class="pip"></span><span class="pip"></span></div>
+      <div class="heat-label">Heat · <b id="heatName">Simmer</b></div>
+    </div>
+    <div class="heat-next" id="heatNext"></div>
+  </div>
 
   <div class="stage">
+    <button class="turn" id="turnBtn" title="Tap to swap whose spin it is"><span class="dot"></span><span id="turnText">Her spin</span><small>tap to swap</small></button>
     <div class="wheel-wrap">
+      <div class="halo" id="halo"></div>
       <div class="pointer" aria-hidden="true"></div>
       <canvas id="wheel" aria-label="Activity wheel"></canvas>
+      <canvas id="sparks" aria-hidden="true"></canvas>
+      <div class="charge-ring" aria-hidden="true"></div>
       <button class="hub" id="spinBtn">Spin</button>
     </div>
+    <p class="hint">Tap to spin · Hold to charge a wild one</p>
     <p class="rounds">Rounds survived · <b id="roundCount">0</b></p>
-    <div id="resultSlot"></div>
-    <p class="veto-note" style="text-align:center">Either of you can veto any spin — no reason needed, no questions asked.</p>
+    <div id="resultSlot" style="width:100%"></div>
+    <p class="veto-note">Either of you can veto any spin — no reason needed, no questions asked.</p>
     <button class="quiet-btn" id="finishBtn" style="margin-top:26px">Someone finished 🏁</button>
   </div>
 </div>
 
+<div class="banner" id="banner" role="status"><b>Plot twist</b><span id="bannerText"></span></div>
+<div class="toast" id="toast" role="status"></div>
+
 <script>
 (function(){
   'use strict';
-  var STORE_KEY='velvet-roulette-v1';
-  var TAGS={her:'For her',him:'For him',both:'Together',wild:'Wildcard'};
-  var SEG_COLORS=['#7C2447','#471E3E','#96334F','#31142B','#5E2947'];
+  var STORE_KEY='velvet-roulette-v2';
   var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var root=document.documentElement;
 
-  /* name, short wheel label, tag, min/max minutes, italic flavor note */
+  var TAGS={her:'For her',him:'For him',both:'Together',wild:'Wildcard',mystery:'Mystery',jackpot:'Jackpot',confession:'Confession',dare:'Dare'};
+  var TAG_FILL={her:['#8E2A4E','#7A2343'],him:['#8A5A22','#75491B'],both:['#4B2252','#3E1B44'],wild:['#1F4A47','#193C3A'],
+    mystery:['#0E0A0E','#0E0A0E'],jackpot:['#D4A64A','#D4A64A'],confession:['#6A2E7A','#6A2E7A'],dare:['#A63A2E','#A63A2E']};
+  var TAG_GLOW={her:'#E4587A',him:'#D9A360',both:'#B07BD6',wild:'#4FA894',mystery:'#A98492',jackpot:'#F2C57C',confession:'#CFA0E0',dare:'#E8643C'};
+  var HEAT_NAMES=['Simmer','Sizzle','Blaze','Inferno'];
+  var HEAT_COLORS=['#D9A360','#E4587A','#E8643C','#FF3B5C'];
+  var HEAT_RGB=[[217,163,96],[228,88,122],[232,100,60],[255,59,92]];
+  var HEAT_AT=[0,2,4,6];
+  var MODES={quickie:.6,classic:1,marathon:1.5};
+
+  /* ---------- the menu (heat 1–4 = which tier unlocks it) ---------- */
   function defaults(){return [
-    {id:'d1', name:'Slow make-out — hands above the waist', wheel:'Make-out', tag:'both', min:2, max:4, note:'Like the first time, except now you know better.'},
-    {id:'d2', name:'Massage her, head to toe', wheel:'Massage · her', tag:'her', min:5, max:8, note:'Warm hands. No shortcuts.'},
-    {id:'d3', name:'Massage him — shoulders, back, and wherever helps', wheel:'Massage · him', tag:'him', min:4, max:6, note:'He carries a lot of tension. Allegedly.'},
-    {id:'d4', name:'He goes down on her', wheel:'Down on her', tag:'her', min:4, max:8, note:'No clock-watching. Oh wait.'},
-    {id:'d5', name:'She goes down on him', wheel:'Down on him', tag:'him', min:4, max:7, note:'Eye contact optional. Recommended.'},
-    {id:'d6', name:'Sixty-nine until the bell', wheel:'69', tag:'both', min:4, max:6, note:'Teamwork makes the dream work.'},
-    {id:'d7', name:'Toy from the drawer — she picks, he drives', wheel:'Toys · her pick', tag:'her', min:4, max:8, note:'Her drawer, her rules.'},
-    {id:'d8', name:'Toy from the drawer — he picks, she puts on the show', wheel:'The show', tag:'wild', min:3, max:5, note:'He watches. He does not touch. Yet.'},
-    {id:'d9', name:'Blindfold round — receiver blindfolded, giver improvises', wheel:'Blindfold', tag:'wild', min:4, max:6, note:'Inside the rules. Outside expectations.'},
-    {id:'d10', name:'Hands only — no mouths, no toys', wheel:'Hands only', tag:'both', min:3, max:5, note:'Back to basics.'},
-    {id:'d11', name:'Mouths only — hands behind your back', wheel:'Mouths only', tag:'both', min:3, max:5, note:'Harder than it sounds.'},
-    {id:'d12', name:'Dirty talk only — one inch apart, zero touching', wheel:'Just talk', tag:'both', min:1, max:3, note:'The cruelest slice on this wheel.'},
-    {id:'d13', name:'Striptease — whoever spun performs', wheel:'Striptease', tag:'wild', min:2, max:4, note:'Commit to the bit.'},
-    {id:'d14', name:'Edge her — close, closer… then the bell decides', wheel:'Edge · her', tag:'her', min:4, max:7, note:'The bell is a menace.'},
-    {id:'d15', name:'Edge him — and stop means stop', wheel:'Edge · him', tag:'him', min:4, max:7, note:'Revenge, served warm.'},
-    {id:'d16', name:'Doggy until the bell', wheel:'Doggy', tag:'both', min:3, max:6, note:'The bell will feel too soon.'},
-    {id:'d17', name:'Cowgirl — she sets the pace, his hands go where she puts them', wheel:'Cowgirl', tag:'both', min:3, max:6, note:'She is the weather. He is the landscape.'},
-    {id:'d18', name:'Missionary in slow motion — no speeding up allowed', wheel:'Slow motion', tag:'both', min:4, max:6, note:'Half speed. All of it.'},
-    {id:'d19', name:'He kisses her everywhere. Everywhere.', wheel:'Everywhere', tag:'her', min:3, max:5, note:'The one door that only opens his way — see house rules.'},
-    {id:'d20', name:'Ice cube round — temperature play, giver’s choice of target', wheel:'Ice', tag:'wild', min:2, max:4, note:'Freezer first. Squealing later.'},
-    {id:'d21', name:'Spinner’s choice — anything inside the rules', wheel:'Your call', tag:'wild', min:3, max:6, note:'Choose wisely. The bell is still coming.'}
+    {id:'d1', heat:1, name:'Slow make-out — hands above the waist', wheel:'Make-out', tag:'both', min:2, max:4, note:'Like the first time, except now you know better.'},
+    {id:'d2', heat:1, zones:true, name:'Massage her, head to toe', wheel:'Massage · her', tag:'her', min:5, max:8, note:'Warm hands. No shortcuts.'},
+    {id:'d3', heat:1, zones:true, name:'Massage him — shoulders, back, and wherever helps', wheel:'Massage · him', tag:'him', min:4, max:6, note:'He carries a lot of tension. Allegedly.'},
+    {id:'d4', heat:1, name:'Kiss trail — lips only, neck to knees', wheel:'Kiss trail', tag:'both', min:2, max:4, note:'Flip a coin for who receives. Loser gives. Everybody wins.'},
+    {id:'d5', heat:1, name:'Body worship — name three things you love about her body, then prove each one', wheel:'Worship', tag:'her', min:3, max:5, note:'Specific beats poetic.'},
+    {id:'d6', heat:1, name:'Dirty talk only — one inch apart, zero touching', wheel:'Just talk', tag:'both', min:1, max:3, note:'The cruelest slice on this wheel.'},
+    {id:'d7', heat:1, name:'Striptease — whoever spun performs', wheel:'Striptease', tag:'wild', min:2, max:4, note:'Commit to the bit.'},
+    {id:'d8', heat:1, name:'Hands only — no mouths, no toys', wheel:'Hands only', tag:'both', min:3, max:5, note:'Back to basics.'},
+    {id:'d9', heat:2, name:'Mouths only — hands behind your back', wheel:'Mouths only', tag:'both', min:3, max:5, note:'Harder than it sounds.'},
+    {id:'d10', heat:2, name:'He goes down on her', wheel:'Down on her', tag:'her', min:4, max:8, note:'No clock-watching. Oh wait.'},
+    {id:'d11', heat:2, name:'She goes down on him', wheel:'Down on him', tag:'him', min:4, max:7, note:'Eye contact optional. Recommended.'},
+    {id:'d12', heat:2, toy:true, name:'Toy from the drawer — she picks, he drives', wheel:'Toys · her pick', tag:'her', min:4, max:8, note:'Her drawer, her rules.'},
+    {id:'d13', heat:2, toy:true, name:'Toy from the drawer — he picks, she puts on the show', wheel:'The show', tag:'wild', min:3, max:5, note:'He watches. He does not touch. Yet.'},
+    {id:'d14', heat:2, name:'Lap dance — his hands stay under his thighs', wheel:'Lap dance', tag:'wild', min:2, max:4, note:'One song. No touching. Suffer beautifully.'},
+    {id:'d15', heat:2, zones:true, name:'Ice cube round — temperature play', wheel:'Ice', tag:'wild', min:2, max:4, note:'Freezer first. Squealing later.'},
+    {id:'d16', heat:2, name:'Roleplay: strangers who just met — stay in character', wheel:'Strangers', tag:'wild', min:3, max:5, note:'Names optional. Accents encouraged.'},
+    {id:'d17', heat:2, name:'Shower round — take it to the water', wheel:'Shower', tag:'both', min:4, max:7, note:'Steam is a feature.'},
+    {id:'d18', heat:2, name:'Spooning — slow, with whispered filth', wheel:'Spoons', tag:'both', min:4, max:6, note:'Lazy is a technique.'},
+    {id:'d19', heat:2, zones:true, name:'Blindfold round — receiver blindfolded, giver improvises', wheel:'Blindfold', tag:'wild', min:4, max:6, note:'Inside the rules. Outside expectations.'},
+    {id:'d20', heat:3, name:'Sixty-nine until the bell', wheel:'69', tag:'both', min:4, max:6, note:'Teamwork makes the dream work.'},
+    {id:'d21', heat:3, name:'Doggy — she gives the instructions, he follows every word', wheel:'Doggy', tag:'both', min:3, max:6, note:'The bell will feel too soon.'},
+    {id:'d22', heat:3, name:'Cowgirl — she sets the pace, his hands go where she puts them', wheel:'Cowgirl', tag:'both', min:3, max:6, note:'She is the weather. He is the landscape.'},
+    {id:'d23', heat:3, name:'Missionary in slow motion — no speeding up allowed', wheel:'Slow motion', tag:'both', min:4, max:6, note:'Half speed. All of it.'},
+    {id:'d24', heat:3, name:'Standing — against the nearest wall', wheel:'The wall', tag:'both', min:3, max:5, note:'Pick a sturdy one.'},
+    {id:'d25', heat:3, name:'Mirror round — somewhere you can both watch', wheel:'Mirror', tag:'both', min:3, max:6, note:'Front-row seats.'},
+    {id:'d26', heat:3, name:'Queen’s throne — she sits, he serves', wheel:'The throne', tag:'her', min:3, max:6, note:'Long live the queen.'},
+    {id:'d27', heat:3, toy:true, name:'Toy and tongue at once — for her', wheel:'Toy + tongue', tag:'her', min:4, max:7, note:'Overkill is the point.'},
+    {id:'d28', heat:3, name:'He kisses her everywhere. Everywhere.', wheel:'Everywhere', tag:'her', min:3, max:5, note:'The one door that only opens his way — see house rules.'},
+    {id:'d29', heat:3, name:'Her on top, his wrists tied or cuffed', wheel:'Tied up · him', tag:'him', min:4, max:6, note:'He can look. That’s all he can do.'},
+    {id:'d30', heat:4, name:'Edge her — close, closer… then the bell decides', wheel:'Edge · her', tag:'her', min:4, max:7, note:'The bell is a menace.'},
+    {id:'d31', heat:4, name:'Edge him — and stop means stop', wheel:'Edge · him', tag:'him', min:4, max:7, note:'Revenge, served warm.'},
+    {id:'d32', heat:4, name:'Edging duel — both at once. First to beg gets… nothing. Yet.', wheel:'Duel', tag:'both', min:4, max:6, note:'Mutually assured frustration.'},
+    {id:'d33', heat:4, name:'Spinner’s choice — anything inside the rules', wheel:'Your call', tag:'wild', min:3, max:6, note:'Choose wisely. The bell is still coming.'},
+    {id:'d34', heat:4, name:'Race to the finish — the wheel is done with you', wheel:'The finish', tag:'both', min:5, max:10, note:'The only winner is whoever finishes.'}
   ];}
 
+  var TWISTS=[
+    {t:'Blindfold the receiver.'},
+    {t:'No hands. At all.'},
+    {t:'Whispers only. Anything louder costs you a kiss.'},
+    {t:'Swap roles — the giver becomes the receiver.'},
+    {t:'Eyes locked the entire time.'},
+    {t:'Half speed. If it feels slow, go slower.'},
+    {t:'Narrate every move out loud before you make it.'},
+    {t:'Standing up. The whole round.'},
+    {t:'Different room first. Go.'},
+    {t:'Music on — match the tempo.'},
+    {t:'Lights off. Phone torch only.'},
+    {t:'Ice cube in the giver’s mouth.'},
+    {t:'Receiver’s hands stay above their head.'},
+    {t:'One piece of clothing stays on. Receiver chooses which.'},
+    {t:'In front of a mirror.'},
+    {t:'Giver asks permission before every new move. Out loud.'},
+    {t:'Receiver may only say “more” or “stop”.'},
+    {t:'Every thirty seconds, say one true thing about their body.'},
+    {t:'The bell is feeling generous — time and a half.', mult:1.5},
+    {t:'Lightning round — half the time. Make it count.', mult:.5}
+  ];
+  var PLOT=[
+    'Swap who’s in control. Now.',
+    'FREEZE. Nobody moves for ten seconds. Breathe.',
+    'Change of scenery — take it to another room.',
+    'Eyes closed until the bell.',
+    'Half speed until the bell.',
+    'Lights off.',
+    'Say their name. Mean it.',
+    'Thirty seconds of maximum intensity. Go.',
+    'Switch positions — receiver picks.',
+    'Kiss for ten seconds, then resume exactly where you were.',
+    'Hands off — mouths only until the bell.',
+    'Tell them what you want next. In detail. Without stopping.'
+  ];
+  var CONFESSIONS=[
+    'What’s a fantasy you’ve thought about but never said out loud?',
+    'What’s the hottest thing I’ve ever done to you?',
+    'Where’s the riskiest place you’d want to do it with me?',
+    'Describe, in detail, what you want me to do to you right now.',
+    'What do I do that instantly turns you on?',
+    'What do you want more of from me in bed?',
+    'Which round tonight did you not want to end?',
+    'What outfit of mine do you secretly want to see on the floor?',
+    'Tell me about a time you thought about me when you really shouldn’t have.',
+    'If you could replay one night of ours, which one — and which part?',
+    'What’s a word or phrase you’d love to hear me say in bed?',
+    'What’s the dirtiest thought you had about me this week?',
+    'Where do you want to be touched that I don’t touch enough?',
+    'What would you want to try if you knew I’d say yes? (House rules still apply.)',
+    'Which part of my body do you think about most?',
+    'Slow or rough tonight — and why?',
+    'What’s the best thing about the way I kiss?',
+    'Tell me a fantasy that has us in it and nobody else.',
+    'What did you notice about me tonight that you haven’t said yet?',
+    'What’s one thing you want me to do without asking first?'
+  ];
+  var DARES=[
+    {t:'Slow strip to one song. The other one is not allowed to touch.', min:3, max:4},
+    {t:'Undress your partner using only your teeth. One item.', min:2, max:3},
+    {t:'Trace a word on their back with one finger. They have to guess it. Keep going until they do.', min:2, max:3},
+    {t:'Lap dance — strict no-hands rule for them.', min:3, max:4},
+    {t:'Stand behind them at the mirror and narrate exactly what you love about what you see.', min:2, max:3},
+    {t:'Go to opposite ends of the room and text each other the filthiest message you dare. Then read them aloud.', min:2, max:3},
+    {t:'Kiss anywhere except the lips. Anywhere.', min:1, max:2},
+    {t:'Feed each other something sweet. No hands.', min:2, max:3},
+    {t:'Blindfold them and touch them with three different textures. They guess each one.', min:3, max:4},
+    {t:'Massage using only your forearms and your lips.', min:3, max:5},
+    {t:'Whisper exactly what you’re about to do to them — then wait a full minute before doing it.', min:2, max:3},
+    {t:'Neck and ears only, until the bell.', min:2, max:3},
+    {t:'Slow dance naked to one song. Actually slow.', min:3, max:4},
+    {t:'Reenact your first kiss. Then upgrade it.', min:2, max:3}
+  ];
+  var ZONES=['neck','ears','collarbones','inner thighs','lower back','hips','chest','lips','wrists and palms','behind the knees','stomach','feet and ankles','shoulders','the small of the back','everywhere except where they expect'];
+  var DEF_TOYS=['the wand','the bullet','her favorite dildo','the big one','the cuffs','the blindfold','the feather','a silk tie','massage oil','an ice cube','spinner’s choice'];
+
   /* ---------- state ---------- */
-  var acts, rounds=0;
+  var acts, settings, stats, turn;
+  function defSettings(){return {mode:'classic',startHeat:0,specials:true,twists:true,plot:true,gamble:true,mysteryTimer:false,sound:true,her:'Her',him:'Him',toys:DEF_TOYS.slice()};}
+  function defStats(){return {rounds:0,seconds:0,twists:0,plot:0,jackpots:0,vetoes:0,longest:0,peakHeat:0,gambles:0,gWon:0,spinsHer:0,spinsHim:0};}
   function load(){
-    acts=defaults();
+    acts=defaults(); settings=defSettings(); stats=defStats(); turn='her';
     try{
       var raw=localStorage.getItem(STORE_KEY);
       if(raw){
-        var s=JSON.parse(raw);
-        if(s && Array.isArray(s.acts) && s.acts.length) acts=s.acts;
-        if(s && typeof s.rounds==='number') rounds=s.rounds;
+        var s=JSON.parse(raw)||{};
+        if(Array.isArray(s.acts)&&s.acts.length) acts=s.acts;
+        if(s.settings) for(var k in s.settings) if(Object.prototype.hasOwnProperty.call(s.settings,k)) settings[k]=s.settings[k];
+        if(s.stats) for(var j in s.stats) if(Object.prototype.hasOwnProperty.call(s.stats,j)) stats[j]=s.stats[j];
+        if(s.turn==='him') turn='him';
       }
     }catch(e){}
+    if(!Array.isArray(settings.toys)) settings.toys=DEF_TOYS.slice();
   }
-  function save(){
-    try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,rounds:rounds}));}catch(e){}
-  }
+  function save(){ try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,settings:settings,stats:stats,turn:turn}));}catch(e){} }
   load();
 
-  function enabled(){return acts.filter(function(a){return a.on!==false;});}
+  function tierFor(r){ return r<HEAT_AT[1]?0: r<HEAT_AT[2]?1: r<HEAT_AT[3]?2:3; }
+  function tier(){ return Math.max(tierFor(stats.rounds), settings.startHeat|0); }
+  function eligibleActs(t){ if(t==null) t=tier(); return acts.filter(function(a){return a.on!==false && ((a.heat||1)-1)<=t;}); }
+  function enabledActs(){ return acts.filter(function(a){return a.on!==false;}); }
+  function specialsFor(t){
+    if(!settings.specials) return [];
+    var s=[{kind:'confession',label:'Confess',tag:'confession'}];
+    if(t>=1){ s.push({kind:'dare',label:'Dare',tag:'dare'}); s.push({kind:'mystery',label:'???',tag:'mystery'}); }
+    if(t>=2) s.push({kind:'jackpot',label:'JACKPOT',tag:'jackpot'});
+    return s;
+  }
+  function slices(){
+    var t=tier();
+    var list=eligibleActs(t).map(function(a){return {kind:'act',act:a,label:a.wheel,tag:a.tag};});
+    var sp=specialsFor(t), n=list.length;
+    /* spread the specials evenly around the wheel instead of bunching them */
+    for(var i=sp.length-1;i>=0;i--){ var pos=Math.floor((i+1)*n/(sp.length+1)); list.splice(pos,0,sp[i]); }
+    return list;
+  }
+  function sliceCount(t){ return eligibleActs(t).length+specialsFor(t).length; }
+
+  /* ---------- helpers ---------- */
+  function el(tag,cls,text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+  function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function mod(x){ var T=Math.PI*2; return ((x%T)+T)%T; }
+  function fmt(sec){ var m=Math.floor(sec/60), s=sec%60; return m+':'+(s<10?'0':'')+s; }
+  function rollSec(min,max,mult){
+    var m=(MODES[settings.mode]||1)*(mult||1);
+    var lo=min*60*m, hi=max*60*m, sec=lo+Math.random()*(hi-lo);
+    return Math.max(30,Math.round(sec/15)*15);
+  }
+  function vibrate(p){ if(navigator.vibrate) try{navigator.vibrate(p);}catch(e){} }
+  var toastT=null;
+  function toast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(function(){t.classList.remove('show');},2400); }
+  function spinLabel(who){ return who==='her' ? (settings.her==='Her'?'Her spin':settings.her+'’s spin') : (settings.him==='Him'?'His spin':settings.him+'’s spin'); }
+  function pronoun(who){ return who==='her' ? (settings.her==='Her'?'She':settings.her) : (settings.him==='Him'?'He':settings.him); }
 
   /* ---------- audio ---------- */
   var actx=null;
-  function audio(){ if(!actx){ try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return actx; }
-  function tick(){
-    var c=audio(); if(!c) return;
-    var o=c.createOscillator(), g=c.createGain();
-    o.type='square'; o.frequency.value=1600;
-    g.gain.setValueAtTime(.03,c.currentTime);
-    g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.03);
-    o.connect(g).connect(c.destination); o.start(); o.stop(c.currentTime+.035);
+  function audio(){ if(!actx){ try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } if(actx&&actx.state==='suspended') try{actx.resume();}catch(e){} return actx; }
+  function blip(freq,type,gain,dur,at){
+    if(!settings.sound) return; var c=audio(); if(!c) return;
+    var t=c.currentTime+(at||0), o=c.createOscillator(), g=c.createGain();
+    o.type=type; o.frequency.value=freq;
+    g.gain.setValueAtTime(gain,t); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+    o.connect(g).connect(c.destination); o.start(t); o.stop(t+dur+.02);
   }
-  function bell(){
-    var c=audio(); if(!c) return;
-    [659.25,987.77,659.25].forEach(function(f,i){
-      var t=c.currentTime+i*.45;
-      var o=c.createOscillator(), g=c.createGain();
-      o.type='sine'; o.frequency.value=f;
-      g.gain.setValueAtTime(.22,t);
-      g.gain.exponentialRampToValueAtTime(.0001,t+.42);
-      o.connect(g).connect(c.destination); o.start(t); o.stop(t+.45);
-    });
+  function tick(){ blip(1600,'square',.03,.03); }
+  function bell(){ [659.25,987.77,659.25].forEach(function(f,i){ blip(f,'sine',.22,.42,i*.45); }); }
+  function heartbeat(){ blip(55,'sine',.4,.18); blip(50,'sine',.3,.16,.16); }
+  function fanfare(){ [523.25,659.25,783.99,1046.5,1318.5].forEach(function(f,i){ blip(f,'triangle',.16,.5,i*.11); }); }
+  function sting(){ blip(880,'sawtooth',.06,.12); blip(440,'sawtooth',.06,.2,.1); }
+  function alarm(){ [0,.15,.3].forEach(function(at){ blip(1200,'square',.05,.08,at); }); }
+  var humOsc=null, humGain=null;
+  function humStart(){ if(!settings.sound) return; var c=audio(); if(!c) return; humOsc=c.createOscillator(); humGain=c.createGain(); humOsc.type='sine'; humOsc.frequency.value=110; humGain.gain.value=.0001; humOsc.connect(humGain).connect(c.destination); humOsc.start(); humGain.gain.linearRampToValueAtTime(.05,c.currentTime+.15); }
+  function humSet(p){ if(humOsc) humOsc.frequency.value=110+p*380; }
+  function humStop(){ if(!humOsc) return; var c=actx, o=humOsc, g=humGain; humOsc=null; humGain=null; g.gain.setValueAtTime(g.gain.value,c.currentTime); g.gain.exponentialRampToValueAtTime(.0001,c.currentTime+.12); o.stop(c.currentTime+.15); }
+
+  /* ---------- heat UI ---------- */
+  function updateHeatUI(){
+    var t=tier(), rgb=HEAT_RGB[t];
+    root.style.setProperty('--heat',HEAT_COLORS[t]);
+    document.getElementById('heatName').textContent=HEAT_NAMES[t];
+    var pips=document.querySelectorAll('.pip'); for(var i=0;i<pips.length;i++) pips[i].classList.toggle('on',i<=t);
+    var halo=document.getElementById('halo');
+    var a=[.22,.32,.42,.55][t];
+    halo.style.background='radial-gradient(circle, rgba('+rgb.join(',')+','+a+') 0%, rgba('+rgb.join(',')+',0) 66%)';
+    halo.classList.toggle('flicker',!reduced && t>=1);
+    var next=document.getElementById('heatNext');
+    if(t>=3) next.textContent='Maximum heat';
+    else { var need=HEAT_AT[t+1]-stats.rounds; next.textContent=need>0 ? HEAT_NAMES[t+1]+' in '+need+(need===1?' round':' rounds') : HEAT_NAMES[t+1]+' next'; }
+    document.getElementById('roundCount').textContent=String(stats.rounds);
+  }
+  function updateTurn(){
+    var b=document.getElementById('turnBtn');
+    b.classList.toggle('him',turn==='him');
+    document.getElementById('turnText').textContent=spinLabel(turn);
   }
 
   /* ---------- wheel ---------- */
   var canvas=document.getElementById('wheel'), ctx=canvas.getContext('2d');
   var angle=0, spinning=false;
-
   function sizeCanvas(){
     var w=canvas.clientWidth, dpr=Math.min(window.devicePixelRatio||1,2);
-    canvas.width=w*dpr; canvas.height=w*dpr;
-    ctx.setTransform(dpr,0,0,dpr,0,0);
+    canvas.width=w*dpr; canvas.height=w*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
     draw();
   }
   function draw(){
-    var list=enabled(), n=list.length, w=canvas.clientWidth, r=w/2;
+    var list=slices(), n=list.length, w=canvas.clientWidth, r=w/2;
     ctx.clearRect(0,0,w,w);
     if(!n) return;
     var per=Math.PI*2/n;
-    ctx.save();
-    ctx.translate(r,r);
-    ctx.rotate(angle);
+    var fs=Math.max(8.5,Math.min(13,(n>28?9.5:n>18?11:13)*(r/210)));
+    ctx.save(); ctx.translate(r,r); ctx.rotate(angle);
+    var prev=null;
     for(var i=0;i<n;i++){
-      var a0=i*per-Math.PI/2, a1=a0+per;
+      var s=list[i], a0=i*per-Math.PI/2, a1=a0+per;
+      var fills=TAG_FILL[s.tag]||TAG_FILL.wild;
+      var fill=fills[0]; if(prev===fill) fill=fills[1]; prev=fill;
       ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0,r-2,a0,a1); ctx.closePath();
-      ctx.fillStyle=SEG_COLORS[i%SEG_COLORS.length];
-      /* avoid same color meeting itself where the circle closes */
-      if(i===n-1 && n%SEG_COLORS.length===1) ctx.fillStyle=SEG_COLORS[2];
-      ctx.fill();
-      ctx.strokeStyle='rgba(217,163,96,.35)'; ctx.lineWidth=1; ctx.stroke();
-      /* label */
-      ctx.save();
-      ctx.rotate(a0+per/2);
+      ctx.fillStyle=fill; ctx.fill();
+      ctx.strokeStyle=s.kind==='jackpot'?'rgba(242,197,124,.9)':'rgba(217,163,96,.32)'; ctx.lineWidth=s.kind==='jackpot'?2:1; ctx.stroke();
+      ctx.save(); ctx.rotate(a0+per/2);
       ctx.textAlign='right'; ctx.textBaseline='middle';
-      ctx.fillStyle='#F0DFE2';
-      var fs=Math.max(9,Math.min(13,r*0.062));
-      ctx.font='500 '+fs+'px Outfit, sans-serif';
-      ctx.fillText(list[i].wheel, r-14, 0);
+      if(s.kind==='jackpot'){ ctx.fillStyle='#2A0A14'; ctx.font='700 '+(fs+1)+'px Outfit, sans-serif'; }
+      else if(s.kind==='mystery'){ ctx.fillStyle='#D9A360'; ctx.font='700 '+(fs+3)+'px Outfit, sans-serif'; }
+      else { ctx.fillStyle='#F0DFE2'; ctx.font='500 '+fs+'px Outfit, sans-serif'; }
+      ctx.fillText(s.label, r-14, 0);
       ctx.restore();
     }
     ctx.restore();
-    /* rim */
-    ctx.beginPath(); ctx.arc(r,r,r-1.5,0,Math.PI*2);
-    ctx.strokeStyle='rgba(217,163,96,.6)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(r,r,r-1.5,0,Math.PI*2); ctx.strokeStyle='rgba(217,163,96,.6)'; ctx.lineWidth=2; ctx.stroke();
   }
 
-  function spin(){
-    var list=enabled();
+  function sparks(color){
+    if(reduced) return;
+    var cv=document.getElementById('sparks'), c=cv.getContext('2d');
+    var W=cv.width=cv.clientWidth, H=cv.height=cv.clientHeight;
+    var ox=W/2, oy=H*0.143, ps=[];
+    for(var i=0;i<54;i++){ var a=Math.random()*Math.PI*2, sp=1.5+Math.random()*5.5; ps.push({x:ox,y:oy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.5,life:1,r:1.2+Math.random()*2.4,d:.018+Math.random()*.02}); }
+    (function loop(){
+      c.clearRect(0,0,W,H); var alive=false;
+      ps.forEach(function(p){ if(p.life<=0) return; alive=true; p.x+=p.vx; p.y+=p.vy; p.vy+=.14; p.vx*=.985; p.life-=p.d;
+        c.globalAlpha=Math.max(0,p.life); c.fillStyle=color; c.beginPath(); c.arc(p.x,p.y,p.r,0,Math.PI*2); c.fill(); });
+      c.globalAlpha=1;
+      if(alive) requestAnimationFrame(loop); else c.clearRect(0,0,W,H);
+    })();
+  }
+
+  /* ---------- charge & spin ---------- */
+  var hub=document.getElementById('spinBtn');
+  var charging=false, chargeT0=0, chargeRAF=null, buzzed=false;
+  function chargeBegin(ev){
+    if(spinning||charging) return;
+    if(ev.button!==undefined && ev.button!==0) return;
+    charging=true; buzzed=false; chargeT0=performance.now(); audio(); humStart();
+    (function loop(){
+      if(!charging) return;
+      var c=Math.min(1,(performance.now()-chargeT0)/1600);
+      root.style.setProperty('--charge',c);
+      hub.style.transform='translate(-50%,-50%) scale('+(1+c*.14)+')';
+      hub.style.boxShadow='0 0 '+(24+c*50)+'px rgba(242,197,124,'+(.25+c*.5)+'), inset 0 0 18px rgba(0,0,0,.5)';
+      humSet(c);
+      if(c>=1&&!buzzed){ buzzed=true; vibrate(25); }
+      chargeRAF=requestAnimationFrame(loop);
+    })();
+  }
+  function chargeEnd(){
+    if(!charging) return;
+    charging=false; cancelAnimationFrame(chargeRAF); humStop();
+    var c=Math.min(1,(performance.now()-chargeT0)/1600);
+    root.style.setProperty('--charge',0); hub.style.transform=''; hub.style.boxShadow='';
+    spin(Math.max(.1,c));
+  }
+
+  function spin(power){
     if(spinning) return;
-    if(list.length<2){ alert('Turn on at least two activities in Edit.'); return; }
+    if(eligibleActs().length<2){ toast('Turn on at least two activities in the menu first.'); return; }
     audio();
-    spinning=true;
-    document.getElementById('spinBtn').disabled=true;
-    clearResult();
-    var n=list.length, per=Math.PI*2/n;
-    var pick=Math.floor(Math.random()*n);
-    /* pointer sits at top; segment i center is at angle (i*per - PI/2 + per/2 + rotation).
-       We want that center at -PI/2 → rotation ≡ -(i*per + per/2) (mod 2π) */
-    var targetMod=((-(pick*per+per/2))%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
-    var curMod=((angle)%(Math.PI*2)+Math.PI*2)%(Math.PI*2);
+    var list=slices(), n=list.length, per=Math.PI*2/n;
+    var spinner=turn;
+    if(spinner==='her') stats.spinsHer++; else stats.spinsHim++;
+    spinning=true; hub.disabled=true; clearResult();
+    var idx=Math.floor(Math.random()*n);
+    var targetMod=mod(-(idx*per+per/2)), curMod=mod(angle);
     var delta=targetMod-curMod; if(delta<=0) delta+=Math.PI*2;
-    var turns=reduced?1:5+Math.floor(Math.random()*3);
+    var turns=reduced?1:4+Math.round(power*6);
     var total=turns*Math.PI*2+delta;
-    var dur=reduced?700:4200+Math.random()*1200;
-    var start=null, from=angle, lastSeg=-1;
+    var dur=reduced?700:3200+power*3800;
+    var start=null, from=angle, lastSeg=-1, expo=3+power*1.5;
     function frame(ts){
       if(!start) start=ts;
-      var t=Math.min(1,(ts-start)/dur);
-      var ease=1-Math.pow(1-t,3);
+      var t=Math.min(1,(ts-start)/dur), ease=1-Math.pow(1-t,expo);
       angle=from+total*ease;
-      /* tick when a boundary passes the pointer */
       var seg=Math.floor(((-angle-Math.PI/2)%(Math.PI*2))/per);
       if(seg!==lastSeg){ if(!reduced) tick(); lastSeg=seg; }
       draw();
-      if(t<1){ requestAnimationFrame(frame); }
-      else{
-        spinning=false;
-        document.getElementById('spinBtn').disabled=false;
-        if(navigator.vibrate) try{navigator.vibrate(60);}catch(e){}
-        land(list[pick]);
-      }
+      if(t<1){ requestAnimationFrame(frame); return; }
+      spinning=false; hub.disabled=false;
+      var s=list[idx];
+      vibrate(s.kind==='jackpot'?[60,40,60,40,120]:60);
+      sparks(TAG_GLOW[s.tag]||TAG_GLOW.wild);
+      turn=spinner==='her'?'him':'her'; save(); updateTurn();
+      land(s,spinner);
     }
     requestAnimationFrame(frame);
   }
 
-  /* ---------- result ---------- */
+  /* ---------- landing ---------- */
   var pending=null;
-  function fmt(sec){
-    var m=Math.floor(sec/60), s=sec%60;
-    return m+':'+(s<10?'0':'')+s;
-  }
-  function rollDuration(a){
-    var lo=Math.round(a.min*60), hi=Math.round(a.max*60);
-    var sec=lo+Math.random()*(hi-lo);
-    return Math.max(30,Math.round(sec/15)*15);
-  }
   function clearResult(){ document.getElementById('resultSlot').innerHTML=''; pending=null; }
-  function land(a){
-    var sec=rollDuration(a);
-    pending={act:a,sec:sec};
-    var slot=document.getElementById('resultSlot');
-    slot.innerHTML=
-      '<div class="card">'+
-        '<span class="tag '+a.tag+'">'+TAGS[a.tag]+'</span>'+
-        '<h2></h2>'+
-        '<p class="note"></p>'+
-        '<p class="clock-line">The bell rings in <b>'+fmt(sec)+'</b></p>'+
-        '<div class="card-btns">'+
-          '<button class="primary-btn" id="startBtn">Start the clock</button>'+
-          '<button class="quiet-btn" id="vetoBtn">Veto · respin</button>'+
-        '</div>'+
-      '</div>';
-    slot.querySelector('h2').textContent=a.name;
-    slot.querySelector('.note').textContent=a.note||'';
-    document.getElementById('startBtn').addEventListener('click',startTimer);
-    document.getElementById('vetoBtn').addEventListener('click',function(){ clearResult(); spin(); });
-    slot.querySelector('.card').scrollIntoView({behavior:reduced?'auto':'smooth',block:'nearest'});
+  function buildFromAct(a,opts){
+    opts=opts||{};
+    var p={kind:opts.hidden?'mystery':'act',act:a,name:a.name,note:a.note||'',tag:a.tag,hidden:!!opts.hidden,twist:null,focus:null,toy:null,jackpot:!!opts.jackpot};
+    if(settings.twists && !opts.jackpot && Math.random()<.35){ p.twist=pick(TWISTS); stats.twists++; }
+    if(a.zones) p.focus=pick(ZONES);
+    if(a.toy && settings.toys.length) p.toy=pick(settings.toys);
+    p.sec=rollSec(a.min,a.max,(p.twist&&p.twist.mult||1)*(opts.jackpot?2:1));
+    return p;
   }
+  function land(s,spinner){
+    var p;
+    if(s.kind==='act'){ p=buildFromAct(s.act); }
+    else if(s.kind==='mystery'){ p=buildFromAct(pick(eligibleActs()),{hidden:true}); }
+    else if(s.kind==='confession'){ p={kind:'confession',name:pick(CONFESSIONS),tag:'confession',note:pronoun(spinner)+' answers first — honestly. The other gets two follow-up questions, then answers the same one.',sec:rollSec(1.5,3,1)}; }
+    else if(s.kind==='dare'){ var d=pick(DARES); p={kind:'dare',name:d.t,tag:'dare',note:pronoun(spinner)+' performs. The bell does not negotiate.',sec:rollSec(d.min,d.max,1)}; }
+    else if(s.kind==='jackpot'){ stats.jackpots++; fanfare(); p={kind:'jackpot',name:'Jackpot',tag:'jackpot',note:pronoun(spinner)+' picks anything on the whole menu — every heat level unlocked — and the bell gives double time.'}; }
+    save();
+    renderCard(p,spinner);
+  }
+  function renderCard(p,spinner){
+    pending=p;
+    var slot=document.getElementById('resultSlot'); slot.innerHTML='';
+    var card=el('div','card'+(p.kind==='jackpot'?' jackpot pick':p.jackpot?' jackpot':'')+(p.hidden?' mystery':''));
+    var chips=el('div','chips');
+    chips.appendChild(el('span','tag '+(p.hidden?'mystery':p.tag),p.hidden?'Mystery':TAGS[p.tag]));
+    if(p.jackpot) chips.appendChild(el('span','tag jackpot','Jackpot · double time'));
+    chips.appendChild(el('span','tag spinner',spinLabel(spinner)));
+    card.appendChild(chips);
+    card.appendChild(el('h2',null,p.hidden?'???':p.name));
+    if(p.hidden) card.appendChild(el('p','note','You commit before you know. Start the clock to reveal it — the bell already knows how long.'));
+    else if(p.note) card.appendChild(el('p','note',p.note));
+
+    if(p.kind==='jackpot'){
+      var sel=el('select'); sel.setAttribute('aria-label','Pick any activity');
+      var list=enabledActs().slice().sort(function(a,b){return (a.heat||1)-(b.heat||1);});
+      list.forEach(function(a){ var o=el('option',null,'🔥'.repeat(a.heat||1)+'  '+a.name); o.value=a.id; sel.appendChild(o); });
+      card.appendChild(sel);
+      var btns=el('div','card-btns');
+      var claim=el('button','primary-btn gold','Claim it');
+      claim.addEventListener('click',function(){ var a=acts.filter(function(x){return x.id===sel.value;})[0]||list[0]; save(); renderCard(buildFromAct(a,{jackpot:true}),spinner); });
+      btns.appendChild(claim); btns.appendChild(vetoBtn());
+      card.appendChild(btns);
+      slot.appendChild(card); scrollTo(card); return;
+    }
+
+    var ex=el('div','extras');
+    if(p.twist && !p.hidden){ var tw=el('div','twist'); tw.appendChild(el('b',null,'Twist')); tw.appendChild(document.createTextNode(p.twist.t)); ex.appendChild(tw); }
+    if(p.twist && p.hidden){ var tw2=el('div','twist'); tw2.appendChild(el('b',null,'Twist attached')); tw2.appendChild(document.createTextNode('Revealed with the activity. Brave.')); ex.appendChild(tw2); }
+    if(p.focus && !p.hidden){ var f=el('p','focus'); f.appendChild(document.createTextNode('Focus: ')); f.appendChild(el('b',null,p.focus)); ex.appendChild(f); }
+    if(p.toy && !p.hidden){ var ty=el('p','focus'); ty.appendChild(document.createTextNode('From the drawer: ')); ty.appendChild(el('b',null,p.toy)); ex.appendChild(ty); }
+    if(ex.childNodes.length) card.appendChild(ex);
+
+    var cl=el('p','clock-line');
+    if(p.hidden||settings.mysteryTimer){ cl.textContent='The bell knows. You don’t.'; }
+    else { cl.appendChild(document.createTextNode('The bell rings in ')); cl.appendChild(el('b',null,fmt(p.sec))); }
+    card.appendChild(cl);
+
+    var btns2=el('div','card-btns');
+    var start=el('button','primary-btn'+(p.jackpot?' gold':''),p.hidden?'Reveal & start':'Start the clock');
+    start.addEventListener('click',function(){ startTimer(p,{}); });
+    btns2.appendChild(start); btns2.appendChild(vetoBtn());
+    card.appendChild(btns2);
+    slot.appendChild(card); scrollTo(card);
+  }
+  function vetoBtn(){
+    var v=el('button','quiet-btn','Veto · respin');
+    v.addEventListener('click',function(){ stats.vetoes++; save(); toast('Vetoed. No questions asked.'); clearResult(); spin(.35+Math.random()*.3); });
+    return v;
+  }
+  function scrollTo(node){ try{ node.scrollIntoView({behavior:reduced?'auto':'smooth',block:'nearest'}); }catch(e){} }
 
   /* ---------- timer ---------- */
   var timerEl=null, timerInt=null;
   var RING_R=46, CIRC=2*Math.PI*RING_R;
-  function startTimer(){
-    if(!pending) return;
-    var a=pending.act, total=pending.sec, left=total;
+  function startTimer(p,opts){
+    opts=opts||{};
+    var total=p.sec, left=total, veiled=settings.mysteryTimer && !opts.overtime;
     clearResult();
-    timerEl=document.createElement('div');
-    timerEl.className='overlay';
-    timerEl.innerHTML=
-      '<span class="tag t-tag '+a.tag+'">'+TAGS[a.tag]+'</span>'+
-      '<h2 class="t-name"></h2>'+
-      '<div class="ring-wrap" id="ringWrap">'+
-        '<svg viewBox="0 0 100 100" aria-hidden="true">'+
-          '<circle class="ring-track" cx="50" cy="50" r="'+RING_R+'"/>'+
-          '<circle class="ring-fill" id="ringFill" cx="50" cy="50" r="'+RING_R+'" stroke-dasharray="'+CIRC+'" stroke-dashoffset="0"/>'+
-        '</svg>'+
-        '<div class="t-digits"><span class="big" id="digits">'+fmt(left)+'</span></div>'+
-      '</div>'+
-      '<p class="t-hint">When the bell rings, everything stops. Everything.</p>'+
-      '<button class="quiet-btn t-end" id="endEarly">Stop early</button>';
-    timerEl.querySelector('.t-name').textContent=a.name;
+    timerEl=el('div','overlay');
+    if(opts.overtime) timerEl.appendChild(el('div','t-label',opts.penalty?'Forfeit · 60 seconds':'Overtime · 60 seconds'));
+    else if(p.jackpot) timerEl.appendChild(el('div','t-label','Jackpot round · double time'));
+    else if(p.hidden) timerEl.appendChild(el('div','t-label','Mystery revealed'));
+    var chips=el('div','chips'); chips.appendChild(el('span','tag '+p.tag,TAGS[p.tag]||p.tag)); timerEl.appendChild(chips);
+    timerEl.appendChild(el('h2','t-name',p.name));
+    var ex=el('div','t-extras');
+    if(p.twist){ var tw=el('div','twist'); tw.appendChild(el('b',null,'Twist')); tw.appendChild(document.createTextNode(p.twist.t)); ex.appendChild(tw); }
+    if(p.focus){ var f=el('p','focus'); f.appendChild(document.createTextNode('Focus: ')); f.appendChild(el('b',null,p.focus)); ex.appendChild(f); }
+    if(p.toy){ var ty=el('p','focus'); ty.appendChild(document.createTextNode('From the drawer: ')); ty.appendChild(el('b',null,p.toy)); ex.appendChild(ty); }
+    if(ex.childNodes.length) timerEl.appendChild(ex);
+
+    var ring=el('div','ring-wrap'+(veiled?' veiled':'')); ring.id='ringWrap';
+    ring.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="'+RING_R+'"/><circle class="ring-fill" id="ringFill" cx="50" cy="50" r="'+RING_R+'" stroke-dasharray="'+CIRC+'" stroke-dashoffset="0"/></svg>';
+    var digits=el('div','t-digits');
+    if(veiled) digits.appendChild(el('span','veil','the bell knows'));
+    else { var big=el('span','big',fmt(left)); big.id='digits'; digits.appendChild(big); }
+    ring.appendChild(digits); timerEl.appendChild(ring);
+    timerEl.appendChild(el('p','t-hint',opts.penalty?'Hands behind your backs. Words only. Make them count.':'When the bell rings, everything stops. Everything.'));
+    var endBtn=el('button','quiet-btn t-end','Stop early'); endBtn.addEventListener('click',function(){ closeTimer(); });
+    timerEl.appendChild(endBtn);
     document.body.appendChild(timerEl);
-    document.getElementById('endEarly').addEventListener('click',function(){ closeTimer(false); });
-    var endAt=Date.now()+left*1000, lastShown=left;
+
+    var startedAt=Date.now(), endAt=startedAt+left*1000, lastShown=left;
+    var plotAt=(settings.plot && !opts.overtime && total>=90 && Math.random()<.3) ? total*(.3+Math.random()*.4) : -1, plotDone=false;
     timerInt=setInterval(function(){
-      left=Math.max(0,Math.round((endAt-Date.now())/1000));
+      var now=Date.now(); left=Math.max(0,Math.round((endAt-now)/1000));
+      var elapsed=(now-startedAt)/1000;
+      if(plotAt>0 && !plotDone && elapsed>=plotAt){ plotDone=true; stats.plot++; save(); showBanner(pick(PLOT)); }
       if(left!==lastShown){
         lastShown=left;
-        document.getElementById('digits').textContent=fmt(left);
-        document.getElementById('ringFill').setAttribute('stroke-dashoffset',String(CIRC*(1-left/total)));
-        if(left<=10) document.getElementById('ringWrap').classList.add('hot');
-        if(left<=5 && left>0) tick();
+        var dg=document.getElementById('digits'); if(dg) dg.textContent=fmt(left);
+        if(!veiled){ var rf=document.getElementById('ringFill'); if(rf) rf.setAttribute('stroke-dashoffset',String(CIRC*(1-left/total))); }
+        if(left<=10){ ring.classList.add('hot'); if(veiled){ ring.classList.remove('veiled'); var v=digits.querySelector('.veil'); if(v) v.textContent='soon'; } }
+        if(left<=10 && left>0) heartbeat();
       }
-      if(left<=0){ bellStop(); }
+      if(left<=0) bellStop(p,total,opts);
     },200);
   }
-  function bellStop(){
+  function closeTimer(){ if(timerInt){clearInterval(timerInt); timerInt=null;} if(timerEl){timerEl.remove(); timerEl=null;} }
+  var bannerT=null;
+  function showBanner(text){
+    var b=document.getElementById('banner'); document.getElementById('bannerText').textContent=text;
+    alarm(); vibrate([80,60,80]); b.classList.add('show');
+    clearTimeout(bannerT); bannerT=setTimeout(function(){ b.classList.remove('show'); },7000);
+  }
+
+  function bellStop(p,total,opts){
     clearInterval(timerInt); timerInt=null;
-    bell();
-    if(navigator.vibrate) try{navigator.vibrate([120,80,120]);}catch(e){}
-    rounds++; save();
-    document.getElementById('roundCount').textContent=String(rounds);
-    timerEl.innerHTML=
-      '<div class="stopped">'+
-        '<h1>Stop.</h1>'+
-        '<p>The bell has spoken. Hands where the wheel can see them.</p>'+
-        '<button class="primary-btn" id="againBtn">Back to the wheel</button>'+
-      '</div>';
-    document.getElementById('againBtn').addEventListener('click',function(){ closeTimer(true); });
-  }
-  function closeTimer(){
-    if(timerInt){clearInterval(timerInt); timerInt=null;}
-    if(timerEl){timerEl.remove(); timerEl=null;}
-  }
+    bell(); vibrate([120,80,120,80,240]);
+    timerEl.classList.add('flash');
+    var before=tier();
+    if(!opts.penalty){ stats.seconds+=total; if(!opts.overtime){ stats.rounds++; stats.longest=Math.max(stats.longest,total); } }
+    var after=tier(); stats.peakHeat=Math.max(stats.peakHeat,after); save(); updateHeatUI(); draw();
 
-  /* ---------- consent gate / rules ---------- */
-  function showGate(first){
-    var g=document.createElement('div');
-    g.className='overlay gate';
-    g.innerHTML=
-      '<div class="gate-inner">'+
-        '<h1>Velvet <span class="amp">&amp;</span> Roulette</h1>'+
-        '<p class="sub">House rules · read together</p>'+
-        '<ul class="rules">'+
-          '<li><span class="r-mark">I.</span><span><em>Consent, every round.</em> A veto needs no reason and gets no debate.</span></li>'+
-          '<li><span class="r-mark">II.</span><span>“Stop” means stop — mid-spin, mid-round, mid-anything. The wheel never outranks a person.</span></li>'+
-          '<li><span class="r-mark">III.</span><span>His back door is closed. Permanently. Not up for a vote.</span></li>'+
-          '<li><span class="r-mark">IV.</span><span>Her back door: his lips only, nothing more — and never the other way around.</span></li>'+
-          '<li><span class="r-mark">V.</span><span>When the bell rings, <em>everything stops</em>. Yes, even then. Especially then.</span></li>'+
-          '<li><span class="r-mark">VI.</span><span>No winners, no losers. Except whoever finishes. That’s the winner.</span></li>'+
-        '</ul>'+
-        '<button class="primary-btn" id="gateBtn">'+(first?'We’re both in':'Back to the wheel')+'</button>'+
-      '</div>';
-    document.body.appendChild(g);
-    document.getElementById('gateBtn').addEventListener('click',function(){ audio(); g.remove(); });
-  }
-
-  /* ---------- finish screen ---------- */
-  function showFinish(){
-    var f=document.createElement('div');
-    f.className='overlay finish';
-    f.innerHTML=
-      '<canvas id="confetti"></canvas>'+
-      '<div class="finish-inner">'+
-        '<h1>We have a winner.</h1>'+
-        '<p>No points. No prizes. Just the one rule that matters:</p>'+
-        '<p>the winner is whoever finished.</p>'+
-        '<p class="score" style="margin-top:18px">Rounds survived tonight: '+rounds+'</p>'+
-        '<button class="primary-btn" id="rematchBtn">Rematch</button> '+
-        '<button class="quiet-btn" id="doneBtn">We’re done (for now)</button>'+
-      '</div>';
-    document.body.appendChild(f);
-    var stop=reduced?function(){}:confetti(f.querySelector('#confetti'));
-    function close(reset){
-      stop(); f.remove();
-      if(reset){ rounds=0; save(); document.getElementById('roundCount').textContent='0'; }
+    timerEl.innerHTML='';
+    var box=el('div','stopped');
+    box.appendChild(el('h1',null,'Stop.'));
+    box.appendChild(el('p',null,opts.penalty?'Forfeit served. Back to the wheel — and no, that didn’t count as a round.':'The bell has spoken. Hands where the wheel can see them.'));
+    if(after>before){
+      var hu=el('div','heat-up'); hu.appendChild(el('b',null,'🔥 Heat rising — '+HEAT_NAMES[after]+' unlocked'));
+      var added=sliceCount(after)-sliceCount(before);
+      hu.appendChild(el('span',null,added>0?added+' new slice'+(added===1?'':'s')+' just landed on the wheel.':'The wheel is getting ideas.'));
+      box.appendChild(hu);
     }
-    document.getElementById('rematchBtn').addEventListener('click',function(){close(true)});
-    document.getElementById('doneBtn').addEventListener('click',function(){close(false)});
+    var offer=settings.gamble && !opts.overtime && p.kind!=='confession' && Math.random()<.38;
+    if(offer){
+      var g=el('div','gamble');
+      g.appendChild(el('h3',null,'Double or nothing?'));
+      g.appendChild(el('p',null,'Flip the coin. Win: sixty seconds of overtime, same round. Lose: sixty seconds of talk only, hands behind your backs.'));
+      var coin=el('div','coin'); coin.appendChild(el('div','face front','MORE')); coin.appendChild(el('div','face back','TALK')); g.appendChild(coin);
+      var res=el('p','result',''); g.appendChild(res);
+      var gb=el('div','card-btns');
+      var flip=el('button','primary-btn gold','Flip the coin'), take=el('button','quiet-btn','Take the bell');
+      gb.appendChild(flip); gb.appendChild(take); g.appendChild(gb);
+      flip.addEventListener('click',function(){
+        flip.disabled=true; take.disabled=true; stats.gambles++;
+        var win=Math.random()<.5; sting();
+        coin.style.transform='rotateY('+(1800+(win?0:180))+'deg)';
+        setTimeout(function(){
+          gb.innerHTML='';
+          if(win){
+            stats.gWon++; save(); fanfare(); res.textContent='MORE. Sixty seconds. Go.';
+            var go=el('button','primary-btn gold','Start overtime');
+            go.addEventListener('click',function(){ closeTimer(); startTimer({kind:p.kind,name:p.name,tag:p.tag,note:'',twist:p.twist,focus:p.focus,toy:p.toy,sec:60},{overtime:true}); });
+            gb.appendChild(go);
+          } else {
+            save(); res.textContent='TALK. Hands behind your backs.';
+            var tk=el('button','primary-btn','Serve the forfeit');
+            tk.addEventListener('click',function(){ closeTimer(); startTimer({kind:'penalty',name:'Talk only — tell them exactly what you would be doing right now. In detail.',tag:'wild',note:'',sec:60},{overtime:true,penalty:true}); });
+            gb.appendChild(tk);
+          }
+        },reduced?50:1750);
+      });
+      take.addEventListener('click',function(){ closeTimer(); });
+      box.appendChild(g);
+    } else {
+      var back=el('button','primary-btn','Back to the wheel'); back.addEventListener('click',function(){ closeTimer(); }); box.appendChild(back);
+    }
+    timerEl.appendChild(box);
+  }
+
+  /* ---------- gate / rules ---------- */
+  function showGate(first){
+    var g=el('div','overlay gate');
+    var inner=el('div','gate-inner');
+    var h=el('h1'); h.appendChild(document.createTextNode('Velvet ')); h.appendChild(el('span','amp','&')); h.appendChild(document.createTextNode(' Roulette')); inner.appendChild(h);
+    inner.appendChild(el('p','sub','House rules · read together'));
+    var rules=[
+      ['I.','Consent, every round.',' A veto needs no reason and gets no debate.'],
+      ['II.','','“Stop” means stop — mid-spin, mid-round, mid-anything. The wheel never outranks a person.'],
+      ['III.','','His back door is closed. Permanently. Not up for a vote.'],
+      ['IV.','','Her back door: his lips only, nothing more — and never the other way around.'],
+      ['V.','','Twists, dares and plot twists obey every rule above. The wheel can be creative, not cruel.'],
+      ['VI.','','When the bell rings, ','everything stops.',' Yes, even then. Especially then.'],
+      ['VII.','','No winners, no losers. Except whoever finishes. That’s the winner.']
+    ];
+    var ul=el('ul','rules');
+    rules.forEach(function(r){
+      var li=el('li'); li.appendChild(el('span','r-mark',r[0])); var sp=el('span');
+      if(r[1]) sp.appendChild(el('em',null,r[1]));
+      sp.appendChild(document.createTextNode(r[2]));
+      if(r[3]) sp.appendChild(el('em',null,r[3]));
+      if(r[4]) sp.appendChild(document.createTextNode(r[4]));
+      li.appendChild(sp); ul.appendChild(li);
+    });
+    inner.appendChild(ul);
+    var b=el('button','primary-btn',first?'We’re both in':'Back to the wheel');
+    b.addEventListener('click',function(){ audio(); g.remove(); });
+    inner.appendChild(b); g.appendChild(inner); document.body.appendChild(g);
+  }
+
+  /* ---------- finish / night report ---------- */
+  function showFinish(){
+    var f=el('div','overlay finish');
+    var cv=el('canvas'); cv.id='confetti'; f.appendChild(cv);
+    var inner=el('div','finish-inner');
+    inner.appendChild(el('h1',null,'We have a winner.'));
+    inner.appendChild(el('p','lede','No points, no prizes — the winner is whoever finished. Here’s the night report anyway.'));
+    var grid=el('div','stats');
+    var rows=[
+      [String(stats.rounds),'Rounds survived'],
+      [fmt(stats.seconds),'Time under the bell'],
+      [HEAT_NAMES[Math.max(stats.peakHeat,tier())],'Peak heat'],
+      [stats.longest?fmt(stats.longest):'—','Longest round'],
+      [String(stats.twists),'Twists survived'],
+      [String(stats.plot),'Plot twists'],
+      [String(stats.jackpots),'Jackpots hit'],
+      [String(stats.vetoes),'Vetoes used'],
+      [stats.gambles?stats.gWon+' / '+stats.gambles:'—','Coin flips won'],
+      [stats.spinsHer+' · '+stats.spinsHim,(settings.her==='Her'?'Her':settings.her)+' · '+(settings.him==='Him'?'him':settings.him)+' spins']
+    ];
+    rows.forEach(function(r){ var s=el('div','stat'); s.appendChild(el('b',null,r[0])); s.appendChild(el('span',null,r[1])); grid.appendChild(s); });
+    inner.appendChild(grid);
+    var ac=el('div','aftercare'); ac.appendChild(el('b',null,'Aftercare')); ac.appendChild(el('p',null,'Water. Cuddles. Each of you names the best moment of the night — and one thing to spin for next time.'));
+    inner.appendChild(ac);
+    var btns=el('div','card-btns');
+    var re=el('button','primary-btn','Rematch (reset the night)'), done=el('button','quiet-btn','We’re done (for now)');
+    btns.appendChild(re); btns.appendChild(done); inner.appendChild(btns);
+    f.appendChild(inner); document.body.appendChild(f);
+    var stop=reduced?function(){}:confetti(cv);
+    function close(reset){ stop(); f.remove(); if(reset){ stats=defStats(); save(); updateHeatUI(); draw(); toast('Fresh night. Heat back to '+HEAT_NAMES[tier()]+'.'); } }
+    re.addEventListener('click',function(){close(true)}); done.addEventListener('click',function(){close(false)});
   }
   function confetti(cv){
-    var c=cv.getContext('2d'), W,H,run=true;
-    function size(){W=cv.width=cv.clientWidth;H=cv.height=cv.clientHeight;}
-    size();
-    var COLS=['#E4587A','#D9A360','#F0DFE2','#B07BD6'];
-    var ps=[]; for(var i=0;i<120;i++)ps.push({
-      x:Math.random()*W,y:-Math.random()*H,r:3+Math.random()*5,
-      vy:1.5+Math.random()*2.5,vx:-1+Math.random()*2,rot:Math.random()*6,vr:-.1+Math.random()*.2,
-      col:COLS[i%COLS.length]
-    });
+    var c=cv.getContext('2d'), W=cv.width=cv.clientWidth, H=cv.height=cv.clientHeight, run=true;
+    var COLS=['#E4587A','#D9A360','#F0DFE2','#B07BD6','#F2C57C'];
+    var ps=[]; for(var i=0;i<140;i++) ps.push({x:Math.random()*W,y:-Math.random()*H,r:3+Math.random()*5,vy:1.5+Math.random()*2.5,vx:-1+Math.random()*2,rot:Math.random()*6,vr:-.1+Math.random()*.2,col:COLS[i%COLS.length]});
     (function loop(){
-      if(!run) return;
-      c.clearRect(0,0,W,H);
-      ps.forEach(function(p){
-        p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;
-        if(p.y>H+10){p.y=-10;p.x=Math.random()*W;}
-        c.save();c.translate(p.x,p.y);c.rotate(p.rot);
-        c.fillStyle=p.col;c.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);
-        c.restore();
-      });
+      if(!run) return; c.clearRect(0,0,W,H);
+      ps.forEach(function(p){ p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; if(p.y>H+10){p.y=-10;p.x=Math.random()*W;}
+        c.save(); c.translate(p.x,p.y); c.rotate(p.rot); c.fillStyle=p.col; c.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); c.restore(); });
       requestAnimationFrame(loop);
     })();
     return function(){run=false;};
   }
 
-  /* ---------- editor ---------- */
-  function showEditor(){
-    var d=document.createElement('div');
-    d.className='drawer';
-    var panel=document.createElement('div');
-    panel.className='drawer-panel';
-    d.appendChild(panel);
+  /* ---------- settings & menu drawer ---------- */
+  function showSettings(){
+    var d=el('div','drawer'), panel=el('div','drawer-panel'); d.appendChild(panel);
+    function toggleRow(label,key,hint,after){
+      var row=el('label','tog'); var sp=el('span'); sp.appendChild(el('b',null,label)); if(hint) sp.appendChild(el('small',null,hint));
+      var cb=el('input'); cb.type='checkbox'; cb.checked=!!settings[key];
+      cb.addEventListener('change',function(){ settings[key]=cb.checked; save(); draw(); updateHeatUI(); if(after) after(); });
+      row.appendChild(sp); row.appendChild(cb); return row;
+    }
     function render(){
-      panel.innerHTML=
-        '<div class="drawer-head"><h2>The menu</h2><button class="ghost-btn" id="closeEd">Done</button></div>'+
-        '<p class="drawer-sub">Untick anything that isn’t on tonight’s menu. Add your own. Saved on this device only.</p>'+
-        '<div id="actList"></div>'+
-        '<form class="add-form" id="addForm">'+
-          '<input name="name" maxlength="80" placeholder="New activity — say it plainly" required>'+
-          '<div class="duo">'+
-            '<input name="wheel" maxlength="14" placeholder="Wheel label" required>'+
-            '<select name="tag"><option value="both">Together</option><option value="her">For her</option><option value="him">For him</option><option value="wild">Wildcard</option></select>'+
-          '</div>'+
-          '<div class="duo">'+
-            '<input name="min" type="number" min="1" max="30" value="3" aria-label="Minimum minutes" required>'+
-            '<input name="max" type="number" min="1" max="30" value="6" aria-label="Maximum minutes" required>'+
-          '</div>'+
-          '<button class="primary-btn" type="submit">Add to the wheel</button>'+
-        '</form>'+
-        '<div class="drawer-foot"><button class="quiet-btn" id="resetEd">Reset to house menu</button></div>';
-      var listEl=panel.querySelector('#actList');
+      panel.innerHTML='';
+      var head=el('div','drawer-head'); head.appendChild(el('h2',null,'The menu')); var close=el('button','ghost-btn','Done'); close.addEventListener('click',function(){ d.remove(); }); head.appendChild(close); panel.appendChild(head);
+      panel.appendChild(el('p','drawer-sub','Everything here is saved on this device only. Nothing leaves the phone.'));
+
+      panel.appendChild(el('h3','sec-title','Tonight’s pace'));
+      var seg=el('div','seg');
+      [['quickie','Quickie'],['classic','Classic'],['marathon','Marathon']].forEach(function(m){
+        var b=el('button',settings.mode===m[0]?'on':'',m[1]); b.type='button';
+        b.addEventListener('click',function(){ settings.mode=m[0]; save(); render(); });
+        seg.appendChild(b);
+      });
+      panel.appendChild(seg);
+      panel.appendChild(el('small',null,'Quickie shortens every timer by 40%. Marathon adds 50%.'));
+
+      panel.appendChild(el('h3','sec-title','Starting heat'));
+      var fh=el('div','field'); var sel=el('select');
+      HEAT_NAMES.forEach(function(nm,i){ var o=el('option',null,nm+(i===0?' — the full slow burn':i===3?' — skip straight to the deep end':'')); o.value=String(i); if((settings.startHeat|0)===i) o.selected=true; sel.appendChild(o); });
+      sel.addEventListener('change',function(){ settings.startHeat=parseInt(sel.value,10)||0; save(); updateHeatUI(); draw(); });
+      fh.appendChild(sel); panel.appendChild(fh);
+      panel.appendChild(el('small',null,'Heat also rises on its own: Sizzle after 2 rounds, Blaze after 4, Inferno after 6.'));
+
+      panel.appendChild(el('h3','sec-title','Chaos dials'));
+      panel.appendChild(toggleRow('Special slices','specials','Jackpot, Mystery, Confession and Dare on the wheel'));
+      panel.appendChild(toggleRow('Twists','twists','About a third of spins get a modifier'));
+      panel.appendChild(toggleRow('Plot twists','plot','Random interruptions mid-round'));
+      panel.appendChild(toggleRow('Double or nothing','gamble','A coin flip for overtime when the bell rings'));
+      panel.appendChild(toggleRow('Hide the clock','mysteryTimer','No countdown shown — the bell just rings'));
+      panel.appendChild(toggleRow('Sound','sound','Ticks, heartbeat, bell'));
+
+      panel.appendChild(el('h3','sec-title','Names'));
+      var duo=el('div','duo');
+      [['her','Her'],['him','Him']].forEach(function(n){
+        var fld=el('div','field'); fld.style.flex='1'; var lab=el('label',null,n[1]+' name'); var inp=el('input'); inp.type='text'; inp.maxLength=20; inp.value=settings[n[0]]===n[1]?'':settings[n[0]]; inp.placeholder=n[1];
+        inp.addEventListener('change',function(){ settings[n[0]]=inp.value.trim()||n[1]; save(); updateTurn(); });
+        fld.appendChild(lab); fld.appendChild(inp); duo.appendChild(fld);
+      });
+      panel.appendChild(duo);
+
+      panel.appendChild(el('h3','sec-title','The drawer'));
+      var ta=el('textarea'); ta.value=settings.toys.join(', '); ta.setAttribute('aria-label','Toys, comma separated');
+      ta.addEventListener('change',function(){ settings.toys=ta.value.split(',').map(function(s){return s.trim();}).filter(Boolean); save(); });
+      panel.appendChild(ta); panel.appendChild(el('small',null,'Comma-separated. Toy rounds roll one of these at random.'));
+
+      panel.appendChild(el('h3','sec-title','The wheel'));
+      panel.appendChild(el('small',null,'Untick anything that isn’t on tonight’s menu. Flames show which heat level unlocks it.'));
+      var listEl=el('div');
       acts.forEach(function(a){
-        var row=document.createElement('div');
-        row.className='act-row'+(a.on===false?' off':'');
-        var lab=document.createElement('label');
-        var cb=document.createElement('input');
-        cb.type='checkbox'; cb.checked=a.on!==false;
-        cb.addEventListener('change',function(){ a.on=cb.checked; save(); draw(); row.className='act-row'+(a.on?'':' off'); });
-        var span=document.createElement('span'); span.textContent=a.name;
-        lab.appendChild(cb); lab.appendChild(span);
-        var mins=document.createElement('span'); mins.className='mins'; mins.textContent=a.min+'–'+a.max+'m';
-        row.appendChild(lab); row.appendChild(mins);
+        var row=el('div','act-row'+(a.on===false?' off':''));
+        var lab=el('label'); var cb=el('input'); cb.type='checkbox'; cb.checked=a.on!==false;
+        cb.addEventListener('change',function(){ a.on=cb.checked; save(); draw(); updateHeatUI(); row.className='act-row'+(a.on?'':' off'); });
+        lab.appendChild(cb); lab.appendChild(el('span',null,a.name)); row.appendChild(lab);
+        var meta=el('span','meta'); var fl=el('i',null,'🔥'.repeat(a.heat||1)); meta.appendChild(fl); meta.appendChild(document.createElement('br')); meta.appendChild(document.createTextNode(a.min+'–'+a.max+'m')); row.appendChild(meta);
         if(String(a.id).charAt(0)==='c'){
-          var del=document.createElement('button'); del.className='del'; del.textContent='✕'; del.setAttribute('aria-label','Delete '+a.name);
+          var del=el('button','del','✕'); del.setAttribute('aria-label','Delete '+a.name);
           del.addEventListener('click',function(){ acts=acts.filter(function(x){return x.id!==a.id;}); save(); draw(); render(); });
           row.appendChild(del);
         }
         listEl.appendChild(row);
       });
-      panel.querySelector('#closeEd').addEventListener('click',function(){ d.remove(); });
-      panel.querySelector('#resetEd').addEventListener('click',function(){
-        acts=defaults(); save(); draw(); render();
-      });
-      panel.querySelector('#addForm').addEventListener('submit',function(ev){
+      panel.appendChild(listEl);
+
+      panel.appendChild(el('h3','sec-title','Add your own'));
+      var form=el('form','add-form');
+      var name=el('input'); name.type='text'; name.name='name'; name.maxLength=90; name.placeholder='New activity — say it plainly'; name.required=true;
+      var wheel=el('input'); wheel.type='text'; wheel.name='wheel'; wheel.maxLength=14; wheel.placeholder='Wheel label'; wheel.required=true;
+      var tag=el('select'); [['both','Together'],['her','For her'],['him','For him'],['wild','Wildcard']].forEach(function(t){ var o=el('option',null,t[1]); o.value=t[0]; tag.appendChild(o); });
+      var heat=el('select'); HEAT_NAMES.forEach(function(nm,i){ var o=el('option',null,'🔥'.repeat(i+1)+' '+nm); o.value=String(i+1); heat.appendChild(o); });
+      var mn=el('input'); mn.type='number'; mn.min='1'; mn.max='30'; mn.value='3'; mn.setAttribute('aria-label','Minimum minutes');
+      var mx=el('input'); mx.type='number'; mx.min='1'; mx.max='30'; mx.value='6'; mx.setAttribute('aria-label','Maximum minutes');
+      var d1=el('div','duo'); d1.appendChild(wheel); d1.appendChild(tag);
+      var d2=el('div','duo'); d2.appendChild(heat); d2.appendChild(mn); d2.appendChild(mx);
+      var sub=el('button','primary-btn','Add to the wheel'); sub.type='submit';
+      form.appendChild(name); form.appendChild(d1); form.appendChild(d2); form.appendChild(sub);
+      form.addEventListener('submit',function(ev){
         ev.preventDefault();
-        var f=ev.target;
-        var lo=Math.max(1,parseInt(f.min.value,10)||3), hi=Math.max(lo,parseInt(f.max.value,10)||6);
-        acts.push({id:'c'+Date.now(), name:f.name.value.trim(), wheel:f.wheel.value.trim()||f.name.value.trim().slice(0,14),
-          tag:f.tag.value, min:lo, max:hi, note:'House special.', on:true});
-        save(); draw(); render();
-        panel.scrollTop=panel.scrollHeight;
+        var lo=Math.max(1,parseInt(mn.value,10)||3), hi=Math.max(lo,parseInt(mx.value,10)||6);
+        acts.push({id:'c'+Date.now(),name:name.value.trim(),wheel:wheel.value.trim()||name.value.trim().slice(0,14),tag:tag.value,heat:parseInt(heat.value,10)||1,min:lo,max:hi,note:'House special.',on:true});
+        save(); draw(); updateHeatUI(); render(); panel.scrollTop=panel.scrollHeight;
       });
+      panel.appendChild(form);
+
+      var foot=el('div','drawer-foot');
+      var reset=el('button','quiet-btn','Reset to house menu'); reset.addEventListener('click',function(){ acts=defaults(); save(); draw(); updateHeatUI(); render(); toast('House menu restored.'); });
+      foot.appendChild(reset); panel.appendChild(foot);
     }
     render();
     d.addEventListener('click',function(ev){ if(ev.target===d) d.remove(); });
@@ -587,14 +1034,19 @@
   }
 
   /* ---------- wire up ---------- */
-  document.getElementById('spinBtn').addEventListener('click',spin);
-  canvas.addEventListener('click',spin);
-  document.getElementById('rulesBtn').addEventListener('click',function(){showGate(false)});
-  document.getElementById('editBtn').addEventListener('click',showEditor);
+  hub.addEventListener('pointerdown',chargeBegin);
+  window.addEventListener('pointerup',chargeEnd);
+  window.addEventListener('pointercancel',chargeEnd);
+  hub.addEventListener('contextmenu',function(e){ e.preventDefault(); });
+  hub.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); spin(.5); } });
+  canvas.addEventListener('click',function(){ spin(.3+Math.random()*.5); });
+  document.getElementById('turnBtn').addEventListener('click',function(){ turn=turn==='her'?'him':'her'; save(); updateTurn(); });
+  document.getElementById('rulesBtn').addEventListener('click',function(){ showGate(false); });
+  document.getElementById('editBtn').addEventListener('click',showSettings);
   document.getElementById('finishBtn').addEventListener('click',showFinish);
-  document.getElementById('roundCount').textContent=String(rounds);
   window.addEventListener('resize',sizeCanvas);
-  sizeCanvas();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  updateHeatUI(); updateTurn(); sizeCanvas();
   showGate(true);
 })();
 </script>
