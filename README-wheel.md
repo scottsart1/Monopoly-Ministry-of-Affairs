@@ -56,6 +56,14 @@ A long bound session rather than a scene. Tap **⛓ Total domination**: choose w
 
 The mode will not run unless **"Kept in restraints for hours, not minutes"** is ticked by both of you on the sheet, and every wave is drawn only from your overlap. Long-session waves include being used as a doll, "Again" (no number), Left Waiting, Displayed, The Long Hour, The Uniform Bound, and Kept Messy Kept Tied — in both directions.
 
+**The shape of a night**
+
+The wheel follows the evening instead of shuffling it. Every round belongs to a stage — **Warm-up** (clothes on: make-out, massage, worship, striptease, lap dance), **Foreplay** (mouths, hands, toys, spanking, edging), **Sex** (positions, the clone, pounding, held open, fisting) or **Finish** (where and how he comes) — and the wheel only offers the current stage and its neighbours. It never jumps two stages ahead and never falls two back, so once you are having sex it will not ask anyone to strip, and once someone is undressed the striptease, dress-up, "one piece of clothing stays on" twist and the undressing dares are gone for the night. A strip above the wheel shows where the night is, what has happened (the last few rounds and any standing rules) and how many times she has come. His finish stops the wheel with a clear choice: **Round two** (back to foreplay, clothes stay off), **Stay messy and tied** if the sheet allows it, or **Call the night** for the report. Confessions and dares only appear up to foreplay; mystery and jackpot rounds obey the same rules. If the current stages run thin the wheel looks one stage ahead rather than backwards. Dominion scenes and Total Domination sessions are ordered the same way inside (clothes and talk, then hands and mouths, then the rest), and finishing one moves the night on.
+
+**Setups before the wheel**
+
+Things that only happen once — booking the club night, casting the third person, curtains open, the collar, body writing, the exposing outfit, dressed to be seen — never hide on the wheel any more. They appear as a **one-time setups** card above the wheel at the start of every night, in a sensible order, each with *Do it* (timed, like any round) or *In effect* (a standing rule for the night, shown as a ⚑ chip) and *Not tonight*. Only the ones your sheet allows are listed. The card disappears the moment the wheel is spun or the first round starts; *Straight to the wheel* skips it. A night that sits untouched for eight hours is over, and the next open starts fresh with the setups; **New night** in the strip does the same on demand.
+
 **Customizing (Menu)**
 
 Pace (Quickie / Classic / Marathon), starting heat, chaos dials (specials, twists, plot twists, coin flips, hidden clock, sound), your names, the toy drawer, and the activity list itself — untick, add your own with a heat level and time range, or reset to the house menu. Everything is saved in the browser's local storage on that device only; nothing leaves the phone.

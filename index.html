@@ -403,6 +403,27 @@
   .sess-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--rose));transition:width .4s}
   .sess-meta{display:flex;justify-content:space-between;width:min(92vw,480px);margin-bottom:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
   .sess-clock{font-family:'DM Mono',monospace;font-variant-numeric:tabular-nums;color:var(--gold)}
+  .night{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 10px;width:min(92vw,520px);margin:-4px auto 14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .night-k{color:var(--gold)}
+  .night-track{display:flex;gap:4px;align-items:center}
+  .night-track span{padding:3px 8px;border-radius:99px;border:1px solid var(--edge);color:var(--dim);font-size:10px;letter-spacing:.1em}
+  .night-track span.on{border-color:var(--gold);color:var(--gold)}
+  .night-track span.cur{background:rgba(217,163,96,.16);color:var(--gold-bright)}
+  .night-stage{color:var(--rose)}
+  .night-log{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;width:100%;text-transform:none;letter-spacing:0;font-size:12px}
+  .night-log i{font-style:normal;padding:2px 9px;border-radius:99px;background:rgba(255,255,255,.05);color:var(--dim)}
+  .night-log i.rule{color:var(--gold);background:rgba(217,163,96,.1)}
+  .night .ghost-btn{font-size:10px;padding:4px 10px}
+  .card.prelude{text-align:left}
+  .card.prelude .chips,.card.prelude h2{text-align:center;justify-content:center}
+  .pre-list{display:flex;flex-direction:column;margin-top:8px}
+  .pre-row{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--edge)}
+  .pre-text{display:flex;flex-direction:column;gap:3px;min-width:0}
+  .pre-text b{font-size:14px;line-height:1.35}
+  .pre-text small{color:var(--dim);font-size:12px;line-height:1.4}
+  .pre-btns{display:flex;flex-direction:column;gap:6px;flex:none}
+  .pre-btns button{padding:7px 12px;font-size:12px;white-space:nowrap;margin:0}
+  .tag.night{color:#9FC9FF;background:rgba(120,180,255,.1)}
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
     .halo.flicker{animation:none}
@@ -427,6 +448,8 @@
   </div>
 
   <div class="stage">
+    <div id="nightStrip" class="night" aria-live="polite"></div>
+    <div id="preludeSlot" style="width:100%"></div>
     <button class="turn" id="turnBtn" title="Tap to swap whose spin it is"><span class="dot"></span><span id="turnText">Her spin</span><small>tap to swap</small></button>
     <div class="wheel-wrap">
       <div class="halo" id="halo"></div>
@@ -537,7 +560,11 @@
     {id:'d63', heat:4, needs:[['milking_machine','him']], name:'The milking machine — seated and worked to the finish over and over, no stopping', wheel:'Milked', tag:'him', min:6, max:10, note:'Water when allowed. Red always works.'},
     {id:'d64', heat:4, needs:[['clit_play','her'],['toys_her','her']], name:'Clit torment — flick, pinch, wand on high, hands pinned, no finish', wheel:'Clit torment', tag:'her', min:3, max:5, note:'Two minutes on, thirty off. Stops the moment it stings.'},
     {id:'d65', heat:2, needs:[['expose_wear','any']], name:'The uniform — put on something that hides nothing and keep it on', wheel:'The uniform', tag:'wild', min:3, max:5, note:'Bought or worn on request. No adjusting it.'},
-    {id:'d66', heat:4, needs:[['strangers_watch','any']], name:'The booking — find a club night this month and book it together, now', wheel:'The booking', tag:'both', min:5, max:8, note:'Read the house rules aloud. Write your own rules for the night tomorrow, sober.'}
+    {id:'d66', heat:4, needs:[['strangers_watch','any']], name:'The booking — find a club night this month and book it together, now', wheel:'The booking', tag:'both', min:5, max:8, note:'Read the house rules aloud. Write your own rules for the night tomorrow, sober.'},
+    {id:'d67', heat:4, needs:[['third_person','any']], name:'The casting — decide together who the third is, and one of you sends the message tonight', wheel:'The casting', tag:'both', min:5, max:8, note:'Name them, agree the rules for that night, and hit send while the other watches. Nothing happens tonight except the message.'},
+    {id:'d68', heat:3, needs:[['collar','any']], name:'Collar on — put it on them, say what it means tonight, and it stays on until the night is called', wheel:'Collar on', tag:'wild', min:2, max:3, note:'Loose enough for a hand underneath. Whoever wears it answers to it all night.'},
+    {id:'d69', heat:3, needs:[['writing','any']], name:'Body writing — write who they belong to tonight, somewhere it will be seen later', wheel:'Body writing', tag:'wild', min:3, max:5, note:'Lipstick or marker. It stays on until morning.'},
+    {id:'d70', heat:4, needs:[['strangers_watch','any'],['dress','any']], name:'Dressed to be seen — pick tonight’s outfit as if strangers will see it, then keep it on until someone takes it off', wheel:'Dressed to be seen', tag:'wild', min:3, max:5, note:'The bar, the balcony, the drive home — or just the doorway with the light on. No adjusting it.'}
 
   ];}
 
@@ -555,7 +582,7 @@
     {t:'Lights off. Phone torch only.'},
     {t:'Ice cube in the giver’s mouth.'},
     {t:'Receiver’s hands stay above their head.'},
-    {t:'One piece of clothing stays on. Receiver chooses which.'},
+    {t:'One piece of clothing stays on. Receiver chooses which.', clothes:true},
     {t:'In front of a mirror.'},
     {t:'Giver asks permission before every new move. Out loud.'},
     {t:'Receiver may only say “more” or “stop”.'},
@@ -600,8 +627,8 @@
     'What’s one thing you want me to do without asking first?'
   ];
   var DARES=[
-    {t:'Slow strip to one song. The other one is not allowed to touch.', min:3, max:4},
-    {t:'Undress your partner using only your teeth. One item.', min:2, max:3},
+    {t:'Slow strip to one song. The other one is not allowed to touch.', min:3, max:4, clothes:true},
+    {t:'Undress your partner using only your teeth. One item.', min:2, max:3, clothes:true},
     {t:'Trace a word on their back with one finger. They have to guess it. Keep going until they do.', min:2, max:3},
     {t:'Lap dance — strict no-hands rule for them.', min:3, max:4},
     {t:'Stand behind them at the mirror and narrate exactly what you love about what you see.', min:2, max:3},
@@ -1093,18 +1120,141 @@
   ];
   STEPS.forEach(function(s,i){ s.id='s'+i; });
 
+  /* ---------- the shape of a night: stage / clothes / finish ---------- */
+  var NIGHT_STAGES=['Prelude','Warm-up','Foreplay','Sex','Finish','Afterglow'];
+  /* st: stage (null = fits anywhere) · clothes: needs clothes on · strips: undresses · fin: ends someone's arc · after: still makes sense once he has finished · pre: one-time setup, offered first · rule: a standing rule for the night, not a timed round · po: prelude order */
+  var ACT_META={
+    d1:{st:1},d2:{st:1},d3:{st:1},d4:{st:1},d5:{st:1},d6:{st:1},d7:{st:1,clothes:true,strips:true},d8:{st:1},d9:{st:2},d10:{st:2},d11:{st:2},d12:{st:2},d13:{st:2},
+    d14:{st:1},d15:{st:2},d16:{st:1},d17:{st:2,strips:true},d18:{st:2},d19:{st:2},d20:{st:2},d21:{st:3},d22:{st:3},d23:{st:3},d24:{st:3},d25:{st:3},d26:{st:2},d27:{st:2},d28:{st:2},d29:{st:3},
+    d30:{st:2},d31:{st:2},d32:{st:2},d33:{st:null},d34:{st:4,fin:'him'},d35:{st:2},d36:{st:2},d37:{st:1},d38:{st:2},d39:{st:3},d40:{st:2},d41:{st:2},
+    d42:{st:null},d43:{st:0,pre:true,rule:true,po:3},d44:{st:2},d45:{st:4,fin:'him'},d46:{st:1,clothes:true,strips:true},d47:{st:3,fin:'her'},
+    d48:{st:3},d49:{st:3,fin:'her'},d50:{st:2},d51:{st:2},d52:{st:4,fin:'him'},d53:{st:4,fin:'him'},d54:{st:4,fin:'him'},d55:{st:4,fin:'him',after:true},
+    d56:{st:2},d57:{st:2},d58:{st:3},d59:{st:3},d60:{st:2},d61:{st:2},d62:{st:2},d63:{st:4,fin:'him'},d64:{st:2},d65:{st:0,pre:true,rule:true,po:6},d66:{st:0,pre:true,po:1},
+    d67:{st:0,pre:true,po:2},d68:{st:0,pre:true,po:4},d69:{st:0,pre:true,po:5},d70:{st:0,pre:true,rule:true,po:7}
+  };
+  function applyMeta(a){
+    var m=ACT_META[a.id];
+    if(m){ a.stage=m.st; a.clothes=!!m.clothes; a.strips=!!m.strips; a.fin=m.fin||null; a.after=!!m.after; a.prelude=!!m.pre; a.rule=!!m.rule; a.po=m.po||99; }
+    else { if(a.stage===undefined) a.stage=null; a.prelude=!!a.prelude; a.rule=!!a.rule; }
+    return a;
+  }
+  /* stored lists win for on/off and custom entries, but the built-in rounds always refresh from code — otherwise a phone that saved an old list never sees new rounds */
+  function mergeActs(stored){
+    var defs=defaults(), byId={}; stored.forEach(function(a){ if(a&&a.id) byId[a.id]=a; });
+    var out=[];
+    defs.forEach(function(d){ var s=byId[d.id]; if(s){ if(s.on===false) d.on=false; delete byId[d.id]; } out.push(d); });
+    stored.forEach(function(a){ if(a&&a.id&&byId[a.id]) out.push(a); });
+    return out.map(applyMeta);
+  }
+  function defNight(){ return {stage:0,naked:{her:false,him:false},finHim:false,finHer:0,preDone:[],preSkip:false,rules:[],log:[],last:Date.now()}; }
+  function anyNaked(){ return !!(night.naked.her||night.naked.him); }
+  /* an activity fits the night if clothes-on rounds are still possible and his finish hasn't closed the arc */
+  function nightOk(a){
+    if(a.clothes && anyNaked()) return false;
+    if(night.finHim && !(a.stage==null || a.after)) return false;
+    return true;
+  }
+  /* the wheel offers this stage and its neighbours; it never jumps two stages ahead, and never falls back two */
+  function stageWindow(a,widen){
+    if(a.stage==null) return true;
+    var cur=Math.max(1,night.stage), lo=Math.max(1,cur-1), hi=cur+1+(widen||0);
+    return a.stage>=lo && a.stage<=hi;
+  }
+  function nightAdvance(a){
+    if(!a) return;
+    if(a.stage!=null && a.stage>night.stage) night.stage=a.stage;
+    if((a.stage!=null && a.stage>=2) || a.strips){ night.naked.her=true; night.naked.him=true; }
+    if(a.fin==='him'){ night.finHim=true; night.stage=Math.max(night.stage,4); }
+    if(a.fin==='her') night.finHer++;
+    if(a.prelude && night.preDone.indexOf(a.id)<0) night.preDone.push(a.id);
+    if(a.rule && night.rules.indexOf(a.id)<0) night.rules.push(a.id);
+    night.log.push({id:a.id,n:a.wheel||a.name,st:a.stage}); if(night.log.length>40) night.log.shift();
+    night.last=Date.now();
+  }
+  function nightAfterScene(label){ night.stage=Math.max(night.stage,3); night.naked.her=true; night.naked.him=true; night.log.push({n:label,st:3}); if(night.log.length>40) night.log.shift(); night.last=Date.now(); save(); updateNightUI(); renderPrelude(); draw(); }
+  function actById(id){ return acts.filter(function(a){ return a.id===id; })[0]||null; }
+  function preludeItems(){ return acts.filter(function(a){ return a.prelude && a.on!==false && actAllowed(a) && night.preDone.indexOf(a.id)<0; }).sort(function(a,b){ return (a.po||99)-(b.po||99); }); }
+  function renderPrelude(){
+    var slot=document.getElementById('preludeSlot'); if(!slot) return; slot.innerHTML='';
+    if(night.stage>0 || night.preSkip) return;
+    var items=preludeItems(); if(!items.length) return;
+    var card=el('div','card prelude');
+    var chips=el('div','chips'); chips.appendChild(el('span','tag night','Before the wheel')); card.appendChild(chips);
+    card.appendChild(el('h2',null,'Tonight’s one-time setups'));
+    card.appendChild(el('p','note','These happen once, at the start, while everyone still has clothes on and a phone in hand. The wheel never brings them up mid-night — do them now, or not tonight.'));
+    var list=el('div','pre-list');
+    items.slice(0,4).forEach(function(a){
+      var row=el('div','pre-row'); var t=el('div','pre-text'); t.appendChild(el('b',null,a.name)); if(a.note) t.appendChild(el('small',null,a.note)); row.appendChild(t);
+      var bb=el('div','pre-btns');
+      var go=el('button','primary-btn',a.rule?'In effect':'Do it');
+      go.addEventListener('click',function(){
+        if(a.rule){ nightAdvance(a); save(); updateNightUI(); renderPrelude(); toast((a.wheel||a.name)+' — in effect tonight.'); return; }
+        var p=buildFromAct(a); if(p.twist){ p.twist=null; stats.twists=Math.max(0,stats.twists-1); }
+        startTimer(p,{});
+      });
+      var no=el('button','quiet-btn','Not tonight'); no.addEventListener('click',function(){ night.preDone.push(a.id); night.last=Date.now(); save(); renderPrelude(); });
+      bb.appendChild(go); bb.appendChild(no); row.appendChild(bb); list.appendChild(row);
+    });
+    card.appendChild(list);
+    if(items.length>4) card.appendChild(el('p','note',(items.length-4)+' more after these.'));
+    var skip=el('button','quiet-btn','Straight to the wheel'); skip.style.marginTop='12px';
+    skip.addEventListener('click',function(){ night.preSkip=true; night.last=Date.now(); save(); renderPrelude(); });
+    card.appendChild(skip); slot.appendChild(card);
+  }
+  function updateNightUI(){
+    var s=document.getElementById('nightStrip'); if(!s) return; s.innerHTML='';
+    s.appendChild(el('span','night-k','Tonight'));
+    var track=el('span','night-track');
+    var curI=Math.max(1,Math.min(4,night.stage));
+    for(var i=1;i<=4;i++){ var st=el('span',(night.stage>=i?'on':'')+(curI===i?' cur':''),NIGHT_STAGES[i]); track.appendChild(st); }
+    s.appendChild(track);
+    if(night.finHer) s.appendChild(el('span','night-stage','she’s come '+night.finHer+'×'));
+    var chips=[]; night.rules.forEach(function(id){ var a=actById(id); if(a) chips.push({n:a.wheel||a.name,rule:true}); });
+    night.log.slice(-5).forEach(function(e){ if(!e.id||night.rules.indexOf(e.id)<0) chips.push({n:e.n}); });
+    if(chips.length){ var lg=el('span','night-log'); chips.forEach(function(c){ lg.appendChild(el('i',c.rule?'rule':null,(c.rule?'⚑ ':'')+c.n)); }); s.appendChild(lg); }
+    if(night.finHim){ var r2=el('button','ghost-btn','Round two'); r2.addEventListener('click',roundTwo); s.appendChild(r2); }
+    var nn=el('button','ghost-btn','New night');
+    nn.addEventListener('click',function(){ if(!nn.dataset.arm){ nn.dataset.arm='1'; nn.textContent='Tap again for a new night'; setTimeout(function(){ nn.dataset.arm=''; nn.textContent='New night'; },2500); return; } newNight(); toast('New night. Setups first, then the wheel.'); });
+    s.appendChild(nn);
+  }
+  function roundTwo(){ night.finHim=false; night.stage=2; night.last=Date.now(); save(); updateNightUI(); clearResult(); draw(); toast('Round two. Back to foreplay — clothes stay off.'); }
+  function newNight(){ night=defNight(); played=[]; save(); updateNightUI(); renderPrelude(); clearResult(); draw(); }
+  /* once he has finished the wheel stops being random about it */
+  function showAfterCard(){
+    var slot=document.getElementById('resultSlot'); slot.innerHTML='';
+    var card=el('div','card');
+    var chips=el('div','chips'); chips.appendChild(el('span','tag night','Finish')); card.appendChild(chips);
+    card.appendChild(el('h2',null,'That was the finish.'));
+    card.appendChild(el('p','note','The wheel is done pretending. From here it is round two, staying exactly as you are, or calling the night and reading the report.'));
+    var btns=el('div','card-btns');
+    var r2=el('button','primary-btn','Round two'); r2.addEventListener('click',roundTwo); btns.appendChild(r2);
+    var messy=actById('d55');
+    if(messy && messy.on!==false && actAllowed(messy) && played.indexOf('d55')<0){ var m=el('button','quiet-btn','Stay messy and tied'); m.addEventListener('click',function(){ var p=buildFromAct(messy); p.twist=null; startTimer(p,{}); }); btns.appendChild(m); }
+    var fin=el('button','quiet-btn','Call the night 🏁'); fin.addEventListener('click',showFinish); btns.appendChild(fin);
+    card.appendChild(btns); slot.appendChild(card);
+  }
+  /* scenes and sessions flow in order too: clothes and talk, then hands and mouths, then the rest */
+  var KINK_STAGE={expose_wear:0,dress:0,collar:0,writing:0,photos:0,curtains:0,strangers_watch:0,third_person:0,public_tease:0,texts:0,
+    titles:1,orders:1,kneel:1,silence:1,humiliation:1,praise:1,degrade:1,roleplay:1,worship:1,counting:1,predicament:1,throat_hand:1,massage:1,feather:1,tickle:1,blindfold:1,wrists:1,tie_bed:1,fold:1,behind_back:1,gag:1,ankles:1,long_bound:1,statue:1,
+    oral_her:2,oral_him:2,rim_her:2,toys_her:2,toys_him:2,clone:2,ice:2,wax:2,clamps:2,bite:2,pinch:2,spank_hand:2,paddle:2,crop:2,slap_body:2,face_slap:2,edging:2,permission:2,clit_play:2,cbt:2,dick_rope:2,deepthroat:2,bj_rough:2,anal_toys_her:2,forced:2,overstim:2,ruined:2,denial_night:2,mirror:2,watch:2,squirt:2,
+    two_at_once:3,pound:3,anal_him_her:3,fist_her:3,multi_o:3,finish_control:3,used_repeatedly:3,fuck_doll:3,
+    cum_swallow:4,cum_face:4,cum_ass:4,cum_messy:4,stay_tied_after:4,facial:4,milking_machine:4};
+  function stepStage(s){ var needs=s.needs||[]; if(!needs.length) return s.phase==='peak'?3:1; var m=0; needs.forEach(function(n){ var v=KINK_STAGE[n[0]]; if(v==null) v=2; if(v>m) m=v; }); return m; }
+  function byStage(list){ return list.map(function(x,i){ return {x:x,i:i,s:stepStage(x.step)}; }).sort(function(a,b){ return a.s-b.s || a.i-b.i; }).map(function(o){ return o.x; }); }
+
+
   /* ---------- state ---------- */
-  var acts, settings, stats, turn, sheet, plan, recent, played;
+  var acts, settings, stats, turn, sheet, plan, recent, played, night;
   function defSheet(){ return {her:{recv:{},give:{},done:false},him:{recv:{},give:{},done:false}}; }
   function defSettings(){return {mode:'classic',startHeat:0,specials:true,twists:true,plot:true,gamble:true,mysteryTimer:false,sound:true,dominion:true,noTimer:false,noRepeat:true,her:'Her',him:'Him',toys:DEF_TOYS.slice()};}
   function defStats(){return {rounds:0,seconds:0,twists:0,plot:0,jackpots:0,vetoes:0,longest:0,peakHeat:0,gambles:0,gWon:0,spinsHer:0,spinsHim:0,scenes:0,scenesHer:0,scenesHim:0};}
   function load(){
-    acts=defaults(); settings=defSettings(); stats=defStats(); turn='her'; sheet=defSheet(); plan=null; recent=[]; played=[];
+    acts=defaults().map(applyMeta); settings=defSettings(); stats=defStats(); turn='her'; sheet=defSheet(); plan=null; recent=[]; played=[]; night=defNight();
     try{
       var raw=localStorage.getItem(STORE_KEY);
       if(raw){
         var s=JSON.parse(raw)||{};
-        if(Array.isArray(s.acts)&&s.acts.length) acts=s.acts;
+        if(Array.isArray(s.acts)&&s.acts.length) acts=mergeActs(s.acts);
         if(s.settings) for(var k in s.settings) if(Object.prototype.hasOwnProperty.call(s.settings,k)) settings[k]=s.settings[k];
         if(s.stats) for(var j in s.stats) if(Object.prototype.hasOwnProperty.call(s.stats,j)) stats[j]=s.stats[j];
         if(s.turn==='him') turn='him';
@@ -1112,23 +1262,29 @@
         if(s.plan&&s.plan.stepIds) plan=s.plan;
         if(Array.isArray(s.recent)) recent=s.recent;
         if(Array.isArray(s.played)) played=s.played;
+        if(s.night&&s.night.naked) night=s.night;
       }
     }catch(e){}
     if(!Array.isArray(settings.toys)) settings.toys=DEF_TOYS.slice();
+    if(!Array.isArray(night.rules)) night.rules=[]; if(!Array.isArray(night.preDone)) night.preDone=[]; if(!Array.isArray(night.log)) night.log=[];
+    /* a night left untouched for eight hours is over: the next open starts fresh, setups first */
+    if(Date.now()-(night.last||0)>8*3600e3 && (night.stage>0||played.length||night.preDone.length||night.preSkip)){ night=defNight(); played=[]; }
   }
-  function save(){ try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,settings:settings,stats:stats,turn:turn,sheet:sheet,plan:plan,recent:recent,played:played}));}catch(e){} }
+  function save(){ try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,settings:settings,stats:stats,turn:turn,sheet:sheet,plan:plan,recent:recent,played:played,night:night}));}catch(e){} }
   load();
 
   function tierFor(r){ return r<HEAT_AT[1]?0: r<HEAT_AT[2]?1: r<HEAT_AT[3]?2:3; }
   function tier(){ return Math.max(tierFor(stats.rounds), settings.startHeat|0); }
-  function eligibleActs(t){ if(t==null) t=tier(); return acts.filter(function(a){return a.on!==false && ((a.heat||1)-1)<=t && actAllowed(a) && !(settings.noRepeat && played.indexOf(a.id)>=0);}); }
+  function eligibleActs(t,widen){ if(t==null) t=tier(); return acts.filter(function(a){return a.on!==false && !a.prelude && ((a.heat||1)-1)<=t && actAllowed(a) && nightOk(a) && stageWindow(a,widen) && !(settings.noRepeat && played.indexOf(a.id)>=0);}); }
+  /* if the current stage and its neighbours run thin, look one stage further ahead, then anywhere ahead — never two stages back */
+  function eligibleWide(t){ var e=eligibleActs(t,0); if(e.length>=3) return e; var w=eligibleActs(t,1); if(w.length>=3) return w; return eligibleActs(t,9); }
   function playedEligible(){ return acts.filter(function(a){return a.on!==false && actAllowed(a) && played.indexOf(a.id)>=0;}); }
   function enabledActs(){ return acts.filter(function(a){return a.on!==false && actAllowed(a);}); }
   function specialsFor(t){
     var s=[];
     if(settings.specials){
-      s.push({kind:'confession',label:'Confess',tag:'confession'});
-      if(t>=1){ s.push({kind:'dare',label:'Dare',tag:'dare'}); s.push({kind:'mystery',label:'???',tag:'mystery'}); }
+      if(night.stage<=2) s.push({kind:'confession',label:'Confess',tag:'confession'});
+      if(t>=1){ if(night.stage<=2) s.push({kind:'dare',label:'Dare',tag:'dare'}); s.push({kind:'mystery',label:'???',tag:'mystery'}); }
       if(t>=2) s.push({kind:'jackpot',label:'JACKPOT',tag:'jackpot'});
     }
     if(settings.dominion && t>=1) s.push({kind:'dominion',label:'DOMINION',tag:'dominion'});
@@ -1136,13 +1292,13 @@
   }
   function slices(){
     var t=tier();
-    var list=eligibleActs(t).map(function(a){return {kind:'act',act:a,label:a.wheel,tag:a.tag};});
+    var list=eligibleWide(t).map(function(a){return {kind:'act',act:a,label:a.wheel,tag:a.tag};});
     var sp=specialsFor(t), n=list.length;
     /* spread the specials evenly around the wheel instead of bunching them */
     for(var i=sp.length-1;i>=0;i--){ var pos=Math.floor((i+1)*n/(sp.length+1)); list.splice(pos,0,sp[i]); }
     return list;
   }
-  function sliceCount(t){ return eligibleActs(t).length+specialsFor(t).length; }
+  function sliceCount(t){ return eligibleWide(t).length+specialsFor(t).length; }
 
   /* ---------- helpers ---------- */
   function el(tag,cls,text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
@@ -1281,7 +1437,9 @@
 
   function spin(power){
     if(spinning) return;
-    if(eligibleActs().length<2){ if(settings.noRepeat && played.length){ played=[]; save(); toast('Every round played — bringing them all back.'); } else { toast('Turn on at least two activities in the menu first.'); return; } }
+    if(night.finHim){ showAfterCard(); toast('That was the finish. Round two, or call the night.'); return; }
+    if(eligibleWide().length<2){ if(settings.noRepeat && played.length){ played=[]; save(); toast('Every round played — bringing them all back.'); } else { toast('Turn on at least two activities in the menu first.'); return; } }
+    if(night.stage===0 && !night.preSkip){ night.preSkip=true; save(); renderPrelude(); }
     audio();
     var list=slices(), n=list.length, per=Math.PI*2/n;
     var spinner=turn;
@@ -1318,7 +1476,7 @@
   function buildFromAct(a,opts){
     opts=opts||{};
     var p={kind:opts.hidden?'mystery':'act',act:a,name:a.name,note:a.note||'',tag:a.tag,hidden:!!opts.hidden,twist:null,focus:null,toy:null,jackpot:!!opts.jackpot};
-    if(settings.twists && !opts.jackpot && Math.random()<.35){ p.twist=pick(TWISTS); stats.twists++; }
+    if(settings.twists && !opts.jackpot && Math.random()<.35){ p.twist=pick(TWISTS.filter(function(x){ return !(x.clothes&&anyNaked()); })); stats.twists++; }
     if(a.zones) p.focus=pick(ZONES);
     if(a.toy && settings.toys.length) p.toy=pick(settings.toys);
     p.sec=rollSec(a.min,a.max,(p.twist&&p.twist.mult||1)*(opts.jackpot?2:1));
@@ -1328,9 +1486,9 @@
     var p;
     if(s.kind==='dominion'){ save(); showSceneSetup(); return; }
     if(s.kind==='act'){ p=buildFromAct(s.act); }
-    else if(s.kind==='mystery'){ p=buildFromAct(pick(eligibleActs()),{hidden:true}); }
+    else if(s.kind==='mystery'){ p=buildFromAct(pick(eligibleWide()),{hidden:true}); }
     else if(s.kind==='confession'){ p={kind:'confession',name:pick(CONFESSIONS),tag:'confession',note:pronoun(spinner)+' answers first — honestly. The other gets two follow-up questions, then answers the same one.',sec:rollSec(1.5,3,1)}; }
-    else if(s.kind==='dare'){ var d=pick(DARES); p={kind:'dare',name:d.t,tag:'dare',note:pronoun(spinner)+' performs. The bell does not negotiate.',sec:rollSec(d.min,d.max,1)}; }
+    else if(s.kind==='dare'){ var d=pick(DARES.filter(function(x){ return !(x.clothes&&anyNaked()); })); p={kind:'dare',name:d.t,tag:'dare',note:pronoun(spinner)+' performs. The bell does not negotiate.',sec:rollSec(d.min,d.max,1)}; }
     else if(s.kind==='jackpot'){ stats.jackpots++; fanfare(); p={kind:'jackpot',name:'Jackpot',tag:'jackpot',note:pronoun(spinner)+' picks anything on the whole menu — every heat level unlocked — and the bell gives double time.'}; }
     save();
     renderCard(p,spinner);
@@ -1344,6 +1502,7 @@
     chips.appendChild(el('span','tag '+(p.hidden?'mystery':p.tag),p.hidden?'Mystery':TAGS[p.tag]));
     if(p.jackpot) chips.appendChild(el('span','tag jackpot','Jackpot · double time'));
     chips.appendChild(el('span','tag spinner',spinLabel(spinner)));
+    if(p.act && p.act.stage!=null && !p.hidden) chips.appendChild(el('span','tag night',NIGHT_STAGES[p.act.stage]));
     card.appendChild(chips);
     card.appendChild(el('h2',null,p.hidden?'???':fillN(p.name)));
     if(p.hidden) card.appendChild(el('p','note','You commit before you know. Start the clock to reveal it — the bell already knows how long.'));
@@ -1351,7 +1510,7 @@
 
     if(p.kind==='jackpot'){
       var sel=el('select'); sel.setAttribute('aria-label','Pick any activity');
-      var list=enabledActs().slice().sort(function(a,b){return (a.heat||1)-(b.heat||1);});
+      var list=enabledActs().filter(function(a){ return !a.prelude && nightOk(a); }).sort(function(a,b){return (a.heat||1)-(b.heat||1);});
       list.forEach(function(a){ var o=el('option',null,'🔥'.repeat(a.heat||1)+'  '+a.name); o.value=a.id; sel.appendChild(o); });
       card.appendChild(sel);
       var btns=el('div','card-btns');
@@ -1432,7 +1591,7 @@
     timerEl.appendChild(stop);
     document.body.appendChild(timerEl);
   }
-  function recordPlayed(p){ if(p&&p.act&&p.act.id&&played.indexOf(p.act.id)<0){ played.push(p.act.id); save(); draw(); } }
+  function recordPlayed(p){ if(p&&p.act&&p.act.id){ if(played.indexOf(p.act.id)<0) played.push(p.act.id); nightAdvance(p.act); save(); draw(); updateNightUI(); renderPrelude(); } }
   function startTimer(p,opts){
     opts=opts||{};
     if(settings.noTimer){ startUntimed(p,opts); return; }
@@ -1474,7 +1633,7 @@
       if(left<=0) bellStop(p,total,opts);
     },200);
   }
-  function closeTimer(){ if(timerInt){clearInterval(timerInt); timerInt=null;} if(timerEl){timerEl.remove(); timerEl=null;} }
+  function closeTimer(){ if(timerInt){clearInterval(timerInt); timerInt=null;} if(timerEl){timerEl.remove(); timerEl=null;} if(night.finHim) showAfterCard(); }
   var bannerT=null;
   function showBanner(text){
     var b=document.getElementById('banner'); document.getElementById('bannerText').textContent=text;
@@ -1596,7 +1755,7 @@
     btns.appendChild(re); btns.appendChild(done); inner.appendChild(btns);
     f.appendChild(inner); document.body.appendChild(f);
     var stop=reduced?function(){}:confetti(cv);
-    function close(reset){ stop(); f.remove(); if(reset){ stats=defStats(); played=[]; recent=[]; save(); updateHeatUI(); draw(); toast('Fresh night. Heat back to '+HEAT_NAMES[tier()]+'. Every round is back on the wheel.'); } }
+    function close(reset){ stop(); f.remove(); if(reset){ stats=defStats(); played=[]; recent=[]; night=defNight(); save(); updateHeatUI(); updateNightUI(); renderPrelude(); clearResult(); draw(); toast('Fresh night. Heat back to '+HEAT_NAMES[tier()]+'. Every round is back on the wheel.'); } }
     re.addEventListener('click',function(){close(true)}); done.addEventListener('click',function(){close(false)});
   }
   function confetti(cv){
@@ -1944,7 +2103,7 @@
       if(out.length<n) out=out.concat(deep.slice(nd,nd+(n-out.length)));
       return out;
     }
-    return [].concat(take('open',1),take('build',Math.max(1,len-2)),take('peak',1),take('close',1));
+    return [].concat(take('open',1),byStage(take('build',Math.max(1,len-2))),take('peak',1),take('close',1));
   }
   function showGather(dom,steps,inten){
     var o=el('div','overlay gate'); var box=el('div','setup');
@@ -1971,6 +2130,7 @@
     function stopInt(){ if(sceneInt){ clearInterval(sceneInt); sceneInt=null; } }
     function endScene(reason){
       stopInt(); sceneEl.innerHTML=''; sceneEl.classList.remove('scene');
+      nightAfterScene('Dominion scene');
       var a=el('div','after');
       a.appendChild(el('h1',null,reason==='red'?'Red. Scene over.':'Scene complete.'));
       a.appendChild(el('p','lede',reason==='red'?'No questions, no explanations, no apologies. '+nameOf(dom)+': untie first, talk later.':'The power goes back in the drawer. Aftercare is not optional — it is the last step.'));
@@ -2119,7 +2279,7 @@
   }
 
   /* ---------- backup & restore ---------- */
-  function backupObject(){ return {app:'velvet-roulette',v:2,exported:new Date().toISOString(),acts:acts,settings:settings,stats:stats,sheet:sheet,plan:plan,turn:turn,recent:recent,played:played}; }
+  function backupObject(){ return {app:'velvet-roulette',v:2,exported:new Date().toISOString(),acts:acts,settings:settings,stats:stats,sheet:sheet,plan:plan,turn:turn,recent:recent,played:played,night:night}; }
   function encodeBackup(){ return btoa(unescape(encodeURIComponent(JSON.stringify(backupObject())))); }
   function decodeBackup(text){
     text=String(text||'').trim(); var obj=null;
@@ -2129,14 +2289,15 @@
   }
   function applyBackup(obj){
     var k;
-    acts=obj.acts;
+    acts=mergeActs(obj.acts);
     settings=defSettings(); for(k in (obj.settings||{})) if(Object.prototype.hasOwnProperty.call(obj.settings,k)) settings[k]=obj.settings[k];
     if(!Array.isArray(settings.toys)) settings.toys=DEF_TOYS.slice();
     stats=defStats(); for(k in (obj.stats||{})) if(Object.prototype.hasOwnProperty.call(obj.stats,k)) stats[k]=obj.stats[k];
     sheet=(obj.sheet&&obj.sheet.her&&obj.sheet.him)?obj.sheet:defSheet();
     plan=(obj.plan&&obj.plan.stepIds)?obj.plan:null; recent=Array.isArray(obj.recent)?obj.recent:[]; played=Array.isArray(obj.played)?obj.played:[];
+    night=(obj.night&&obj.night.naked)?obj.night:defNight(); if(!Array.isArray(night.rules)) night.rules=[]; if(!Array.isArray(night.preDone)) night.preDone=[]; if(!Array.isArray(night.log)) night.log=[];
     turn=obj.turn==='him'?'him':'her';
-    save(); updateHeatUI(); updateTurn(); updatePlanBadge(); draw();
+    save(); updateHeatUI(); updateTurn(); updatePlanBadge(); updateNightUI(); renderPrelude(); draw();
   }
 
   /* ---------- escalation ladder mode ---------- */
@@ -2152,7 +2313,7 @@
   var LADDER_NAMES=['Warming','Wandering','Wanting','Reckless','The edge'];
   function showLadder(){
     audio();
-    var allowed=acts.filter(function(a){ return a.on!==false && actAllowed(a); });
+    var allowed=acts.filter(function(a){ return a.on!==false && !a.prelude && actAllowed(a) && nightOk(a); });
     if(allowed.length<2){ toast('Turn on more activities, or fill the Limits Sheet, first.'); return; }
     var byLevel={1:[],2:[],3:[],4:[],5:[]};
     allowed.forEach(function(a){ byLevel[ladderLevel(a)].push(a); });
@@ -2163,6 +2324,7 @@
       var recentIds=shown.slice(-4);
       for(var d=0;d<5;d++){
         var ring=[]; [L-d,L+d].forEach(function(LL){ if(d===0&&LL!==L) return; if(byLevel[LL]) ring=ring.concat(byLevel[LL]); });
+        ring=ring.filter(nightOk);
         var fresh=ring.filter(function(a){ return recentIds.indexOf(a.id)<0; });
         if(fresh.length) return fresh;
         if(ring.length) return ring;
@@ -2224,7 +2386,7 @@
     }
     function nextRung(){
       var cands=candidates(level);
-      if(!cands.length){ toast('Nothing left at this level tonight.'); cleanup(); ov.remove(); return; }
+      if(!cands.length){ toast(night.finHim?'That was the finish. The ladder ends here.':'Nothing left at this level tonight.'); cleanup(); ov.remove(); if(night.finHim) showAfterCard(); return; }
       var a=pick(cands); shown.push(a.id); curP=buildFromAct(a); renderRung();
     }
     nextRung();
@@ -2269,7 +2431,9 @@
     var fin=peaks.filter(function(x){ return !used[x.step.id]; })[0];
     if(fin){ used[fin.step.id]=1; out.push(fin); }
     else { var f2=pool.filter(function(x){ return !used[x.step.id]; })[0]; if(f2) out.push(f2); }
-    return out.slice(0,Math.max(2,waves));
+    out=out.slice(0,Math.max(2,waves));
+    if(out.length>3) out=[out[0]].concat(byStage(out.slice(1,-1)),[out[out.length-1]]);
+    return out;
   }
   function showTotalSetup(){
     clearResult();
@@ -2356,6 +2520,7 @@
     function stop(){ if(totalInt){ clearInterval(totalInt); totalInt=null; } }
     function release(reason){
       stop(); totalEl.innerHTML=''; totalEl.classList.remove('total');
+      nightAfterScene('Total domination');
       var a=el('div','after');
       a.appendChild(el('h1',null,reason==='red'?'Red. Ties off now.':'Session over.'));
       a.appendChild(el('p','lede',reason==='red'?'Untie first. Everything else — talking, checking, apologising — comes after the last knot is gone.':'Take the ties off slowly, one limb at a time, and support each one as it comes free.'));
@@ -2472,7 +2637,7 @@
   document.getElementById('totalBtn').addEventListener('click',showTotalSetup);
   window.addEventListener('resize',sizeCanvas);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
-  updateHeatUI(); updateTurn(); updatePlanBadge(); sizeCanvas();
+  updateHeatUI(); updateTurn(); updatePlanBadge(); updateNightUI(); renderPrelude(); sizeCanvas();
   showGate(true);
 })();
 </script>
