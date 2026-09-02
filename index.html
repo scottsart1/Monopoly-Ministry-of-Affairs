@@ -394,6 +394,15 @@
   .ladder .rung-name{font-size:11px;letter-spacing:.18em;text-transform:uppercase}
   .ladder-choices{display:flex;flex-direction:column;gap:10px;width:min(88vw,320px)}
   .ladder-choices .primary-btn,.ladder-choices .quiet-btn{width:100%}
+  .total-setup .tog{border-bottom:1px solid var(--edge)}
+  .total-setup .safety{margin-top:18px}
+  .terms{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:9px}
+  .terms li{display:flex;gap:9px;font-size:13px;line-height:1.45}
+  .terms li::before{content:'§';color:var(--gold);flex:none;font-family:'Cormorant',Georgia,serif}
+  .sess-bar{width:min(92vw,480px);height:5px;border-radius:99px;background:var(--edge);overflow:hidden;margin:2px 0 6px}
+  .sess-fill{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--rose));transition:width .4s}
+  .sess-meta{display:flex;justify-content:space-between;width:min(92vw,480px);margin-bottom:14px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .sess-clock{font-family:'DM Mono',monospace;font-variant-numeric:tabular-nums;color:var(--gold)}
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
     .halo.flicker{animation:none}
@@ -433,6 +442,7 @@
       <button class="quiet-btn" id="limitsBtn">🔒 Limits sheet</button>
       <button class="quiet-btn crown" id="domBtn">👑 Dominion scene</button>
       <button class="quiet-btn" id="ladderBtn">🪜 Escalation ladder</button>
+      <button class="quiet-btn crown" id="totalBtn">⛓ Total domination</button>
     </div>
     <div id="resultSlot" style="width:100%"></div>
     <p class="veto-note">Either of you can veto any spin — no reason needed, no questions asked.</p>
@@ -618,6 +628,7 @@
     {id:'fold',cat:'Restraint',label:'Folded ties',desc:'Wrist to ankle on all fours, or ankle to thigh so the legs stay open.',note:'Nothing tight over a joint. Check every ten minutes.',recv:BOTH_P,def:'maybe'},
     {id:'behind_back',cat:'Restraint',label:'Hands tied behind the back, kneeling',recv:BOTH_P,def:'maybe'},
     {id:'blindfold',cat:'Restraint',label:'Blindfolded',recv:BOTH_P,def:'yes'},
+    {id:'long_bound',cat:'Restraint',label:'Kept in restraints for hours, not minutes',desc:'Tied at the start of a long session and not released until the end — no untying between acts.',note:'Only with someone in the room the whole time. Circulation checked every twenty minutes, position shifted, water offered; shears within reach. Numbness, tingling, cold or colour change means loosen now, not later.',recv:BOTH_P,def:'no'},
     {id:'gag',cat:'Restraint',label:'Gagged',desc:'A scarf, a ball gag.',note:'A gagged sub can’t say Red — agree a hand signal first: three taps, or drop something they hold.',recv:BOTH_P,def:'no'},
     {id:'predicament',cat:'Restraint',label:'Predicament',desc:'Hold a position or pay for it.',recv:BOTH_P,def:'maybe'},
     {id:'spank_hand',cat:'Impact',label:'Spanking, open hand',note:'Ass and upper thighs only — never spine, tailbone, kidneys or neck. Warm up first.',recv:BOTH_P,def:'maybe'},
@@ -646,6 +657,8 @@
     {id:'multi_o',cat:'Control & denial',label:'Made to come again and again — legs held open',desc:'Two, three, four in a row; the count is not hers to pick.',note:'Overstimulation is real. Yellow slows it, Red ends it, both honoured instantly.',recv:['her'],def:'no'},
     {id:'pound',cat:'Control & denial',label:'Rough, aggressive pounding',desc:'Held down, driven into, no gentleness asked for.',note:'A word for “ease off” agreed first; hips and grip, never the neck.',recv:BOTH_P,def:'no'},
     {id:'milking_machine',cat:'Control & denial',label:'Milked like a cow — seated, worked to the finish over and over, no stopping',desc:'Positioned and kept there while she uses him — hand, mouth, riding — through orgasm after orgasm.',note:'His call to add an erection aid, never pressured; only what a doctor cleared, never with nitrates or heart meds. Water, breaks on Red, and stop if anything hurts or goes numb.',recv:['him'],def:'no'},
+    {id:'fuck_doll',cat:'Control & denial',label:'Used as a doll — positioned, used, not expected to participate',desc:'Limbs moved where they are wanted and left there; no responding, no helping, no performing.',note:'Silence is not consent: agree a tap or hum signal before the doll rules start, and the one using them checks in out loud on a timer.',recv:BOTH_P,def:'no'},
+    {id:'used_repeatedly',cat:'Control & denial',label:'Used as many times as they want — no cap, no negotiating between',desc:'The number is not yours; it ends when they decide or the clock does.',note:'Water, breaks and Red always available. Soreness the next day is real — plan for a slow morning.',recv:BOTH_P,def:'no'},
     {id:'statue',cat:'Control & denial',label:'Kept as a plaything — stays put and unclothed all evening, used at will',desc:'One position, one place, hands to yourself, a hood or mouth cap on; the other does whatever they like around the rules.',note:'Circulation and warmth checked often, nothing over the airway, Red always reachable — agree a non-verbal signal before the cap goes on.',recv:BOTH_P,def:'no'},
     {id:'praise',cat:'Words & power',label:'Praise',desc:'Good girl. Good boy.',recv:BOTH_P,def:'yes'},
     {id:'degrade',cat:'Words & power',label:'Degradation',desc:'Dirty names — agree the words first.',recv:BOTH_P,def:'no'},
@@ -1002,6 +1015,80 @@
       text:'Choose what she wears tonight — crotchless, cut-out, sheer, whatever hides nothing — from her drawer, or hand her the phone and have her buy it while you watch. She puts it on, and it stays on until you take it off her, which may not be for a while.',sub:'Wear it. Do not adjust it. Do not take it off.'},
     {dom:'her',phase:'open',intense:true,title:'The Uniform',needs:[['expose_wear']],min:3,max:5,
       text:'Choose what he wears tonight — or make him choose and model it for you. Something that leaves him nowhere to hide. It stays exactly as you put it until you decide otherwise.',sub:'Wear it. Do not adjust it. Do not take it off.'}
+,
+    /* ===== cock work — the suite that never landed ===== */
+    {dom:'her',phase:'build',title:'Cock Inspection',needs:[['humiliation']],min:2,max:3,
+      text:'Kneel him up. Take it in your hand like you are deciding whether to keep it: weigh it, turn it, comment on everything — size, shape, how fast it answers you, how badly it wants you. He thanks you for each observation. Then decide out loud what it is for tonight.',sub:'Thank her for every observation.'},
+    {dom:'her',phase:'build',intense:true,title:'The Ring',needs:[['cbt']],props:['a soft cock ring'],min:3,max:4,
+      text:'A soft stretchy ring, or a silk tie at the base loose enough to slip a finger under. It stays on for the next two steps and comes off the second anything goes cold, numb or changes colour, and never past twenty minutes. Now stroke him once, slowly, and tell him that is all he gets for a while.',sub:'Say "numb" or "cold" the instant you feel it.'},
+    {dom:'her',phase:'build',intense:true,title:'Ball Handling',needs:[['cbt']],min:3,max:5,
+      text:'Roll them in your palm. Then squeeze, slowly building, while he counts aloud, and release at ten. Tug down gently while your other hand works him. Never twist, never strike. Five sets, and he thanks you after each release then asks properly for the next.',sub:'Count to ten. Thank her. Ask for the next.'},
+    {dom:'her',phase:'build',intense:true,title:'Slapped',needs:[['cbt']],min:2,max:4,
+      text:'Light slaps to the shaft with two fingers — sharp, not hard. The balls only with an open cupped hand, barely at all. He asks for each one by name and number. Twenty, then your mouth for exactly one minute as the reward. Then twenty more.',sub:'Ask for each one by name and number.'},
+    {dom:'her',phase:'build',intense:true,title:'Pins Below',needs:[['cbt'],['clamps']],props:['clothespins'],min:3,max:5,
+      text:'Clothespins on the loose skin of his sack — skin only, never the testicles, three at most, five minutes on the clock. Watch his face while each one bites. Take them off one at a time while your mouth is on him, so the sting lands inside something good.',sub:'Skin only. Five minutes. Yellow if it is wrong.'},
+    {dom:'her',phase:'build',intense:true,title:'Tease Torture',needs:[['feather'],['edging']],min:4,max:6,
+      text:'Fingertips and breath on the head only — never a grip, never a stroke, never enough — for the whole step. He may not thrust. He may beg, but only loudly and specifically: what he wants, where, how hard. Reward good begging with one second of your tongue.',sub:'No thrusting. Beg loudly and specifically.'},
+    {dom:'her',phase:'build',title:'Cock Writing',needs:[['writing']],props:['lipstick'],min:2,max:3,
+      text:'Lipstick. Along the shaft, write who it belongs to. On his thigh, what it is for tonight. On his chest, the title he calls you. Make him read all three in the mirror, aloud, before you touch him again.',sub:'Read every word aloud.'},
+    {dom:'her',phase:'build',deep:true,intense:true,title:'Cock Protocol',needs:[['cbt'],['titles']],min:3,max:4,
+      text:'It has rules tonight: it is touched only when you say, it thanks you through his mouth every time it is, and it asks by your title before it so much as twitches toward you. Enforce each rule with the flat of your hand on the shaft, lightly, and a restart of the count.',sub:'It asks first. It thanks after. By her title.'},
+    {dom:'him',phase:'build',intense:true,title:'Clit Torment',needs:[['clit_play'],['toys_her']],props:['the wand'],min:3,max:5,
+      text:'Hood back with your thumb. Flick it. Pinch it and hold. Then the wand on high, exactly where she cannot take it and cannot escape, her hands pinned above her head. Two minutes on, thirty seconds off, and no finish — every time she gets close the wand lifts and your fingers pinch instead.',sub:'Hands above your head. No finish until told.'},
+    {dom:'him',phase:'build',intense:true,title:'Nipples, Timed',needs:[['pinch'],['counting']],min:2,max:4,
+      text:'Pinch both and hold while she counts to fifteen aloud. Release, your mouth on each for ten seconds. Pinch again a notch harder, count to twenty. Three rounds, and she thanks you for every release.',sub:'Count aloud. Thank him for each release.'},
+    {dom:'him',phase:'build',intense:true,title:'Tickle Torture',needs:[['tickle'],['tie_bed']],min:3,max:5,
+      text:'Tied spread, nowhere to go. Tickle her — ribs, feet, inner thighs, under the arms — until she is begging through the laughing. Then your mouth between her legs for thirty seconds. Then tickle again. Only Yellow stops it; begging just tells you where.',sub:'Beg all you like. Only Yellow stops it.'},
+    {dom:'her',phase:'build',intense:true,title:'Tickle Torture',needs:[['tickle'],['tie_bed']],min:3,max:5,
+      text:'Tied spread, nowhere to go. Tickle him — ribs, feet, inner thighs, under the arms — until he is begging through the laughing. Then your mouth on him for thirty seconds. Then tickle again. Only Yellow stops it.',sub:'Beg all you like. Only Yellow stops it.'},
+
+    /* ===== the wider world — assignments ===== */
+    {dom:'him',phase:'build',intense:true,title:'The Booking',needs:[['strangers_watch']],props:['your phone'],min:5,max:8,
+      text:'Hand her the phone. The assignment: find a sex-positive club night or play party within an hour of here, read its house rules to you aloud, pick a night in the next month, and book it — now, while you watch her do it. Tonight the booking is an act of obedience. The rules for that night get written together afterwards, sober.',sub:'Find it. Read the rules aloud. Book it.'},
+    {dom:'her',phase:'build',intense:true,title:'The Booking',needs:[['strangers_watch']],props:['your phone'],min:5,max:8,
+      text:'Hand him the phone. The assignment: find a sex-positive club night or play party within an hour of here, read its house rules to you aloud, pick a night in the next month, and book it — now, while you watch him do it. Tonight the booking is an act of obedience. The rules for that night get written together afterwards, sober.',sub:'Find it. Read the rules aloud. Book it.'},
+    {dom:'him',phase:'build',intense:true,title:'The Casting',needs:[['third_person']],props:['your phone'],min:5,max:8,
+      text:'Together, the who: an app, a couple you have met, a friend of a friend. She drafts the message with the hard rules in it — protection, a veto for all three that ends it instantly, no surprises, no pressure. You edit and approve every word. She sends it and thanks you for the privilege.',sub:'Draft it. Accept every edit. Send it.'},
+    {dom:'her',phase:'build',intense:true,title:'The Casting',needs:[['third_person']],props:['your phone'],min:5,max:8,
+      text:'Together, the who: an app, a couple you have met, a friend of a friend. He drafts the message with the hard rules in it — protection, a veto for all three that ends it instantly, no surprises, no pressure. You edit and approve every word. He sends it and thanks you for the privilege.',sub:'Draft it. Accept every edit. Send it.'},
+    {dom:'him',phase:'build',title:'Dressed for Strangers',needs:[['strangers_watch'],['dress']],min:3,max:5,
+      text:'Pick what she would wear to a club where people could watch. She puts it on and walks the room like it is already that night, slowly, describing who would be looking. Then take one piece off her for every person she named.',sub:'Walk it. Name them. Lose a piece for each.'},
+    {dom:'her',phase:'build',title:'Dressed for Strangers',needs:[['strangers_watch'],['dress']],min:3,max:5,
+      text:'Pick what he would wear to a club where people could watch. He puts it on and walks the room like it is already that night, slowly, describing who would be looking. Then take one piece off him for every person he named.',sub:'Walk it. Name them. Lose a piece for each.'},
+
+    /* ===== TOTAL DOMINATION — long-session waves (phase 'wave', never used by normal scenes) ===== */
+    {dom:'him',phase:'wave',total:true,intense:true,title:'The Binding',needs:[['long_bound'],['tie_bed']],props:['four ties','safety shears'],min:8,max:12,
+      text:'Spread her on the bed and tie all four points properly — this is the tie that stays for hours, so check it twice: two fingers under every cuff, nothing across a joint, shears on the nightstand. Say the terms out loud while you work: she is not coming out of these until you say, she takes what happens as many times as it happens, Yellow pauses everything, Red ends it and the ties come off that second. Then sit and look at her until she squirms.',sub:'Say the terms back. Then wait.'},
+    {dom:'him',phase:'wave',total:true,intense:true,title:'Doll',needs:[['fuck_doll']],min:10,max:16,
+      text:'She is an object for this stretch. Move her limbs where you want them and she leaves them there. Use her — mouth, hands, whatever the sheet allows — with no expectation that she participates at all. No responding, no performing, no helping. Position, use, set down, repeat.',sub:'Do not help. Do not perform. Stay where you are put.'},
+    {dom:'him',phase:'wave',total:true,intense:true,title:'Again',needs:[['used_repeatedly'],['multi_o']],props:['the wand'],min:14,max:22,
+      text:'No number tonight. Take her over the edge and do not stop, and when she comes down start again, and when she says she cannot start again anyway. Hands, mouth, wand, in whatever order keeps her from settling. This wave ends when the clock says so, not when she is finished.',sub:'There is no count. Yellow slows it. Red ends it.'},
+    {dom:'him',phase:'wave',total:true,title:'Left Waiting',needs:[['long_bound']],min:8,max:14,
+      text:'Do nothing to her at all. Sit across the room with a drink, or leave the door open and go do something else in earshot for most of this wave. She stays exactly as she is, still tied, with nothing happening. Come back twice — once to check her hands are warm and give her water, once to touch her for ten seconds and then walk away again.',sub:'Nothing to do but wait and think about it.'},
+    {dom:'him',phase:'wave',total:true,intense:true,title:'Displayed',needs:[['long_bound'],['mirror']],min:8,max:12,
+      text:'Move the mirror so she can see herself exactly as she is — or angle her toward it, still tied. Then narrate: what she looks like, how long she has been there, what you are going to do next. If photos are on the menu, three frames from angles she picks, keep or delete decided together right now.',sub:'Eyes on the mirror. Do not look away.'},
+    {dom:'him',phase:'wave',total:true,intense:true,title:'The Long Hour',needs:[['long_bound'],['edging']],min:16,max:25,
+      text:'A whole wave of nothing but the edge. Bring her close, stop, wait, again — no finish permitted for the entire wave no matter how she asks. Vary what you use so she can never predict it. If she comes without permission, the next wave is another one of these.',sub:'No finishing. Ask anyway; the answer is no.'},
+    {dom:'her',phase:'wave',total:true,intense:true,title:'The Binding',needs:[['long_bound'],['tie_bed']],props:['four ties','safety shears'],min:8,max:12,
+      text:'Spread him on the bed and tie all four points properly — this tie is staying for hours, so check it twice: two fingers under every cuff, nothing across a joint, shears on the nightstand. Say the terms while you work: he is not coming out of these until you say, he takes what happens as many times as it happens, Yellow pauses everything, Red ends it and the ties come off that second. Then sit on his chest and look at him.',sub:'Say the terms back. Then wait.'},
+    {dom:'her',phase:'wave',total:true,intense:true,title:'Fuck Doll',needs:[['fuck_doll']],min:10,max:16,
+      text:'He is equipment for this stretch. Put his limbs where you want them and they stay. Use him — ride him, use his mouth, use his hand as if it were yours — with no expectation that he does anything but be used. He does not thrust, does not help, does not speak. Get yourself off on him as many times as you like and then leave him there.',sub:'Do not move. Do not help. Do not speak.'},
+    {dom:'her',phase:'wave',total:true,intense:true,title:'Again',needs:[['used_repeatedly'],['milking_machine']],props:['the wand','water','towels'],min:14,max:22,
+      text:'No number tonight. Take him through the finish and keep going straight past it into the oversensitive, then work him back up and do it again, and again, for the whole wave. Hand, mouth, riding — your choice each time. He drinks water when you allow it. This wave ends on the clock, not on him.',sub:'There is no count. Red is always there.'},
+    {dom:'her',phase:'wave',total:true,title:'Left Waiting',needs:[['long_bound']],min:8,max:14,
+      text:'Do nothing to him at all. Sit across the room, or go do something else in earshot for most of this wave. He stays exactly as he is, tied, with nothing happening. Come back twice — once to check his hands are warm and give him water, once to touch him for ten seconds and then walk away.',sub:'Nothing to do but wait and think about it.'},
+    {dom:'her',phase:'wave',total:true,intense:true,title:'Displayed',needs:[['long_bound'],['mirror']],min:8,max:12,
+      text:'Angle the mirror so he can see exactly what he looks like right now — or move him toward it, still tied. Narrate it: how long he has been there, what he looks like, what is coming. If photos are on the menu, three frames from angles he picks, keep or delete decided together on the spot.',sub:'Eyes on the mirror. Do not look away.'},
+    {dom:'her',phase:'wave',total:true,intense:true,title:'The Long Hour',needs:[['long_bound'],['edging']],min:16,max:25,
+      text:'A whole wave of nothing but the edge. Take him close, stop, wait, again — no finish for the entire wave however he asks. Change what you use so he can never predict it. If he goes over without permission, the next wave is another one of these.',sub:'No finishing. Ask anyway; the answer is no.'},
+    {dom:'him',phase:'wave',total:true,intense:true,title:'The Uniform, Bound',needs:[['long_bound'],['expose_wear']],min:6,max:10,
+      text:'Untie one limb at a time — one only, ever — and dress her in the thing that hides nothing, retying as you go so she is never actually free. Then leave her in it for the rest of the wave and use only what the outfit leaves open.',sub:'One limb free at a time. Never both.'},
+    {dom:'her',phase:'wave',total:true,intense:true,title:'The Uniform, Bound',needs:[['long_bound'],['expose_wear']],min:6,max:10,
+      text:'Untie one limb at a time — one only, ever — and dress him in whatever leaves him nowhere to hide, retying as you go so he is never actually free. Then leave him in it and use only what the outfit leaves open.',sub:'One limb free at a time. Never both.'},
+    {dom:'him',phase:'wave',total:true,intense:true,title:'Kept Messy, Kept Tied',needs:[['long_bound'],['cum_messy'],['stay_tied_after']],min:8,max:14,
+      text:'Finish on her however you like and then simply carry on with the wave without cleaning any of it up. She stays tied, stays marked, and the next thing you do happens on top of it. Tell her twice during the wave exactly what she looks like.',sub:'Wear it. Stay exactly where you are.'},
+    {dom:'her',phase:'wave',total:true,intense:true,title:'Kept Messy, Kept Tied',needs:[['long_bound'],['cum_messy'],['stay_tied_after']],min:8,max:14,
+      text:'Wring him out and then carry on with the wave without cleaning anything up. He stays tied, stays messy, and whatever comes next happens on top of it. Tell him twice during the wave exactly what he looks like.',sub:'Wear it. Stay exactly where you are.'}
 
   ];
   STEPS.forEach(function(s,i){ s.id='s'+i; });
@@ -2143,6 +2230,209 @@
     nextRung();
   }
 
+  /* ---------- TOTAL DOMINATION — long bound sessions ---------- */
+  function totalTerms(dom,sub,mins,wings){
+    var t=[
+      nameOf(sub)+' is tied at the start and stays tied for the whole '+(mins/60)+' hour'+(mins>60?'s':'')+'. No untying between acts — one limb at a time only if something has to be moved.',
+      nameOf(sub)+' takes whatever '+nameOf(dom)+' does, as many times as it happens. There is no count and no negotiating mid-session.',
+      nameOf(dom)+' does not leave the room while '+nameOf(sub)+' is bound, and never falls asleep. Shears stay within arm’s reach the whole time.',
+      'Every twenty minutes the app stops everything for a circulation check. It is not optional and it is not a mood-killer — it is the price of a long tie.',
+      'Yellow pauses everything and the clock stops. Red ends the session immediately and the ties come off before anything else is said.'
+    ];
+    if(wings.doll) t.push('Doll rules: '+nameOf(sub)+' does not speak, help, or perform — only the agreed tap or hum signal, and the safewords, which always work.');
+    if(wings.nocap) t.push('No cap: '+nameOf(dom)+' decides how many times, and the answer may be “again”.');
+    if(wings.denial) t.push('Denial: '+nameOf(sub)+' does not finish until '+nameOf(dom)+' allows it, which may be at the very end or not at all.');
+    if(wings.display) t.push('Display: '+nameOf(sub)+' may be positioned to see themselves, or photographed, decided keep-or-delete on the spot.');
+    return t;
+  }
+  function buildSession(dom,waves,want){
+    var sub=other(dom);
+    function ok(s){ return stepOk(s,sub,'devout'); }
+    var waveP=STEPS.filter(function(s){ return s.dom===dom&&s.phase==='wave'; }).map(ok).filter(Boolean);
+    var bind=waveP.filter(function(x){ return /Binding/.test(x.step.title); })[0];
+    var rest=waveP.filter(function(x){ return !/Binding/.test(x.step.title); });
+    var reg=STEPS.filter(function(s){ return s.dom===dom&&(s.phase==='build'||s.phase==='peak'); }).map(ok).filter(Boolean);
+    var peaks=STEPS.filter(function(s){ return s.dom===dom&&s.phase==='peak'; }).map(ok).filter(Boolean);
+    var pool=rest.concat(reg);
+    pool.forEach(function(x){ x.score=scoreStep(x,sub,'devout',want)+(x.step.total?1.6:0); });
+    pool.sort(function(a,b){ return b.score-a.score; });
+    var out=[], used={};
+    if(bind){ out.push(bind); used[bind.step.id]=1; }
+    for(var i=0;i<pool.length&&out.length<waves-1;i++){ var x=pool[i]; if(used[x.step.id]) continue; used[x.step.id]=1; out.push(x); }
+    peaks.sort(function(a,b){ return scoreStep(b,sub,'devout',want)-scoreStep(a,sub,'devout',want); });
+    var fin=peaks.filter(function(x){ return !used[x.step.id]; })[0];
+    if(fin){ used[fin.step.id]=1; out.push(fin); }
+    else { var f2=pool.filter(function(x){ return !used[x.step.id]; })[0]; if(f2) out.push(f2); }
+    return out.slice(0,Math.max(2,waves));
+  }
+  function showTotalSetup(){
+    clearResult();
+    var o=el('div','overlay gate'); var box=el('div','setup total-setup');
+    box.appendChild(el('h1',null,'Total Domination'));
+    box.appendChild(el('p','lede','One of you goes into restraints and does not come out for hours. The other runs the whole session — the app imposes a new wave every so often, holds the clock, and stops everything on a timer to check the ties. '+(sheetReady()?'Built only from your overlap.':'Fill the Limits Sheet first — the long-session items are off until you both tick them.')));
+    var dom=null, mins=120, want='heavy', begin;
+    var wings={doll:false,nocap:false,denial:false,display:false};
+    box.appendChild(el('h3','sec-title','Who goes into the ties?'));
+    var who=el('div','who'), wb={};
+    ['her','him'].forEach(function(w){ var b=el('button',null,nameOf(w)+' is bound'); b.addEventListener('click',function(){ dom=other(w); paint(); }); who.appendChild(b); wb[w]=b; });
+    var coin=el('button',null,'Coin decides'); coin.addEventListener('click',function(){ dom=Math.random()<.5?'her':'him'; sting(); paint(); toast(nameOf(other(dom))+' goes into the ties.'); }); who.appendChild(coin);
+    function paint(){ ['her','him'].forEach(function(w){ wb[w].className=(dom&&other(dom)===w)?'on':''; }); renderTerms(); }
+    box.appendChild(who);
+    function segment(opts,cur,onpick){ var seg=el('div','seg'); opts.forEach(function(m){ var b=el('button',cur===m[0]?'on':'',m[1]); b.addEventListener('click',function(){ onpick(m[0]); Array.prototype.forEach.call(seg.children,function(c){c.className='';}); b.className='on'; renderTerms(); }); seg.appendChild(b); }); return seg; }
+    box.appendChild(el('h3','sec-title','How long in the ties'));
+    box.appendChild(segment([[60,'1 hour'],[120,'2 hours'],[180,'3 hours']],mins,function(v){mins=v;}));
+    box.appendChild(el('h3','sec-title','How much the bound one wants'));
+    box.appendChild(segment([['light','Light'],['medium','Medium'],['heavy','Heavy']],want,function(v){want=v;}));
+    box.appendChild(el('h3','sec-title','Wings'));
+    [['doll','Doll rules','No speaking, helping or performing — only the signal and the safewords','fuck_doll'],
+     ['nocap','No cap','As many times as they decide, with no number agreed in advance','used_repeatedly'],
+     ['denial','Denial','No finishing until the very end, if at all','edging'],
+     ['display','Display','Positioned to watch, or photographed, decided on the spot','mirror']].forEach(function(w){
+      var allowed=pair(w[3],'her',false).ok||pair(w[3],'him',false).ok;
+      var row=el('label','tog'); var sp=el('span'); sp.appendChild(el('b',null,w[1])); sp.appendChild(el('small',null,allowed?w[2]:'Not on your sheet yet'));
+      var cb=el('input'); cb.type='checkbox'; cb.disabled=!allowed;
+      cb.addEventListener('change',function(){ wings[w[0]]=cb.checked; renderTerms(); });
+      row.appendChild(sp); row.appendChild(cb); box.appendChild(row);
+    });
+    var termsBox=el('div','safety'); box.appendChild(termsBox);
+    function renderTerms(){
+      termsBox.innerHTML='';
+      termsBox.appendChild(el('b',null,'The contract — read it out loud, both of you'));
+      if(!dom){ termsBox.appendChild(document.createTextNode('Pick who goes into the ties first.')); begin.disabled=true; return; }
+      if(!pair('long_bound',other(dom),false).ok){
+        termsBox.appendChild(document.createTextNode(nameOf(other(dom))+' hasn’t agreed to being kept in restraints for hours — and neither has the other side agreed to doing it. Open the Limits Sheet and tick “Kept in restraints for hours, not minutes”, both passes. This mode does not run without it.'));
+        begin.disabled=true; return;
+      }
+      var ul=el('ul','terms'); totalTerms(dom,other(dom),mins,wings).forEach(function(t){ ul.appendChild(el('li',null,t)); }); termsBox.appendChild(ul);
+      begin.disabled=false;
+    }
+    var btns=el('div','card-btns'); btns.style.marginTop='20px';
+    begin=el('button','primary-btn','We both agree — begin'); begin.disabled=true;
+    begin.addEventListener('click',function(){
+      var waves=Math.max(3,Math.round(mins/15));
+      var plan=buildSession(dom,waves,want);
+      if(plan.length<2){ toast('Not enough on your sheet for a long session yet — tick the long-session items.'); return; }
+      o.remove(); showTotalGather(dom,plan,mins,wings);
+    });
+    var back=el('button','quiet-btn','Not tonight'); back.addEventListener('click',function(){ o.remove(); });
+    btns.appendChild(begin); btns.appendChild(back); box.appendChild(btns);
+    renderTerms();
+    o.appendChild(box); document.body.appendChild(o);
+  }
+  function showTotalGather(dom,plan,mins,wings){
+    var o=el('div','overlay gate'); var box=el('div','setup');
+    box.appendChild(el('h1',null,nameOf(other(dom))+' goes under.'));
+    box.appendChild(el('p','lede',plan.length+' waves over '+(mins/60)+' hour'+(mins>60?'s':'')+'. '+nameOf(dom)+' sees each wave only when it starts. The ties do not come off until the end — or until Red.'));
+    var props={}, ties=false;
+    plan.forEach(function(x){ (x.step.props||[]).forEach(function(p){ props[p]=1; if(/tie|rope/.test(p)) ties=true; }); });
+    var list=Object.keys(props); list.push(ties?'safety shears (for the ties)':'safety shears');
+    list.push('water for both of you','a blanket for after','snacks within reach','phone charged, alarm off');
+    var g=el('div','gather'); g.appendChild(el('b',null,'Within arm’s reach before the first knot')); g.appendChild(document.createTextNode(list.join(' · '))); box.appendChild(g);
+    var s=el('div','safety'); s.appendChild(el('b',null,'Long ties are different'));
+    s.appendChild(document.createTextNode('Two fingers under every cuff, nothing across a joint, nothing round the neck. Shift position at every check. Numbness, tingling, cold or a colour change means loosen now — not at the end of the wave. Nobody leaves the room, nobody falls asleep, nobody drinks their way through this.'));
+    box.appendChild(s);
+    var b=el('button','primary-btn','Start the session — hand the phone to '+nameOf(dom));
+    b.addEventListener('click',function(){ o.remove(); runTotal(dom,plan,mins,wings); });
+    box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
+  }
+  var totalEl=null, totalInt=null;
+  function runTotal(dom,plan,mins,wings){
+    var sub=other(dom), i=0, paused=false, untimed=!!settings.noTimer;
+    var totalSec=mins*60, waveSec=Math.round(totalSec/plan.length);
+    var startedAt=Date.now(), endAt=startedAt+totalSec*1000, waveEnd=Date.now()+waveSec*1000;
+    var nextCheck=20*60, checks=0, wavesDone=0;
+    stats.scenes++; if(dom==='her') stats.scenesHer++; else stats.scenesHim++;
+    recent=plan.map(function(x){return x.step.id;}).concat(recent).slice(0,20); save();
+    totalEl=el('div','overlay scene total'); document.body.appendChild(totalEl);
+    function stop(){ if(totalInt){ clearInterval(totalInt); totalInt=null; } }
+    function release(reason){
+      stop(); totalEl.innerHTML=''; totalEl.classList.remove('total');
+      var a=el('div','after');
+      a.appendChild(el('h1',null,reason==='red'?'Red. Ties off now.':'Session over.'));
+      a.appendChild(el('p','lede',reason==='red'?'Untie first. Everything else — talking, checking, apologising — comes after the last knot is gone.':'Take the ties off slowly, one limb at a time, and support each one as it comes free.'));
+      var ul=el('ul');
+      ['Untie in the reverse order you tied. Support the limb; do not let it drop.','Move every joint slowly through its range. Pins and needles are normal; numbness that lingers is not.','Water, then something with sugar in it. '+nameOf(sub)+' will be colder than they think.','Wrap them up. Skin contact, no phones, at least fifteen minutes.',nameOf(dom)+' says what they loved. '+nameOf(sub)+' says one word for how they feel, then as many as they want.','Tomorrow: check in again, and expect them to be sore and a bit floaty. That is normal after hours under.'].forEach(function(t){ ul.appendChild(el('li',null,t)); });
+      a.appendChild(ul);
+      var dn=el('div','safety'); dn.appendChild(el('b',null,'Watch for, tonight and tomorrow'));
+      dn.appendChild(document.createTextNode('Numbness or weakness that does not fade within an hour, a hand or foot that stays cold or discoloured, or pain along a nerve line — those are worth a doctor, not a wait-and-see. Emotional drop can land a day later for either of you.'));
+      a.appendChild(dn);
+      var b=el('button','primary-btn','Back to the wheel'); b.addEventListener('click',function(){ totalEl.remove(); totalEl=null; updateHeatUI(); }); a.appendChild(b);
+      totalEl.appendChild(a); if(reason!=='red') bell();
+    }
+    function safetyCheck(){
+      paused=true; alarm(); vibrate([100,60,100]);
+      var ci=el('div','overlay'); ci.style.zIndex='75'; var box=el('div','checkin');
+      box.appendChild(el('h2',null,'Circulation check'));
+      box.appendChild(el('p',null,'Stop. Hands and feet: warm, pink, moving? Two fingers still under every tie? Shift the position — shoulders, hips, whatever has been loaded. Water for '+nameOf(sub)+'. Look them in the eye and ask for a colour: green, yellow or red.'));
+      var ok=el('button','primary-btn','Checked — everything green'), loose=el('button','quiet-btn','Loosen and continue'), rd=el('button','quiet-btn','Red — end it now');
+      var bb=el('div','card-btns'); bb.appendChild(ok); bb.appendChild(loose); bb.appendChild(rd); box.appendChild(bb);
+      ci.appendChild(box); document.body.appendChild(ci);
+      var pausedAt=Date.now();
+      function resume(){ var d=Date.now()-pausedAt; endAt+=d; waveEnd+=d; paused=false; checks++; nextCheck+=20*60; ci.remove(); }
+      ok.addEventListener('click',resume);
+      loose.addEventListener('click',function(){ resume(); toast('Loosen it now, then carry on.'); });
+      rd.addEventListener('click',function(){ ci.remove(); release('red'); });
+    }
+    function showWave(){
+      if(i>=plan.length){ release('done'); return; }
+      var x=plan[i], s=x.step;
+      totalEl.innerHTML='';
+      totalEl.appendChild(el('div','s-head','Total Domination · '+nameOf(sub)+' is bound'));
+      var bar=el('div','sess-bar'); var fill=el('div','sess-fill'); bar.appendChild(fill); totalEl.appendChild(bar);
+      var meta=el('div','sess-meta');
+      var elapsedEl=el('span','sess-clock','0:00'), waveEl=el('span','sess-wave','Wave '+(i+1)+' of '+plan.length);
+      meta.appendChild(waveEl); meta.appendChild(elapsedEl); totalEl.appendChild(meta);
+      var card=el('div','s-card build');
+      var chips=el('div','chips'); chips.style.justifyContent='flex-start';
+      if(s.total) chips.appendChild(el('span','tag dominion','Long wave'));
+      if(x.maybe) chips.appendChild(el('span','tag him','Maybe on the sheet — check in first'));
+      if(chips.childNodes.length) card.appendChild(chips);
+      card.appendChild(el('h2',null,s.title));
+      card.appendChild(el('p',null,fillN(s.text)));
+      if(s.sub){ var r=el('div','sub-rule'); r.appendChild(el('b',null,'Rule for '+nameOf(sub))); r.appendChild(document.createTextNode(fillN(s.sub))); card.appendChild(r); }
+      if(wings.doll&&i>0) card.appendChild(el('p','focus','Doll rules are in force: no speaking, no helping.'));
+      if(wings.nocap) card.appendChild(el('p','focus','No cap this session — “again” is always a valid answer.'));
+      var btns=el('div','s-btns');
+      var next=el('button','primary-btn',i===plan.length-1?'End the session':'Next wave'); next.disabled=!untimed;
+      next.addEventListener('click',function(){ wavesDone++; i++; waveEnd=Date.now()+waveSec*1000; showWave(); });
+      btns.appendChild(next);
+      var swapB=el('button','quiet-btn',nameOf(sub)+' vetoes this wave');
+      swapB.addEventListener('click',function(){
+        stats.vetoes++; save();
+        var sub2=other(dom), used={}; plan.forEach(function(y){ used[y.step.id]=1; });
+        var alt=STEPS.filter(function(st2){ return st2.dom===dom&&(st2.phase==='wave'||st2.phase==='build')&&!used[st2.id]; }).map(function(st2){ return stepOk(st2,sub2,'devout'); }).filter(Boolean);
+        if(alt.length){ plan[i]=pick(alt); toast('Wave swapped. No questions.'); } else { plan.splice(i,1); toast('Wave removed.'); }
+        showWave();
+      });
+      btns.appendChild(swapB);
+      card.appendChild(btns); totalEl.appendChild(card);
+      var sw=el('div','safewords');
+      var y=el('button','yellow'); y.appendChild(document.createTextNode('Yellow')); y.appendChild(el('small',null,'pause the clock & check in'));
+      var rd=el('button','red'); rd.appendChild(document.createTextNode('Red')); rd.appendChild(el('small',null,'end it and untie now'));
+      sw.appendChild(y); sw.appendChild(rd); totalEl.appendChild(sw);
+      rd.addEventListener('click',function(){ release('red'); });
+      y.addEventListener('click',function(){ if(!paused) safetyCheck(); });
+      if(untimed){
+        elapsedEl.textContent='no clock';
+        if(i>0&&i%3===0) setTimeout(safetyCheck,50);
+        return;
+      }
+      stop();
+      totalInt=setInterval(function(){
+        if(paused) return;
+        var now=Date.now(), leftAll=Math.max(0,Math.round((endAt-now)/1000)), elapsed=totalSec-leftAll;
+        elapsedEl.textContent=fmt(elapsed)+' / '+fmt(totalSec);
+        fill.style.width=Math.min(100,(elapsed/totalSec)*100)+'%';
+        if(elapsed>=nextCheck){ safetyCheck(); return; }
+        var wLeft=Math.max(0,Math.round((waveEnd-now)/1000));
+        waveEl.textContent='Wave '+(i+1)+' of '+plan.length+' · '+fmt(wLeft);
+        if(wLeft<=0){ next.disabled=false; waveEl.textContent='Wave '+(i+1)+' of '+plan.length+' · bell'; if(!next.dataset.rang){ next.dataset.rang='1'; bell(); vibrate([120,80,120]); } }
+        if(leftAll<=0){ stop(); release('done'); }
+      },250);
+    }
+    showWave();
+  }
+
   /* ---------- wire up ---------- */
   hub.addEventListener('pointerdown',chargeBegin);
   window.addEventListener('pointerup',chargeEnd);
@@ -2157,6 +2447,7 @@
   document.getElementById('limitsBtn').addEventListener('click',showLimits);
   document.getElementById('domBtn').addEventListener('click',showSceneSetup);
   document.getElementById('ladderBtn').addEventListener('click',showLadder);
+  document.getElementById('totalBtn').addEventListener('click',showTotalSetup);
   window.addEventListener('resize',sizeCanvas);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
   updateHeatUI(); updateTurn(); updatePlanBadge(); sizeCanvas();
