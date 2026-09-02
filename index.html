@@ -1412,7 +1412,7 @@
   function showLimits(){
     var o=el('div','overlay gate'); var box=el('div','sheet');
     box.appendChild(el('h1',null,'The Limits Sheet'));
-    box.appendChild(el('p','lede','Each of you answers alone — what may be done to you, and what you’d do to them. Then the phone shows only the overlap: the things you both said yes (or maybe) to. If it isn’t on the overlap, it doesn’t exist tonight, and nobody has to explain why.'));
+    box.appendChild(el('p','lede','Each of you answers alone, in two parts. Part one — what you want done to you — is shared with your partner, so they know what you want. Part two — what you’re willing to do to them — stays private. The reveal shows both wishlists and the overlap where they meet; if it isn’t on the overlap, it isn’t on tonight’s menu, and nobody has to explain why.'));
     var st=el('div','gather'); st.appendChild(el('b',null,'Status'));
     st.appendChild(document.createTextNode(nameOf('her')+': '+(sheet.her.done?'answered':'not yet')+' · '+nameOf('him')+': '+(sheet.him.done?'answered':'not yet')+'. '+(sheetReady()?'The wheel and the scenes follow your overlap.':'Until both of you answer, the house defaults apply.')));
     box.appendChild(st);
@@ -1422,7 +1422,7 @@
       b.addEventListener('click',function(){ o.remove(); handoff(w,function(){ sheetFor(w,function(){ if(sheetReady()) showOverlap(); else showLimits(); }); }); });
       btns.appendChild(b);
     });
-    if(sheetReady()){ var v=el('button','primary-btn gold','View the overlap'); v.addEventListener('click',function(){ o.remove(); showOverlap(); }); btns.appendChild(v); }
+    if(sheetReady()){ var v=el('button','primary-btn gold','View the reveal'); v.addEventListener('click',function(){ o.remove(); showOverlap(); }); btns.appendChild(v); }
     var reset=el('button','quiet-btn','Reset the whole sheet'), armed=false;
     reset.addEventListener('click',function(){ if(!armed){ armed=true; reset.textContent='Tap again to wipe both sets of answers'; return; } sheet=defSheet(); save(); draw(); o.remove(); toast('Sheet wiped. House defaults apply.'); });
     btns.appendChild(reset);
@@ -1432,7 +1432,7 @@
   function handoff(w,then){
     var o=el('div','overlay gate'); var box=el('div','handoff');
     box.appendChild(el('h1',null,'Hand the phone to '+nameOf(w)+'.'));
-    box.appendChild(el('p',null,nameOf(other(w))+', eyes elsewhere. Nothing '+nameOf(w)+' answers will ever be shown to you — only what you both agree on.'));
+    box.appendChild(el('p',null,nameOf(other(w))+', eyes elsewhere. You’ll see what '+nameOf(w)+' wants done to them once you’ve both finished — never what they’re willing to do to you, unless it matches what you want.'));
     var b=el('button','primary-btn','I’m '+nameOf(w)+' — begin'); b.addEventListener('click',function(){ o.remove(); then(); });
     box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
   }
@@ -1464,8 +1464,8 @@
         });
       });
     }
-    pass('recv','Part one · done to me','What '+nameOf(oth)+' may do to my body.');
-    pass('give','Part two · I’d do this to '+nameOf(oth),'What I want to do to '+(oth==='her'?'her':'him')+' when I hold the power.');
+    pass('recv','Part one · done to me · shared','What I want '+nameOf(oth)+' to do to my body. '+nameOf(oth)+' will see this list.');
+    pass('give','Part two · I’d do this to '+nameOf(oth)+' · private','What I’m willing to do to '+(oth==='her'?'her':'him')+'. Only shown where it matches something they want.');
     var foot=el('div','sheet-foot');
     var lock=el('button','primary-btn','Lock my answers'); lock.addEventListener('click',function(){ me.done=true; save(); draw(); updateHeatUI(); o.remove(); then(); });
     foot.appendChild(lock); foot.appendChild(el('small',null,'Locking hides this screen. You can edit any time from the Limits button.'));
@@ -1473,18 +1473,30 @@
   }
   function showOverlap(){
     var o=el('div','overlay gate'); o.style.justifyContent='flex-start'; var box=el('div','sheet overlap');
-    box.appendChild(el('h1',null,'The overlap'));
-    box.appendChild(el('p','lede','Only mutual yeses and maybes appear. Anything either of you said no to is simply not here — and never will be.'));
+    box.appendChild(el('h1',null,'The reveal'));
+    box.appendChild(el('p','lede','Wants are shared on purpose: each of you sees what the other would like done to them. What you’re each willing to do stays private. The overlap at the bottom is where a want meets a willing partner — that’s tonight’s menu.'));
+    function item(k,tag,cls){ if(k.id==='breath'&&tag){ tag='never scripted'; cls='maybe'; } var r=el('div','o-item'), l=el('div'); l.appendChild(document.createTextNode(k.label)); if(k.note) l.appendChild(el('small','risk',k.note)); r.appendChild(l); if(tag) r.appendChild(el('span','st '+cls,tag)); return r; }
+    /* wishlists */
+    ['her','him'].forEach(function(w){
+      var wants=[], curious=[];
+      KINKS.forEach(function(k){ if(k.recv.indexOf(w)<0) return; var a=ans(w,'recv',k.id); if(a==='yes') wants.push(k); else if(a==='maybe') curious.push(k); });
+      box.appendChild(el('h2',null,'What '+nameOf(w)+' wants done to '+(w==='her'?'her':'him')));
+      if(!wants.length&&!curious.length) box.appendChild(el('p','o-empty','Nothing marked yet.'));
+      if(wants.length){ box.appendChild(el('div','o-sub','Yes, please')); wants.forEach(function(k){ var p=pair(k.id,w,false); box.appendChild(item(k,p.ok?'on tonight’s menu':'','yes')); }); }
+      if(curious.length){ box.appendChild(el('div','o-sub','Curious — would try it')); curious.forEach(function(k){ var p=pair(k.id,w,false); box.appendChild(item(k,p.ok?'on tonight’s menu':'','maybe')); }); }
+    });
+    /* the overlap */
     [['him','her'],['her','him']].forEach(function(d){
       var giver=d[0], recv=d[1], yes=[], maybe=[];
-      box.appendChild(el('h2',null,nameOf(giver)+' → '+nameOf(recv)));
+      box.appendChild(el('h2',null,'Tonight’s menu · '+nameOf(giver)+' → '+nameOf(recv)));
       KINKS.forEach(function(k){ if(k.recv.indexOf(recv)<0) return; var p=pair(k.id,recv,false); if(!p.ok) return; (p.maybe?maybe:yes).push(k); });
       if(!yes.length&&!maybe.length) box.appendChild(el('p','o-empty','Nothing yet. That’s an answer too.'));
-      function list(arr,cls,label){ if(!arr.length) return; box.appendChild(el('div','o-sub',label)); arr.forEach(function(k){ var r=el('div','o-item'), l=el('div'); l.appendChild(document.createTextNode(k.label)); if(k.note) l.appendChild(el('small','risk',k.note)); r.appendChild(l); r.appendChild(el('span','st '+cls,cls==='yes'?'yes · yes':'talk first')); box.appendChild(r); }); }
-      list(yes,'yes','Both said yes'); list(maybe,'maybe','One of you said maybe — check in before it happens');
-      if(pair('breath',recv,false).ok){ var s=el('div','safety'); s.appendChild(el('b',null,'Breath play — read this together')); s.appendChild(document.createTextNode(KINK_BY.breath.note)); box.appendChild(s); }
+      if(yes.length){ box.appendChild(el('div','o-sub','Both said yes')); yes.forEach(function(k){ box.appendChild(item(k,'yes · yes','yes')); }); }
+      if(maybe.length){ box.appendChild(el('div','o-sub','One of you said maybe — check in before it happens')); maybe.forEach(function(k){ box.appendChild(item(k,'talk first','maybe')); }); }
+      if(pair('breath',recv,false).ok||ans(recv,'recv','breath')==='yes'||ans(recv,'recv','breath')==='maybe'){ var sc=el('div','safety'); sc.appendChild(el('b',null,'Breath play — read this together')); sc.appendChild(document.createTextNode(KINK_BY.breath.note)); box.appendChild(sc); }
     });
-    var b=el('button','primary-btn','Take it to the wheel'); b.style.marginTop='24px'; b.addEventListener('click',function(){ o.remove(); draw(); updateHeatUI(); });
+    box.appendChild(el('p','lede','A want that isn’t on the menu means the other person didn’t say yes to doing it — tonight. Nobody has to explain. Be kind about it.'));
+    var b=el('button','primary-btn','Take it to the wheel'); b.style.marginTop='12px'; b.addEventListener('click',function(){ o.remove(); draw(); updateHeatUI(); });
     box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
   }
 
