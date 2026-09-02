@@ -2231,22 +2231,28 @@
   }
 
   /* ---------- TOTAL DOMINATION — long bound sessions ---------- */
+  function pn(w,cap){ var custom=w==='her'?(settings.her!=='Her'?settings.her:null):(settings.him!=='Him'?settings.him:null); if(custom) return custom; var p=w==='her'?'she':'he'; return cap?p.charAt(0).toUpperCase()+p.slice(1):p; }
+  function ob(w){ var custom=w==='her'?(settings.her!=='Her'?settings.her:null):(settings.him!=='Him'?settings.him:null); if(custom) return custom; return w==='her'?'her':'him'; }
+  function fmtLong(sec){ sec=Math.max(0,sec|0); var hh=Math.floor(sec/3600), mm=Math.floor((sec%3600)/60), ss=sec%60; return (hh?hh+':'+(mm<10?'0':''):'')+mm+':'+(ss<10?'0':'')+ss; }
   function totalTerms(dom,sub,mins,wings){
+    var hrs=(mins/60)+' hour'+(mins>60?'s':'');
     var t=[
-      nameOf(sub)+' is tied at the start and stays tied for the whole '+(mins/60)+' hour'+(mins>60?'s':'')+'. No untying between acts — one limb at a time only if something has to be moved.',
-      nameOf(sub)+' takes whatever '+nameOf(dom)+' does, as many times as it happens. There is no count and no negotiating mid-session.',
-      nameOf(dom)+' does not leave the room while '+nameOf(sub)+' is bound, and never falls asleep. Shears stay within arm’s reach the whole time.',
+      pn(sub,true)+' is tied at the start and stays tied for the whole '+hrs+'. No untying between acts — one limb at a time only if something has to be moved.',
+      pn(sub,true)+' takes whatever '+pn(dom)+' does, as many times as it happens. There is no count and no negotiating mid-session.',
+      pn(dom,true)+' does not leave the room while '+pn(sub)+' is bound, and never falls asleep. Shears stay within arm’s reach the whole time.',
       'Every twenty minutes the app stops everything for a circulation check. It is not optional and it is not a mood-killer — it is the price of a long tie.',
       'Yellow pauses everything and the clock stops. Red ends the session immediately and the ties come off before anything else is said.'
     ];
-    if(wings.doll) t.push('Doll rules: '+nameOf(sub)+' does not speak, help, or perform — only the agreed tap or hum signal, and the safewords, which always work.');
-    if(wings.nocap) t.push('No cap: '+nameOf(dom)+' decides how many times, and the answer may be “again”.');
-    if(wings.denial) t.push('Denial: '+nameOf(sub)+' does not finish until '+nameOf(dom)+' allows it, which may be at the very end or not at all.');
-    if(wings.display) t.push('Display: '+nameOf(sub)+' may be positioned to see themselves, or photographed, decided keep-or-delete on the spot.');
+    if(wings.doll) t.push('Doll rules: '+pn(sub)+' does not speak, help or perform — only the agreed tap or hum signal, and the safewords, which always work.');
+    if(wings.nocap) t.push('No cap: '+pn(dom)+' decides how many times, and the answer may be “again”.');
+    if(wings.denial) t.push('Denial: '+pn(sub)+' does not finish until '+pn(dom)+' allows it, which may be at the very end or not at all.');
+    if(wings.display) t.push('Display: '+pn(sub)+' may be positioned to watch, or photographed — keep or delete decided on the spot.');
     return t;
   }
-  function buildSession(dom,waves,want){
-    var sub=other(dom);
+  function buildSession(dom,waves,want,wings){
+    var sub=other(dom); wings=wings||{};
+    var WING_BONUS={fuck_doll:wings.doll?2.2:0,used_repeatedly:wings.nocap?2.2:0,multi_o:wings.nocap?1.2:0,milking_machine:wings.nocap?1.2:0,edging:wings.denial?1.4:0,denial_night:wings.denial?1.4:0,mirror:wings.display?1.6:0,photos:wings.display?1.6:0,curtains:wings.display?1.2:0};
+    function wingScore(x){ var b=0; (x.step.needs||[]).forEach(function(n){ b+=WING_BONUS[n[0]]||0; }); if(wings.denial&&(x.step.needs||[]).some(function(n){ return /^(cum_|finish_control|facial)/.test(n[0]); })) b-=1.5; return b; }
     function ok(s){ return stepOk(s,sub,'devout'); }
     var waveP=STEPS.filter(function(s){ return s.dom===dom&&s.phase==='wave'; }).map(ok).filter(Boolean);
     var bind=waveP.filter(function(x){ return /Binding/.test(x.step.title); })[0];
@@ -2254,7 +2260,7 @@
     var reg=STEPS.filter(function(s){ return s.dom===dom&&(s.phase==='build'||s.phase==='peak'); }).map(ok).filter(Boolean);
     var peaks=STEPS.filter(function(s){ return s.dom===dom&&s.phase==='peak'; }).map(ok).filter(Boolean);
     var pool=rest.concat(reg);
-    pool.forEach(function(x){ x.score=scoreStep(x,sub,'devout',want)+(x.step.total?1.6:0); });
+    pool.forEach(function(x){ x.score=scoreStep(x,sub,'devout',want)+(x.step.total?1.6:0)+wingScore(x); });
     pool.sort(function(a,b){ return b.score-a.score; });
     var out=[], used={};
     if(bind){ out.push(bind); used[bind.step.id]=1; }
@@ -2274,8 +2280,8 @@
     var wings={doll:false,nocap:false,denial:false,display:false};
     box.appendChild(el('h3','sec-title','Who goes into the ties?'));
     var who=el('div','who'), wb={};
-    ['her','him'].forEach(function(w){ var b=el('button',null,nameOf(w)+' is bound'); b.addEventListener('click',function(){ dom=other(w); paint(); }); who.appendChild(b); wb[w]=b; });
-    var coin=el('button',null,'Coin decides'); coin.addEventListener('click',function(){ dom=Math.random()<.5?'her':'him'; sting(); paint(); toast(nameOf(other(dom))+' goes into the ties.'); }); who.appendChild(coin);
+    ['her','him'].forEach(function(w){ var b=el('button',null,pn(w,true)+' is bound'); b.addEventListener('click',function(){ dom=other(w); paint(); }); who.appendChild(b); wb[w]=b; });
+    var coin=el('button',null,'Coin decides'); coin.addEventListener('click',function(){ dom=Math.random()<.5?'her':'him'; sting(); paint(); toast(pn(other(dom),true)+' goes into the ties.'); }); who.appendChild(coin);
     function paint(){ ['her','him'].forEach(function(w){ wb[w].className=(dom&&other(dom)===w)?'on':''; }); renderTerms(); }
     box.appendChild(who);
     function segment(opts,cur,onpick){ var seg=el('div','seg'); opts.forEach(function(m){ var b=el('button',cur===m[0]?'on':'',m[1]); b.addEventListener('click',function(){ onpick(m[0]); Array.prototype.forEach.call(seg.children,function(c){c.className='';}); b.className='on'; renderTerms(); }); seg.appendChild(b); }); return seg; }
@@ -2300,7 +2306,10 @@
       termsBox.appendChild(el('b',null,'The contract — read it out loud, both of you'));
       if(!dom){ termsBox.appendChild(document.createTextNode('Pick who goes into the ties first.')); begin.disabled=true; return; }
       if(!pair('long_bound',other(dom),false).ok){
-        termsBox.appendChild(document.createTextNode(nameOf(other(dom))+' hasn’t agreed to being kept in restraints for hours — and neither has the other side agreed to doing it. Open the Limits Sheet and tick “Kept in restraints for hours, not minutes”, both passes. This mode does not run without it.'));
+        termsBox.appendChild(document.createTextNode('This mode needs “Kept in restraints for hours, not minutes” ticked on the Limits Sheet — by '+pn(other(dom))+' under done to me, and by '+pn(dom)+' under I’d do this. It is off by default. Tick it, come back, and the contract appears here.'));
+        var openS=el('button','primary-btn','Open the Limits Sheet'); openS.style.marginTop='12px';
+        openS.addEventListener('click',function(){ o.remove(); showLimits(); });
+        termsBox.appendChild(openS);
         begin.disabled=true; return;
       }
       var ul=el('ul','terms'); totalTerms(dom,other(dom),mins,wings).forEach(function(t){ ul.appendChild(el('li',null,t)); }); termsBox.appendChild(ul);
@@ -2310,7 +2319,7 @@
     begin=el('button','primary-btn','We both agree — begin'); begin.disabled=true;
     begin.addEventListener('click',function(){
       var waves=Math.max(3,Math.round(mins/15));
-      var plan=buildSession(dom,waves,want);
+      var plan=buildSession(dom,waves,want,wings);
       if(plan.length<2){ toast('Not enough on your sheet for a long session yet — tick the long-session items.'); return; }
       o.remove(); showTotalGather(dom,plan,mins,wings);
     });
@@ -2321,8 +2330,8 @@
   }
   function showTotalGather(dom,plan,mins,wings){
     var o=el('div','overlay gate'); var box=el('div','setup');
-    box.appendChild(el('h1',null,nameOf(other(dom))+' goes under.'));
-    box.appendChild(el('p','lede',plan.length+' waves over '+(mins/60)+' hour'+(mins>60?'s':'')+'. '+nameOf(dom)+' sees each wave only when it starts. The ties do not come off until the end — or until Red.'));
+    box.appendChild(el('h1',null,pn(other(dom),true)+' goes under.'));
+    box.appendChild(el('p','lede',plan.length+' waves over '+(mins/60)+' hour'+(mins>60?'s':'')+'. '+pn(dom,true)+' sees each wave only when it starts. The ties do not come off until the end — or until Red.'));
     var props={}, ties=false;
     plan.forEach(function(x){ (x.step.props||[]).forEach(function(p){ props[p]=1; if(/tie|rope/.test(p)) ties=true; }); });
     var list=Object.keys(props); list.push(ties?'safety shears (for the ties)':'safety shears');
@@ -2331,7 +2340,7 @@
     var s=el('div','safety'); s.appendChild(el('b',null,'Long ties are different'));
     s.appendChild(document.createTextNode('Two fingers under every cuff, nothing across a joint, nothing round the neck. Shift position at every check. Numbness, tingling, cold or a colour change means loosen now — not at the end of the wave. Nobody leaves the room, nobody falls asleep, nobody drinks their way through this.'));
     box.appendChild(s);
-    var b=el('button','primary-btn','Start the session — hand the phone to '+nameOf(dom));
+    var b=el('button','primary-btn','Start the session — hand the phone to '+ob(dom));
     b.addEventListener('click',function(){ o.remove(); runTotal(dom,plan,mins,wings); });
     box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
   }
@@ -2351,7 +2360,7 @@
       a.appendChild(el('h1',null,reason==='red'?'Red. Ties off now.':'Session over.'));
       a.appendChild(el('p','lede',reason==='red'?'Untie first. Everything else — talking, checking, apologising — comes after the last knot is gone.':'Take the ties off slowly, one limb at a time, and support each one as it comes free.'));
       var ul=el('ul');
-      ['Untie in the reverse order you tied. Support the limb; do not let it drop.','Move every joint slowly through its range. Pins and needles are normal; numbness that lingers is not.','Water, then something with sugar in it. '+nameOf(sub)+' will be colder than they think.','Wrap them up. Skin contact, no phones, at least fifteen minutes.',nameOf(dom)+' says what they loved. '+nameOf(sub)+' says one word for how they feel, then as many as they want.','Tomorrow: check in again, and expect them to be sore and a bit floaty. That is normal after hours under.'].forEach(function(t){ ul.appendChild(el('li',null,t)); });
+      ['Untie in the reverse order you tied. Support the limb; do not let it drop.','Move every joint slowly through its range. Pins and needles are normal; numbness that lingers is not.','Water, then something with sugar in it. '+pn(sub,true)+' will be colder than they think.','Wrap them up. Skin contact, no phones, at least fifteen minutes.',pn(dom,true)+' says what they loved. '+pn(sub,true)+' says one word for how they feel, then as many as they want.','Tomorrow: check in again, and expect them to be sore and a bit floaty. That is normal after hours under.'].forEach(function(t){ ul.appendChild(el('li',null,t)); });
       a.appendChild(ul);
       var dn=el('div','safety'); dn.appendChild(el('b',null,'Watch for, tonight and tomorrow'));
       dn.appendChild(document.createTextNode('Numbness or weakness that does not fade within an hour, a hand or foot that stays cold or discoloured, or pain along a nerve line — those are worth a doctor, not a wait-and-see. Emotional drop can land a day later for either of you.'));
@@ -2363,7 +2372,7 @@
       paused=true; alarm(); vibrate([100,60,100]);
       var ci=el('div','overlay'); ci.style.zIndex='75'; var box=el('div','checkin');
       box.appendChild(el('h2',null,'Circulation check'));
-      box.appendChild(el('p',null,'Stop. Hands and feet: warm, pink, moving? Two fingers still under every tie? Shift the position — shoulders, hips, whatever has been loaded. Water for '+nameOf(sub)+'. Look them in the eye and ask for a colour: green, yellow or red.'));
+      box.appendChild(el('p',null,'Stop. Hands and feet: warm, pink, moving? Two fingers still under every tie? Shift the position — shoulders, hips, whatever has been loaded. Water for '+ob(sub)+'. Look them in the eye and ask for a colour: green, yellow or red.'));
       var ok=el('button','primary-btn','Checked — everything green'), loose=el('button','quiet-btn','Loosen and continue'), rd=el('button','quiet-btn','Red — end it now');
       var bb=el('div','card-btns'); bb.appendChild(ok); bb.appendChild(loose); bb.appendChild(rd); box.appendChild(bb);
       ci.appendChild(box); document.body.appendChild(ci);
@@ -2373,14 +2382,27 @@
       loose.addEventListener('click',function(){ resume(); toast('Loosen it now, then carry on.'); });
       rd.addEventListener('click',function(){ ci.remove(); release('red'); });
     }
+    function yellowPause(){
+      paused=true; alarm();
+      var ci=el('div','overlay'); ci.style.zIndex='75'; var box=el('div','checkin');
+      box.appendChild(el('h2',null,'Yellow.'));
+      box.appendChild(el('p',null,pn(dom,true)+': stop what you’re doing. Don’t untie unless asked. Ask, out loud: “Are you okay? What do you need?” Then listen. The clock is paused; the next circulation check is unchanged.'));
+      var b1=el('button','primary-btn','Continue'), b2=el('button','quiet-btn','Skip this wave'), b3=el('button','quiet-btn','Red — end it');
+      var bb=el('div','card-btns'); bb.appendChild(b1); bb.appendChild(b2); bb.appendChild(b3); box.appendChild(bb); ci.appendChild(box); document.body.appendChild(ci);
+      var pausedAt=Date.now();
+      function resume(){ var d=Date.now()-pausedAt; endAt+=d; waveEnd+=d; paused=false; ci.remove(); }
+      b1.addEventListener('click',resume);
+      b2.addEventListener('click',function(){ resume(); i++; waveEnd=Date.now()+waveSec*1000; showWave(); });
+      b3.addEventListener('click',function(){ ci.remove(); release('red'); });
+    }
     function showWave(){
       if(i>=plan.length){ release('done'); return; }
       var x=plan[i], s=x.step;
       totalEl.innerHTML='';
-      totalEl.appendChild(el('div','s-head','Total Domination · '+nameOf(sub)+' is bound'));
+      totalEl.appendChild(el('div','s-head','Total Domination · '+pn(sub,true)+' is bound'));
       var bar=el('div','sess-bar'); var fill=el('div','sess-fill'); bar.appendChild(fill); totalEl.appendChild(bar);
       var meta=el('div','sess-meta');
-      var elapsedEl=el('span','sess-clock','0:00'), waveEl=el('span','sess-wave','Wave '+(i+1)+' of '+plan.length);
+      var elapsedEl=el('span','sess-clock',untimed?'no clock':fmtLong(Math.max(0,totalSec-Math.round((endAt-Date.now())/1000)))+' / '+fmtLong(totalSec)), waveEl=el('span','sess-wave','Wave '+(i+1)+' of '+plan.length+(untimed?'':' · '+fmtLong(waveSec)));
       meta.appendChild(waveEl); meta.appendChild(elapsedEl); totalEl.appendChild(meta);
       var card=el('div','s-card build');
       var chips=el('div','chips'); chips.style.justifyContent='flex-start';
@@ -2389,14 +2411,14 @@
       if(chips.childNodes.length) card.appendChild(chips);
       card.appendChild(el('h2',null,s.title));
       card.appendChild(el('p',null,fillN(s.text)));
-      if(s.sub){ var r=el('div','sub-rule'); r.appendChild(el('b',null,'Rule for '+nameOf(sub))); r.appendChild(document.createTextNode(fillN(s.sub))); card.appendChild(r); }
+      if(s.sub){ var r=el('div','sub-rule'); r.appendChild(el('b',null,'Rule for '+ob(sub))); r.appendChild(document.createTextNode(fillN(s.sub))); card.appendChild(r); }
       if(wings.doll&&i>0) card.appendChild(el('p','focus','Doll rules are in force: no speaking, no helping.'));
       if(wings.nocap) card.appendChild(el('p','focus','No cap this session — “again” is always a valid answer.'));
       var btns=el('div','s-btns');
       var next=el('button','primary-btn',i===plan.length-1?'End the session':'Next wave'); next.disabled=!untimed;
       next.addEventListener('click',function(){ wavesDone++; i++; waveEnd=Date.now()+waveSec*1000; showWave(); });
       btns.appendChild(next);
-      var swapB=el('button','quiet-btn',nameOf(sub)+' vetoes this wave');
+      var swapB=el('button','quiet-btn',pn(sub,true)+' vetoes this wave');
       swapB.addEventListener('click',function(){
         stats.vetoes++; save();
         var sub2=other(dom), used={}; plan.forEach(function(y){ used[y.step.id]=1; });
@@ -2406,14 +2428,14 @@
       });
       btns.appendChild(swapB);
       card.appendChild(btns); totalEl.appendChild(card);
+      totalEl.appendChild(el('p','t-hint',untimed?'No clock tonight — move on when you’re both ready.':'The clock decides when the next wave comes. Circulation checks arrive on their own.'));
       var sw=el('div','safewords');
       var y=el('button','yellow'); y.appendChild(document.createTextNode('Yellow')); y.appendChild(el('small',null,'pause the clock & check in'));
       var rd=el('button','red'); rd.appendChild(document.createTextNode('Red')); rd.appendChild(el('small',null,'end it and untie now'));
       sw.appendChild(y); sw.appendChild(rd); totalEl.appendChild(sw);
       rd.addEventListener('click',function(){ release('red'); });
-      y.addEventListener('click',function(){ if(!paused) safetyCheck(); });
+      y.addEventListener('click',function(){ if(!paused) yellowPause(); });
       if(untimed){
-        elapsedEl.textContent='no clock';
         if(i>0&&i%3===0) setTimeout(safetyCheck,50);
         return;
       }
@@ -2421,11 +2443,11 @@
       totalInt=setInterval(function(){
         if(paused) return;
         var now=Date.now(), leftAll=Math.max(0,Math.round((endAt-now)/1000)), elapsed=totalSec-leftAll;
-        elapsedEl.textContent=fmt(elapsed)+' / '+fmt(totalSec);
+        elapsedEl.textContent=fmtLong(elapsed)+' / '+fmtLong(totalSec);
         fill.style.width=Math.min(100,(elapsed/totalSec)*100)+'%';
         if(elapsed>=nextCheck){ safetyCheck(); return; }
         var wLeft=Math.max(0,Math.round((waveEnd-now)/1000));
-        waveEl.textContent='Wave '+(i+1)+' of '+plan.length+' · '+fmt(wLeft);
+        waveEl.textContent='Wave '+(i+1)+' of '+plan.length+' · '+fmtLong(wLeft);
         if(wLeft<=0){ next.disabled=false; waveEl.textContent='Wave '+(i+1)+' of '+plan.length+' · bell'; if(!next.dataset.rang){ next.dataset.rang='1'; bell(); vibrate([120,80,120]); } }
         if(leftAll<=0){ stop(); release('done'); }
       },250);
