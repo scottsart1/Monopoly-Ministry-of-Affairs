@@ -21,6 +21,12 @@ A private spin-the-wheel game for two, in a single `index.html` — no build, no
 - **Focus rolls** — massage, ice and blindfold rounds pick a body zone; toy rounds pick from your (editable) drawer.
 - **Night Report** — rounds survived, time under the bell, peak heat, twists, jackpots, vetoes and coin flips, plus an aftercare card.
 
+**The Limits Sheet & Dominion**
+
+- **Limits Sheet** — each partner answers privately (the app shows a hand-the-phone screen in between): *done to me* and *I'd do this to them*, across restraint, impact, sensation, control & denial, words & power, toys & penetration, mouths, exhibition, throat & breath, and rituals — every item with a plain description and a safety note where one matters. The house rules are the prefilled defaults. Afterwards the phone shows only the **overlap** (mutual yes / maybe); anything either of you said no to is never displayed. The wheel itself obeys the sheet: rounds that need something one of you declined simply disappear.
+- **Dominion scenes** — pick who holds the power (or flip a coin), a length (3 / 5 / 7 steps) and an intensity (Soft / Firm / Ruthless). The Dom gets a sealed, step-by-step script built only from the overlap — opening tie, build-up, peak, aftercare — one step at a time, each timed by the bell. The sub can veto any step, tap **Yellow** to pause for a check-in, or **Red** to end the scene instantly and go straight to the aftercare checklist.
+- Breath play appears on the sheet with a safety card but is never scripted; the only throat item the scripts use is "hand resting on the throat, zero pressure".
+
 **Customizing (Menu)**
 
 Pace (Quickie / Classic / Marathon), starting heat, chaos dials (specials, twists, plot twists, coin flips, hidden clock, sound), your names, the toy drawer, and the activity list itself — untick, add your own with a heat level and time range, or reset to the house menu. Everything is saved in the browser's local storage on that device only; nothing leaves the phone.

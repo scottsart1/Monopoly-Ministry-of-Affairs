@@ -290,6 +290,86 @@
   }
   .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
+  /* ---------- limits sheet / dominion ---------- */
+  .power-row{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;justify-content:center}
+  .power-row .quiet-btn{padding:11px 18px;font-size:12px}
+  .power-row .quiet-btn.crown{border-color:#5A1424;color:#F08CA5}
+  .tag.dominion{color:#FF6B85;background:rgba(255,59,92,.1)}
+  .sheet{max-width:520px;width:100%;text-align:left}
+  .sheet h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:40px;margin:0 0 6px;text-align:center}
+  .sheet .lede{color:var(--dim);font-size:14px;line-height:1.55;margin:0 0 22px;text-align:center}
+  .sheet-pass{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:600;margin:28px 0 4px}
+  .sheet-pass-sub{font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:22px;margin:0 0 10px}
+  .cat{margin:18px 0 4px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+  .cat h3{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--rose-soft);margin:0;font-weight:600}
+  .cat .quick{display:flex;gap:4px}
+  .cat .quick button{background:none;border:1px solid var(--edge);color:var(--dim);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:999px}
+  .cat .quick button:hover{color:var(--cream);border-color:var(--dim)}
+  .kink{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--edge)}
+  .kink .kl{flex:1;min-width:0}
+  .kink .kl b{display:block;font-weight:500;font-size:14px;line-height:1.3}
+  .kink .kl small{margin-top:2px;line-height:1.4}
+  .kink .kl .risk{color:#F0A070;margin-top:4px}
+  .kink .kl .lock{color:var(--dim);font-style:italic}
+  .tri{display:flex;gap:4px;flex:none;padding-top:2px}
+  .tri button{width:44px;height:32px;border-radius:8px;border:1px solid var(--edge);background:none;color:var(--dim);font-size:10px;letter-spacing:.06em;text-transform:uppercase;font-weight:600}
+  .tri button.on.yes{background:#2E5C4A;border-color:#4FA894;color:#CFF2E4}
+  .tri button.on.maybe{background:#5A4620;border-color:var(--gold);color:#F7E3B9}
+  .tri button.on.no{background:#5A1424;border-color:var(--rose);color:#FBD3DC}
+  .sheet-foot{position:sticky;bottom:-24px;background:linear-gradient(to top,var(--ground) 70%,transparent);padding:18px 0 8px;display:flex;flex-direction:column;gap:8px;align-items:center;margin-top:10px}
+  .handoff h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:44px;margin:0 0 8px}
+  .handoff p{color:var(--dim);font-size:15px;margin:0 0 30px;max-width:340px;line-height:1.5}
+  .overlap h2{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:26px;margin:26px 0 4px;color:var(--gold)}
+  .overlap .o-sub{font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim);margin:14px 0 4px;font-weight:600}
+  .o-item{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--edge);font-size:14px;align-items:flex-start}
+  .o-item .st{flex:none;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;padding:3px 8px;border-radius:999px;border:1px solid currentColor;margin-top:2px}
+  .o-item .st.yes{color:#7FD3B5} .o-item .st.maybe{color:var(--gold)}
+  .o-item small.risk{color:#F0A070}
+  .o-empty{color:var(--dim);font-style:italic;font-family:'Cormorant',Georgia,serif;font-size:17px;padding:8px 0}
+  .safety{background:#2A1016;border:1px solid #7A2343;border-radius:14px;padding:14px 16px;margin:12px 0;font-size:13px;line-height:1.5;color:var(--cream);text-align:left}
+  .safety b{display:block;color:#FF6B85;font-size:10px;letter-spacing:.26em;text-transform:uppercase;margin-bottom:4px}
+  .setup{max-width:460px;width:100%}
+  .setup h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:44px;margin:0 0 4px;color:#FF6B85}
+  .setup .lede{color:var(--dim);font-size:14px;line-height:1.5;margin:0 0 18px}
+  .setup .sec-title{margin-top:20px}
+  .who{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:6px}
+  .who button{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--edge);color:var(--cream);border-radius:14px;padding:16px 12px;font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:22px;font-weight:600}
+  .who button.on{border-color:var(--rose);box-shadow:0 0 30px rgba(228,88,122,.25)}
+  .gather{background:var(--surface);border:1px solid var(--edge);border-radius:14px;padding:12px 16px;margin:16px 0;font-size:13px;text-align:left;line-height:1.5}
+  .gather b{display:block;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+  .scene{justify-content:flex-start;padding-top:28px}
+  .scene .s-head{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:#FF6B85;font-weight:700;margin-bottom:4px}
+  .scene .s-step{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:16px}
+  .s-card{background:var(--surface);border:1px solid var(--edge);border-radius:18px;padding:22px;max-width:480px;width:100%;text-align:left;animation:rise .45s}
+  .s-card.peak{border-color:var(--rose)}
+  .s-card.close{border-color:var(--gold)}
+  .s-card h2{font-family:'Cormorant',Georgia,serif;font-weight:600;font-size:30px;margin:0 0 10px;line-height:1.1}
+  .s-card p{margin:0 0 12px;font-size:15px;line-height:1.55}
+  .s-card .sub-rule{background:var(--surface-2);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--cream)}
+  .s-card .sub-rule b{color:var(--gold);font-weight:600;letter-spacing:.14em;text-transform:uppercase;font-size:10px;display:block;margin-bottom:2px}
+  .s-timer{display:flex;align-items:center;gap:14px;margin:16px 0 4px}
+  .s-timer .mini{position:relative;width:64px;height:64px;flex:none}
+  .s-timer .mini svg{width:100%;height:100%;transform:rotate(-90deg)}
+  .s-timer .mini .big{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:14px;font-variant-numeric:tabular-nums}
+  .s-timer .mini.hot .big{color:var(--rose)}
+  .s-timer .mini.hot .ring-fill{stroke:var(--rose)}
+  .s-timer .s-note{font-family:'Cormorant',Georgia,serif;font-style:italic;font-size:17px;color:var(--dim);line-height:1.3}
+  .s-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+  .s-btns .primary-btn:disabled{opacity:.45;transform:none;box-shadow:none;cursor:default}
+  .safewords{display:flex;gap:10px;margin-top:22px;width:100%;max-width:480px}
+  .safewords button{flex:1;border:none;border-radius:14px;padding:16px 10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:12px}
+  .safewords .yellow{background:#D9A360;color:#2A1A05}
+  .safewords .red{background:#C8283E;color:#fff}
+  .safewords small{display:block;font-weight:400;letter-spacing:0;text-transform:none;font-size:11px;margin-top:2px;color:inherit;opacity:.85}
+  .checkin{background:var(--surface);border:1px solid var(--gold);border-radius:18px;padding:22px;max-width:440px;width:100%}
+  .checkin h2{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:34px;margin:0 0 8px;color:var(--gold)}
+  .checkin p{font-size:14px;color:var(--cream);line-height:1.5;margin:0 0 16px}
+  .after{max-width:440px}
+  .after h1{font-family:'Cormorant',Georgia,serif;font-style:italic;font-weight:600;font-size:46px;margin:0 0 8px;color:var(--gold)}
+  .after ul{list-style:none;padding:0;margin:0 0 22px;text-align:left;display:flex;flex-direction:column;gap:10px}
+  .after li{display:flex;gap:12px;font-size:15px;line-height:1.45}
+  .after li::before{content:'—';color:var(--rose);flex:none}
+
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
     .halo.flicker{animation:none}
@@ -325,6 +405,10 @@
     </div>
     <p class="hint">Tap to spin · Hold to charge a wild one</p>
     <p class="rounds">Rounds survived · <b id="roundCount">0</b></p>
+    <div class="power-row">
+      <button class="quiet-btn" id="limitsBtn">🔒 Limits sheet</button>
+      <button class="quiet-btn crown" id="domBtn">👑 Dominion scene</button>
+    </div>
     <div id="resultSlot" style="width:100%"></div>
     <p class="veto-note">Either of you can veto any spin — no reason needed, no questions asked.</p>
     <button class="quiet-btn" id="finishBtn" style="margin-top:26px">Someone finished 🏁</button>
@@ -341,10 +425,10 @@
   var reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var root=document.documentElement;
 
-  var TAGS={her:'For her',him:'For him',both:'Together',wild:'Wildcard',mystery:'Mystery',jackpot:'Jackpot',confession:'Confession',dare:'Dare'};
+  var TAGS={her:'For her',him:'For him',both:'Together',wild:'Wildcard',mystery:'Mystery',jackpot:'Jackpot',confession:'Confession',dare:'Dare',dominion:'Dominion'};
   var TAG_FILL={her:['#8E2A4E','#7A2343'],him:['#8A5A22','#75491B'],both:['#4B2252','#3E1B44'],wild:['#1F4A47','#193C3A'],
-    mystery:['#0E0A0E','#0E0A0E'],jackpot:['#D4A64A','#D4A64A'],confession:['#6A2E7A','#6A2E7A'],dare:['#A63A2E','#A63A2E']};
-  var TAG_GLOW={her:'#E4587A',him:'#D9A360',both:'#B07BD6',wild:'#4FA894',mystery:'#A98492',jackpot:'#F2C57C',confession:'#CFA0E0',dare:'#E8643C'};
+    mystery:['#0E0A0E','#0E0A0E'],jackpot:['#D4A64A','#D4A64A'],confession:['#6A2E7A','#6A2E7A'],dare:['#A63A2E','#A63A2E'],dominion:['#3D0B18','#2E0812']};
+  var TAG_GLOW={her:'#E4587A',him:'#D9A360',both:'#B07BD6',wild:'#4FA894',mystery:'#A98492',jackpot:'#F2C57C',confession:'#CFA0E0',dare:'#E8643C',dominion:'#FF3B5C'};
   var HEAT_NAMES=['Simmer','Sizzle','Blaze','Inferno'];
   var HEAT_COLORS=['#D9A360','#E4587A','#E8643C','#FF3B5C'];
   var HEAT_RGB=[[217,163,96],[228,88,122],[232,100,60],[255,59,92]];
@@ -362,31 +446,44 @@
     {id:'d7', heat:1, name:'Striptease — whoever spun performs', wheel:'Striptease', tag:'wild', min:2, max:4, note:'Commit to the bit.'},
     {id:'d8', heat:1, name:'Hands only — no mouths, no toys', wheel:'Hands only', tag:'both', min:3, max:5, note:'Back to basics.'},
     {id:'d9', heat:2, name:'Mouths only — hands behind your back', wheel:'Mouths only', tag:'both', min:3, max:5, note:'Harder than it sounds.'},
-    {id:'d10', heat:2, name:'He goes down on her', wheel:'Down on her', tag:'her', min:4, max:8, note:'No clock-watching. Oh wait.'},
-    {id:'d11', heat:2, name:'She goes down on him', wheel:'Down on him', tag:'him', min:4, max:7, note:'Eye contact optional. Recommended.'},
-    {id:'d12', heat:2, toy:true, name:'Toy from the drawer — she picks, he drives', wheel:'Toys · her pick', tag:'her', min:4, max:8, note:'Her drawer, her rules.'},
-    {id:'d13', heat:2, toy:true, name:'Toy from the drawer — he picks, she puts on the show', wheel:'The show', tag:'wild', min:3, max:5, note:'He watches. He does not touch. Yet.'},
+    {id:'d10', heat:2, needs:[['oral_her','her']], name:'He goes down on her', wheel:'Down on her', tag:'her', min:4, max:8, note:'No clock-watching. Oh wait.'},
+    {id:'d11', heat:2, needs:[['oral_him','him']], name:'She goes down on him', wheel:'Down on him', tag:'him', min:4, max:7, note:'Eye contact optional. Recommended.'},
+    {id:'d12', heat:2, needs:[['toys_her','her']], toy:true, name:'Toy from the drawer — she picks, he drives', wheel:'Toys · her pick', tag:'her', min:4, max:8, note:'Her drawer, her rules.'},
+    {id:'d13', heat:2, needs:[['toys_her','her'],['watch','her']], toy:true, name:'Toy from the drawer — he picks, she puts on the show', wheel:'The show', tag:'wild', min:3, max:5, note:'He watches. He does not touch. Yet.'},
     {id:'d14', heat:2, name:'Lap dance — his hands stay under his thighs', wheel:'Lap dance', tag:'wild', min:2, max:4, note:'One song. No touching. Suffer beautifully.'},
-    {id:'d15', heat:2, zones:true, name:'Ice cube round — temperature play', wheel:'Ice', tag:'wild', min:2, max:4, note:'Freezer first. Squealing later.'},
+    {id:'d15', heat:2, needs:[['ice','any']], zones:true, name:'Ice cube round — temperature play', wheel:'Ice', tag:'wild', min:2, max:4, note:'Freezer first. Squealing later.'},
     {id:'d16', heat:2, name:'Roleplay: strangers who just met — stay in character', wheel:'Strangers', tag:'wild', min:3, max:5, note:'Names optional. Accents encouraged.'},
     {id:'d17', heat:2, name:'Shower round — take it to the water', wheel:'Shower', tag:'both', min:4, max:7, note:'Steam is a feature.'},
     {id:'d18', heat:2, name:'Spooning — slow, with whispered filth', wheel:'Spoons', tag:'both', min:4, max:6, note:'Lazy is a technique.'},
-    {id:'d19', heat:2, zones:true, name:'Blindfold round — receiver blindfolded, giver improvises', wheel:'Blindfold', tag:'wild', min:4, max:6, note:'Inside the rules. Outside expectations.'},
-    {id:'d20', heat:3, name:'Sixty-nine until the bell', wheel:'69', tag:'both', min:4, max:6, note:'Teamwork makes the dream work.'},
+    {id:'d19', heat:2, needs:[['blindfold','any']], zones:true, name:'Blindfold round — receiver blindfolded, giver improvises', wheel:'Blindfold', tag:'wild', min:4, max:6, note:'Inside the rules. Outside expectations.'},
+    {id:'d20', heat:3, needs:[['oral_her','her'],['oral_him','him']], name:'Sixty-nine until the bell', wheel:'69', tag:'both', min:4, max:6, note:'Teamwork makes the dream work.'},
     {id:'d21', heat:3, name:'Doggy — she gives the instructions, he follows every word', wheel:'Doggy', tag:'both', min:3, max:6, note:'The bell will feel too soon.'},
     {id:'d22', heat:3, name:'Cowgirl — she sets the pace, his hands go where she puts them', wheel:'Cowgirl', tag:'both', min:3, max:6, note:'She is the weather. He is the landscape.'},
     {id:'d23', heat:3, name:'Missionary in slow motion — no speeding up allowed', wheel:'Slow motion', tag:'both', min:4, max:6, note:'Half speed. All of it.'},
     {id:'d24', heat:3, name:'Standing — against the nearest wall', wheel:'The wall', tag:'both', min:3, max:5, note:'Pick a sturdy one.'},
-    {id:'d25', heat:3, name:'Mirror round — somewhere you can both watch', wheel:'Mirror', tag:'both', min:3, max:6, note:'Front-row seats.'},
-    {id:'d26', heat:3, name:'Queen’s throne — she sits, he serves', wheel:'The throne', tag:'her', min:3, max:6, note:'Long live the queen.'},
-    {id:'d27', heat:3, toy:true, name:'Toy and tongue at once — for her', wheel:'Toy + tongue', tag:'her', min:4, max:7, note:'Overkill is the point.'},
-    {id:'d28', heat:3, name:'He kisses her everywhere. Everywhere.', wheel:'Everywhere', tag:'her', min:3, max:5, note:'The one door that only opens his way — see house rules.'},
-    {id:'d29', heat:3, name:'Her on top, his wrists tied or cuffed', wheel:'Tied up · him', tag:'him', min:4, max:6, note:'He can look. That’s all he can do.'},
-    {id:'d30', heat:4, name:'Edge her — close, closer… then the bell decides', wheel:'Edge · her', tag:'her', min:4, max:7, note:'The bell is a menace.'},
-    {id:'d31', heat:4, name:'Edge him — and stop means stop', wheel:'Edge · him', tag:'him', min:4, max:7, note:'Revenge, served warm.'},
-    {id:'d32', heat:4, name:'Edging duel — both at once. First to beg gets… nothing. Yet.', wheel:'Duel', tag:'both', min:4, max:6, note:'Mutually assured frustration.'},
+    {id:'d25', heat:3, needs:[['mirror','any']], name:'Mirror round — somewhere you can both watch', wheel:'Mirror', tag:'both', min:3, max:6, note:'Front-row seats.'},
+    {id:'d26', heat:3, needs:[['oral_her','her']], name:'Queen’s throne — she sits, he serves', wheel:'The throne', tag:'her', min:3, max:6, note:'Long live the queen.'},
+    {id:'d27', heat:3, needs:[['toys_her','her'],['oral_her','her']], toy:true, name:'Toy and tongue at once — for her', wheel:'Toy + tongue', tag:'her', min:4, max:7, note:'Overkill is the point.'},
+    {id:'d28', heat:3, needs:[['rim_her','her']], name:'He kisses her everywhere. Everywhere.', wheel:'Everywhere', tag:'her', min:3, max:5, note:'The one door that only opens his way — see house rules.'},
+    {id:'d29', heat:3, needs:[['wrists','him']], name:'Her on top, his wrists tied or cuffed', wheel:'Tied up · him', tag:'him', min:4, max:6, note:'He can look. That’s all he can do.'},
+    {id:'d30', heat:4, needs:[['edging','her']], name:'Edge her — close, closer… then the bell decides', wheel:'Edge · her', tag:'her', min:4, max:7, note:'The bell is a menace.'},
+    {id:'d31', heat:4, needs:[['edging','him']], name:'Edge him — and stop means stop', wheel:'Edge · him', tag:'him', min:4, max:7, note:'Revenge, served warm.'},
+    {id:'d32', heat:4, needs:[['edging','any']], name:'Edging duel — both at once. First to beg gets… nothing. Yet.', wheel:'Duel', tag:'both', min:4, max:6, note:'Mutually assured frustration.'},
     {id:'d33', heat:4, name:'Spinner’s choice — anything inside the rules', wheel:'Your call', tag:'wild', min:3, max:6, note:'Choose wisely. The bell is still coming.'},
-    {id:'d34', heat:4, name:'Race to the finish — the wheel is done with you', wheel:'The finish', tag:'both', min:5, max:10, note:'The only winner is whoever finishes.'}
+    {id:'d34', heat:4, name:'Race to the finish — the wheel is done with you', wheel:'The finish', tag:'both', min:5, max:10, note:'The only winner is whoever finishes.'},
+    {id:'d35', heat:3, needs:[['spank_hand','her']], name:'Warm-up spanking — twenty, open hand, she counts', wheel:'Spank · her', tag:'her', min:3, max:4, note:'Ass and thighs only. A miscount starts the set over.'},
+    {id:'d36', heat:3, needs:[['spank_hand','him']], name:'Spank him — twenty, he counts and thanks her', wheel:'Spank · him', tag:'him', min:3, max:4, note:'Open hand, building slowly. Never the spine.'},
+    {id:'d37', heat:3, needs:[['throat_hand','her']], name:'His hand on her throat — zero pressure — while he tells her what’s next', wheel:'Hand · throat', tag:'her', min:2, max:3, note:'Weight of a hand, no squeeze, fingers on the jaw. Two taps means lift.'},
+    {id:'d38', heat:3, needs:[['clone','her']], name:'The clone — his copy inside her while he watches her face', wheel:'The clone', tag:'her', min:4, max:6, note:'Slow. All the way. Tell her what she feels like.'},
+    {id:'d39', heat:4, needs:[['two_at_once','her'],['clone','her']], name:'Two of him — the clone in her mouth, him inside her', wheel:'Two of him', tag:'her', min:5, max:8, note:'If she stops sucking, he stops moving.'},
+    {id:'d40', heat:3, needs:[['clamps','any']], name:'Clothespins — on whoever the spinner chooses, after a warm-up with a mouth', wheel:'Clothespins', tag:'wild', min:3, max:5, note:'Fifteen minutes max. Taking them off is the part that counts.'},
+    {id:'d41', heat:3, needs:[['wax','any']], name:'Wax — low-temperature candle, stomach and thighs, the spinner pours', wheel:'Wax', tag:'wild', min:3, max:5, note:'Test on your own arm first. Thirty centimetres. Never the face.'},
+    {id:'d42', heat:3, needs:[['photos','any']], name:'Photo shoot — three frames, the subject picks the angles, then keep or delete together', wheel:'Photos', tag:'wild', min:3, max:4, note:'Decide right then. Never shared.'},
+    {id:'d43', heat:3, needs:[['curtains','any']], name:'Curtains open, lights on — carry on', wheel:'Curtains', tag:'both', min:3, max:5, note:'Nobody’s watching. Probably.'},
+    {id:'d44', heat:4, needs:[['deepthroat','her']], name:'Deep — she takes him as far as she can; he holds completely still', wheel:'Deep', tag:'him', min:3, max:5, note:'Two taps means lift. Always.'},
+    {id:'d45', heat:4, needs:[['facial','her']], name:'He finishes where she says — on her', wheel:'On her', tag:'her', min:4, max:7, note:'She chooses the canvas. He asks first.'},
+    {id:'d46', heat:2, needs:[['dress','any']], name:'Dress-up — the spinner picks the outfit; it comes off one piece every two minutes', wheel:'Dress-up', tag:'wild', min:4, max:6, note:'Lingerie counts. So does a tie and nothing else.'},
+    {id:'d47', heat:4, needs:[['forced','her'],['toys_her','her']], name:'Forced — the wand stays on her through one orgasm and into the next', wheel:'Forced · her', tag:'her', min:3, max:5, note:'She says Yellow when she means it. He stops that second.'}
   ];}
 
   var TWISTS=[
@@ -466,12 +563,255 @@
   var ZONES=['neck','ears','collarbones','inner thighs','lower back','hips','chest','lips','wrists and palms','behind the knees','stomach','feet and ankles','shoulders','the small of the back','everywhere except where they expect'];
   var DEF_TOYS=['the wand','the bullet','her favorite dildo','the big one','the cuffs','the blindfold','the feather','a silk tie','massage oil','an ice cube','spinner’s choice'];
 
+  /* ---------- the limits sheet: catalogue ---------- */
+  var KCATS=['Restraint','Impact','Sensation','Control & denial','Words & power','Toys & penetration','Mouths','Exhibition','Throat & breath','Rituals'];
+  var BOTH_P=['her','him'];
+  var KINKS=[
+    {id:'wrists',cat:'Restraint',label:'Wrists tied or cuffed',desc:'Silk ties, cuffs, a belt.',note:'Two fingers under every knot. Safety shears within reach.',recv:BOTH_P,def:'yes'},
+    {id:'tie_bed',cat:'Restraint',label:'Tied to the bed, spread out',desc:'Four corners, or wrists up and ankles apart.',note:'Check hands and feet stay warm. Untie at the first tingle.',recv:BOTH_P,def:'maybe'},
+    {id:'ankles',cat:'Restraint',label:'Ankles tied, legs held open',desc:'Ties to the bed frame, a spreader, or knees to chair legs.',recv:BOTH_P,def:'maybe'},
+    {id:'fold',cat:'Restraint',label:'Folded ties',desc:'Wrist to ankle on all fours, or ankle to thigh so the legs stay open.',note:'Nothing tight over a joint. Check every ten minutes.',recv:BOTH_P,def:'maybe'},
+    {id:'behind_back',cat:'Restraint',label:'Hands tied behind the back, kneeling',recv:BOTH_P,def:'maybe'},
+    {id:'blindfold',cat:'Restraint',label:'Blindfolded',recv:BOTH_P,def:'yes'},
+    {id:'gag',cat:'Restraint',label:'Gagged',desc:'A scarf, a ball gag.',note:'A gagged sub can’t say Red — agree a hand signal first: three taps, or drop something they hold.',recv:BOTH_P,def:'no'},
+    {id:'predicament',cat:'Restraint',label:'Predicament',desc:'Hold a position or pay for it.',recv:BOTH_P,def:'maybe'},
+    {id:'spank_hand',cat:'Impact',label:'Spanking, open hand',note:'Ass and upper thighs only — never spine, tailbone, kidneys or neck. Warm up first.',recv:BOTH_P,def:'maybe'},
+    {id:'paddle',cat:'Impact',label:'Paddle, hairbrush, belt',note:'Same target, more warm-up, fewer strokes than you think.',recv:BOTH_P,def:'no'},
+    {id:'crop',cat:'Impact',label:'Crop or flogger',note:'Thighs and ass. Never let it wrap round to the hip bone.',recv:BOTH_P,def:'no'},
+    {id:'slap_body',cat:'Impact',label:'Slapping breasts, thighs, inner thighs',recv:BOTH_P,def:'no'},
+    {id:'face_slap',cat:'Impact',label:'Face slapping',note:'Open palm, light, cheek only — never near the ear or jaw line. Eye contact after each one.',recv:BOTH_P,def:'no'},
+    {id:'ice',cat:'Sensation',label:'Ice and temperature',recv:BOTH_P,def:'yes'},
+    {id:'feather',cat:'Sensation',label:'Touch-torture',desc:'Feathers, fingertips, breath — nothing that satisfies.',recv:BOTH_P,def:'yes'},
+    {id:'wax',cat:'Sensation',label:'Wax play',note:'Only a low-temperature massage candle. Test on your own forearm from the same height. Thirty centimetres away, never the face or genitals.',recv:BOTH_P,def:'no'},
+    {id:'clamps',cat:'Sensation',label:'Nipple clamps or clothespins',note:'Fifteen minutes maximum. Taking them off is the intense part.',recv:BOTH_P,def:'no'},
+    {id:'bite',cat:'Sensation',label:'Biting, scratching, marks',recv:BOTH_P,def:'maybe'},
+    {id:'tickle',cat:'Sensation',label:'Tickling',recv:BOTH_P,def:'maybe'},
+    {id:'pinch',cat:'Sensation',label:'Pinching and squeezing',recv:BOTH_P,def:'maybe'},
+    {id:'overstim',cat:'Sensation',label:'Overstimulation',desc:'Keep going after the orgasm.',note:'Red always works, even mid-shudder.',recv:BOTH_P,def:'maybe'},
+    {id:'edging',cat:'Control & denial',label:'Edging and denial',recv:BOTH_P,def:'yes'},
+    {id:'permission',cat:'Control & denial',label:'Asking permission to come',recv:BOTH_P,def:'maybe'},
+    {id:'ruined',cat:'Control & denial',label:'Ruined orgasm',desc:'Hands off at the exact moment.',recv:BOTH_P,def:'maybe'},
+    {id:'forced',cat:'Control & denial',label:'Forced orgasms',desc:'The wand stays until Yellow.',recv:BOTH_P,def:'maybe'},
+    {id:'denial_night',cat:'Control & denial',label:'Denied all night',desc:'Sent to bed without.',recv:BOTH_P,def:'maybe'},
+    {id:'counting',cat:'Control & denial',label:'Counting, holding still, staying silent',recv:BOTH_P,def:'maybe'},
+    {id:'orders',cat:'Control & denial',label:'Taking orders and tasks',recv:BOTH_P,def:'yes'},
+    {id:'finish_control',cat:'Control & denial',label:'The Dom decides where and how it ends',recv:BOTH_P,def:'maybe'},
+    {id:'praise',cat:'Words & power',label:'Praise',desc:'Good girl. Good boy.',recv:BOTH_P,def:'yes'},
+    {id:'degrade',cat:'Words & power',label:'Degradation',desc:'Dirty names — agree the words first.',recv:BOTH_P,def:'no'},
+    {id:'humiliation',cat:'Words & power',label:'Light humiliation',desc:'Begging, crawling, being inspected.',recv:BOTH_P,def:'no'},
+    {id:'roleplay',cat:'Words & power',label:'Power roleplay',desc:'Boss, teacher, captor, stranger.',recv:BOTH_P,def:'maybe'},
+    {id:'titles',cat:'Words & power',label:'Titles',desc:'Sir, Ma’am, Daddy, Mistress.',recv:BOTH_P,def:'maybe'},
+    {id:'silence',cat:'Words & power',label:'Speaking only when spoken to',recv:BOTH_P,def:'maybe'},
+    {id:'toys_her',cat:'Toys & penetration',label:'Toys inside her',recv:['her'],def:'yes'},
+    {id:'clone',cat:'Toys & penetration',label:'The clone inside her',desc:'His cast. Two of him.',recv:['her'],def:'yes'},
+    {id:'two_at_once',cat:'Toys & penetration',label:'Two at once — the clone and him',desc:'Mouth and pussy. The house-rules version of double penetration.',recv:['her'],def:'yes'},
+    {id:'anal_toys_her',cat:'Toys & penetration',label:'Anal — fingers or a toy, for her',note:'House rule IV says lips only. If you both change this: lube, patience, smallest first, and she controls every second of the pace.',recv:['her'],def:'no'},
+    {id:'anal_him_her',cat:'Toys & penetration',label:'Anal — him inside her',note:'Only after toys, only with a lot of lube, only if she sets every rule.',recv:['her'],def:'no'},
+    {id:'squirt',cat:'Toys & penetration',label:'Trying to make her squirt',desc:'Towels. Patience. Zero pressure to perform.',recv:['her'],def:'maybe'},
+    {id:'toys_him',cat:'Toys & penetration',label:'A vibrator or wand on him',desc:'Outside only.',recv:['him'],def:'maybe'},
+    {id:'anal_him',cat:'Toys & penetration',label:'Anything anal for him',recv:['him'],def:'no',locked:true},
+    {id:'oral_her',cat:'Mouths',label:'Going down on her',recv:['her'],def:'yes'},
+    {id:'rim_her',cat:'Mouths',label:'Rimming her',desc:'His mouth, her back door. House rule IV.',recv:['her'],def:'yes'},
+    {id:'deepthroat',cat:'Mouths',label:'Deep throat, face-fucking',note:'Two taps means lift. He holds still; she sets the depth.',recv:['her'],def:'maybe'},
+    {id:'facial',cat:'Mouths',label:'Finishing on her',desc:'Face, chest, mouth — she picks the canvas.',recv:['her'],def:'maybe'},
+    {id:'oral_him',cat:'Mouths',label:'Going down on him',recv:['him'],def:'yes'},
+    {id:'rim_him',cat:'Mouths',label:'Rimming him',recv:['him'],def:'no',locked:true},
+    {id:'watch',cat:'Exhibition',label:'Being watched while touching yourself',recv:BOTH_P,def:'yes'},
+    {id:'mirror',cat:'Exhibition',label:'In front of a mirror',recv:BOTH_P,def:'yes'},
+    {id:'dress',cat:'Exhibition',label:'Dressing up on request',desc:'Lingerie, a costume, a tie and nothing else.',recv:BOTH_P,def:'yes'},
+    {id:'photos',cat:'Exhibition',label:'Photos or video',note:'Decide together, right then: keep or delete. Never shared. Never.',recv:BOTH_P,def:'no'},
+    {id:'curtains',cat:'Exhibition',label:'Curtains open, lights on',note:'Your window, your night. Never aimed at anyone who didn’t ask to see.',recv:BOTH_P,def:'no'},
+    {id:'public_tease',cat:'Exhibition',label:'Public teasing',desc:'A hand under the table. A remote toy at dinner.',note:'Plausible deniability is the whole game. Nobody else gets involved.',recv:BOTH_P,def:'maybe'},
+    {id:'texts',cat:'Exhibition',label:'Filthy texts and photos during the day',recv:BOTH_P,def:'maybe'},
+    {id:'throat_hand',cat:'Throat & breath',label:'A hand resting on the throat — zero pressure',note:'The look without the risk: palm barely touching, fingers on the jaw. Any squeeze at all and it’s the item below.',recv:BOTH_P,def:'maybe'},
+    {id:'breath',cat:'Throat & breath',label:'Breath play, choking',note:'This game will never script this, even if you both say yes. The danger has nothing to do with lung capacity or holding your breath: pressure on the neck cuts blood to the brain and can trip the vagus nerve, and people black out or go into cardiac arrest with zero warning — a partner cannot tell “fine” from “about to pass out”. If you ever do it anyway: never the front of the throat, never both sides at once, seconds not tens of seconds, never while restrained, never during orgasm, and stop at the first dizziness, ringing or spots.',recv:BOTH_P,def:'no'},
+    {id:'writing',cat:'Rituals',label:'Body writing',desc:'Lipstick, marker.',recv:BOTH_P,def:'yes'},
+    {id:'worship',cat:'Rituals',label:'Worship',desc:'Feet, body, kneeling at their feet.',recv:BOTH_P,def:'maybe'},
+    {id:'kneel',cat:'Rituals',label:'Positions on command',desc:'Kneel. Present. Hold.',recv:BOTH_P,def:'maybe'},
+    {id:'collar',cat:'Rituals',label:'Collar and leash',note:'Loose enough for a hand underneath. Never pulled from the front.',recv:BOTH_P,def:'no'},
+    {id:'massage',cat:'Rituals',label:'Massage, and everything after',recv:BOTH_P,def:'yes'}
+  ];
+
+  /* ---------- dominion: the script library ----------
+     dom = who holds the power. Text speaks to the Dom. needs = [kink, receiver?] (receiver defaults to the sub). */
+  var STEPS=[
+    /* ===== HE dominates ===== */
+    {dom:'him',phase:'open',title:'The Spread',needs:[['tie_bed']],props:['four ties'],min:2,max:3,
+      text:'Wrists to the top corners, ankles to the bottom. A pillow under her hips so she’s tilted up and can’t hide anything. Two fingers under every knot; shears on the nightstand. Then stand at the foot of the bed and look at her for a full minute without touching.',sub:'She may not close her legs. She may not look away.'},
+    {dom:'him',phase:'open',title:'Hands and Knees, No Escape',needs:[['fold']],props:['two ties'],min:2,max:3,
+      text:'On all fours. Tie each wrist to the ankle on the same side, so she can’t rise and can’t straighten. Face in the pillow, hips up. Tell her she stays exactly like that until you’re finished with her.',sub:'Hips stay up.'},
+    {dom:'him',phase:'open',title:'The Present',needs:[['wrists']],props:['one tie'],min:2,max:3,
+      text:'Wrists together above her head, tied to the headboard. Legs free — but here’s the rule: they stay open. Every time they close, you stop whatever you were doing and the clock restarts.',sub:'Legs open. Always.'},
+    {dom:'him',phase:'open',title:'The Frog',needs:[['fold']],props:['two ties'],min:2,max:3,
+      text:'On her back. Tie each ankle to its own thigh so her legs stay folded and open — she can’t straighten, can’t close. Wrists free: she could push you away. She won’t.',sub:'Hands above her head unless told otherwise.'},
+    {dom:'him',phase:'open',title:'The Chair',needs:[['ankles'],['wrists']],props:['a sturdy chair','three ties'],min:2,max:3,
+      text:'Sit her on a chair. Wrists behind the backrest, each knee tied out to a chair leg. Kneel between them. Tell her exactly what you’re about to do, slowly. Then don’t do it yet.',sub:'She speaks only to answer questions.'},
+    {dom:'him',phase:'open',title:'Inspection',needs:[['humiliation']],min:2,max:3,
+      text:'Strip her yourself, one item at a time, and inspect every inch like you’re deciding what to do with it. Turn her around. Say what you see. Make her thank you for looking.',sub:'“Yes” and “thank you”. Nothing else.'},
+    {dom:'him',phase:'open',title:'Rules of the Night',needs:[],min:2,max:3,
+      text:'No ties yet. Stand her in front of you and set the rules out loud, one at a time, making her repeat each one back: she speaks when spoken to; she comes when permitted; she says Yellow to pause and Red to stop, and you obey those instantly. Then take one piece of her clothing as a deposit.',sub:'Repeat every rule back, word for word.'},
+
+    {dom:'him',phase:'build',title:'Ice Trail',needs:[['ice']],props:['ice'],min:3,max:4,
+      text:'An ice cube in your mouth. Trace it from her throat to her navel to her inner thighs, and follow it with your tongue. She’s not allowed a single sound. Every sound adds thirty seconds of denial to the peak — count them out loud.',sub:'Silence.'},
+    {dom:'him',phase:'build',title:'Three Edges',needs:[['edging']],min:4,max:6,
+      text:'Fingers, mouth or the wand — bring her right to the edge. Stop. Wait ten seconds. Again. Three times. She counts each edge out loud. If she comes without permission, she gets nothing until the peak.',sub:'Count them. Don’t come.'},
+    {dom:'him',phase:'build',title:'Warm-up Spanking',needs:[['spank_hand']],min:3,max:4,
+      text:'Over your knee or hips up. Twenty, open hand, alternating cheeks, starting at a pat and building. Lower ass and upper thighs only — never the tailbone, spine or kidneys. She counts every one; a miscount starts the set over. Then rub the heat in slowly.',sub:'Count. Thank him for the last one.'},
+    {dom:'him',phase:'build',title:'The Paddle',needs:[['paddle']],props:['paddle or hairbrush'],min:3,max:4,intense:true,
+      text:'Ten with the paddle, evenly spaced, same target as always: the meat of her ass, never higher. Between each one, a full breath and your hand smoothing the skin. She says the number and “more” — or she says Yellow.',sub:'The number, then “more”.'},
+    {dom:'him',phase:'build',title:'Clothespins',needs:[['clamps']],props:['clothespins'],min:3,max:5,
+      text:'Warm each nipple with your mouth first. Then a clothespin on each, one at a time, and watch her face while it bites. Leave them on through the next step; take them off during something that feels good — that’s the part she’ll remember. Fifteen minutes maximum.',sub:'Eyes on his while they go on.'},
+    {dom:'him',phase:'build',title:'Wax',needs:[['wax']],props:['low-temp massage candle'],min:4,max:5,intense:true,
+      text:'Low-temperature massage candle only, tested on your own forearm from the same height first. From thirty centimetres, drip a line down her sternum, then her stomach, then each thigh. Never the face, never between her legs. Then peel it off with your nails, slowly.',sub:'Still. Breathe out on every drop.'},
+    {dom:'him',phase:'build',title:'Hand on Her Throat',needs:[['throat_hand']],min:2,max:3,
+      text:'Lay your hand across the front of her throat — the weight of a hand, zero squeeze, fingers resting on the jaw, not the neck. Hold it there while you tell her, in detail, everything that’s coming. If she taps twice, you lift. There is no version of this with pressure.',sub:'Two taps means lift. Use them freely.'},
+    {dom:'him',phase:'build',title:'Blind and Waiting',needs:[['blindfold']],props:['blindfold'],min:3,max:4,
+      text:'Blindfold on. Leave the room for a full minute. Come back silently and touch her once, somewhere unexpected, then wait again. Make her guess what touched her: a feather, an ice cube, your teeth, the clone.',sub:'Guess out loud. Wrong guesses cost a kiss she doesn’t get.'},
+    {dom:'him',phase:'build',title:'Wand and Denial',needs:[['toys_her'],['edging']],props:['the wand'],min:4,max:6,
+      text:'The wand on her, lowest setting, through her underwear if she still has any. Every time her hips chase it, take it away for ten seconds. She’s allowed to beg. Begging changes nothing.',sub:'Hips still.'},
+    {dom:'him',phase:'build',title:'Teeth and Nails',needs:[['bite']],min:2,max:3,
+      text:'Leave a mark she’ll find tomorrow: the inside of a thigh, the curve of her breast, the back of her shoulder. Slowly. Tell her where it will show.',sub:'Hold still for it.'},
+    {dom:'him',phase:'build',title:'First Taste of Two',needs:[['clone']],props:['the clone','lube'],min:3,max:4,
+      text:'Take the clone and let her watch you slick it. Slide it into her — slowly, all the way — and hold it there without moving while you kiss her. Tell her that’s what she feels like from your side.',sub:'Eyes open.'},
+    {dom:'him',phase:'build',title:'Worship, From Behind',needs:[['rim_her']],min:3,max:5,
+      text:'Face down, hips up, or over your lap. Your mouth, everywhere back there, unhurried. She’s not allowed to look back or say anything except your name.',sub:'Only his name.'},
+    {dom:'him',phase:'build',title:'Body Writing',needs:[['writing']],props:['lipstick or marker'],min:2,max:3,
+      text:'Lipstick or marker. Write one word on her body for every place you own tonight — her chest, her stomach, the inside of a thigh. She reads them in the mirror afterward, out loud.',sub:'Read every word aloud.'},
+    {dom:'him',phase:'build',title:'Three Orders',needs:[['orders']],min:3,max:4,
+      text:'Three commands, delivered one at a time, no explanations: a position to hold, something to say, something to do to herself while you watch. She holds each one until you say otherwise.',sub:'Obey the first time.'},
+    {dom:'him',phase:'build',title:'Forced',needs:[['forced'],['toys_her']],props:['the wand'],min:3,max:5,intense:true,
+      text:'The wand stays on her through the orgasm and into the next one. She’ll try to move it. Hold her still. She uses Yellow when she means it — and the second she says it, you stop.',sub:'Yellow is always available. Use it honestly.'},
+    {dom:'him',phase:'build',title:'Sir',needs:[['titles']],min:2,max:3,
+      text:'For the rest of the scene she calls you Sir — or the title you chose. Every time she forgets, add one minute of denial to the peak. Ask her questions that need full sentences.',sub:'Sir. Every time.'},
+    {dom:'him',phase:'build',title:'What She Is Tonight',needs:[['degrade']],min:2,max:3,
+      text:'Tell her exactly what she is tonight — yours, and the filthier words you both agreed to. Make her say it back, looking at you. Then kiss her like you mean the opposite.',sub:'Say it back. Eyes up.'},
+    {dom:'him',phase:'build',title:'Good Girl',needs:[['praise']],min:2,max:3,
+      text:'Tell her what she’s doing right, specifically and constantly. “Good girl” is the start, not the end. Reward each thing you praise with your mouth somewhere new.',sub:'Say thank you every time.'},
+    {dom:'him',phase:'build',title:'Three Frames',needs:[['photos']],props:['your phone'],min:2,max:3,
+      text:'Three photos of her like this, from the angles she chooses. Show her each one. Then, together, right now: keep or delete. Whatever she says is what happens.',sub:'Her angles. Her call.'},
+    {dom:'him',phase:'build',title:'Mirror',needs:[['mirror']],min:3,max:4,
+      text:'Move her in front of the mirror, or bring the mirror to her. Whatever you do next, she watches herself take it. Every time she closes her eyes, you stop.',sub:'Eyes on the mirror.'},
+    {dom:'him',phase:'build',title:'Curtains',needs:[['curtains']],min:3,max:4,
+      text:'Curtains open a crack, lights up. Nobody’s watching — probably. Do the next thing by the window anyway, and tell her what someone would see.',sub:'Face the glass.'},
+    {dom:'him',phase:'build',title:'On Her Toes',needs:[['predicament']],min:3,max:4,
+      text:'On her toes, hands flat on the wall, back arched. As long as she holds it, your mouth stays on her. The moment her heels drop, everything stops for thirty seconds. Her call how long she lasts.',sub:'Heels up.'},
+    {dom:'him',phase:'build',title:'Dress Her',needs:[['dress']],min:3,max:4,
+      text:'Choose what she wears — from her drawer or yours. Watch her put it on. Then take it off her one piece at a time, with a full minute of looking between each piece.',sub:'She dresses slowly. She undresses slower.'},
+    {dom:'him',phase:'build',title:'Hold Still',needs:[['counting']],min:3,max:4,
+      text:'Her job is to not move and not make a sound while you do exactly what you like with your hands and mouth. Every flinch, every sound: you stop, you count to ten out loud, you start again from the beginning.',sub:'Statue.'},
+
+    {dom:'him',phase:'peak',title:'Two of You',needs:[['clone'],['two_at_once']],props:['the clone','lube'],min:5,max:8,
+      text:'Slide into her. Bring the clone to her mouth and make her take it — that’s you, twice. Fuck her slowly while she sucks it; if she stops, you stop. When she’s close, take the clone away and make her ask, properly, before she gets it back.',sub:'She asks before she comes.'},
+    {dom:'him',phase:'peak',title:'Swapped',needs:[['clone'],['two_at_once']],props:['the clone','lube'],min:5,max:8,
+      text:'Kneel over her chest. She takes you in her mouth while you work the clone inside her, matching her rhythm exactly. If she speeds up, you slow down. She comes on your schedule, not hers.',sub:'Her rhythm sets his. Choose wisely.'},
+    {dom:'him',phase:'peak',title:'Three Points',needs:[['clone'],['toys_her'],['two_at_once'],['permission']],props:['the clone','the wand','lube'],min:5,max:8,
+      text:'You inside her, the wand on her clit, the clone in her mouth. She’s not allowed to come until you count down from ten — slowly — and you don’t start counting until she’s begged at least twice.',sub:'Beg twice. Then wait for zero.'},
+    {dom:'him',phase:'peak',title:'The Full Double',needs:[['anal_toys_her'],['clone'],['two_at_once']],props:['the clone','a smaller toy','a lot of lube','towel'],min:6,max:10,intense:true,
+      text:'Lube. Patience. The smaller toy first. The clone goes in her ass slowly — she controls that part with her breathing and her words — and then you inside her. Once you’re both in, nobody moves for a full minute. She sets the first rhythm; you take over the second.',sub:'Breathe out on the way in. Say “slower” whenever you want it.'},
+    {dom:'him',phase:'peak',title:'Permission',needs:[['permission']],min:5,max:8,
+      text:'Whatever position you choose, one rule: she asks before she comes, out loud, and the first two times the answer is no. The third time — if she asked nicely — yes. Watch her face when you say it.',sub:'Ask. Accept no. Ask again.'},
+    {dom:'him',phase:'peak',title:'Denied',needs:[['denial_night'],['edging']],min:4,max:6,intense:true,
+      text:'She doesn’t come tonight. Take her to the edge once more, stop, untie one hand, and let her watch you finish. Then hold her. Tomorrow she gets whatever she wants, first thing.',sub:'Watch. Don’t touch yourself.'},
+    {dom:'him',phase:'peak',title:'Where You Say',needs:[['finish_control']],min:4,max:7,
+      text:'You decide where and how this ends, and you tell her in advance — her mouth, her chest, inside her. She says “yes, please” or she says Yellow. Then take it.',sub:'“Yes, please” — or Yellow.'},
+    {dom:'him',phase:'peak',title:'On Her Knees',needs:[['facial'],['behind_back']],min:3,max:5,
+      text:'On her knees, hands tied behind her back, mouth open, eyes on you. She stays exactly like that until you’re done, and then she thanks you for it.',sub:'Eyes up. Mouth open. Thank him.'},
+    {dom:'him',phase:'peak',title:'Your Choice',needs:[],min:5,max:8,
+      text:'Untie one limb if you need to, and take her in the position you’ve been thinking about since the first step. Slowly, then not slowly. Tell her when she’s allowed to let go — she waits for it.',sub:'Wait for the word.'},
+
+    /* ===== SHE dominates ===== */
+    {dom:'her',phase:'open',title:'Starfish',needs:[['tie_bed']],props:['four ties'],min:2,max:3,
+      text:'Wrists and ankles to the four corners. Straddle his chest, just out of reach of his mouth, and tell him the rules: he speaks when asked, he comes when told, and he doesn’t move his hips unless you say so.',sub:'Hips still. Eyes on her.'},
+    {dom:'her',phase:'open',title:'Hands Off',needs:[['wrists']],props:['one tie'],min:2,max:3,
+      text:'Wrists together above his head, tied to the headboard. Sit on his thighs and undress yourself an inch at a time — close enough to touch, far enough that he can’t.',sub:'He may look. That’s all.'},
+    {dom:'her',phase:'open',title:'Kneeling',needs:[['behind_back']],props:['one tie','a pillow'],min:2,max:3,
+      text:'Wrists tied behind his back, kneeling on a pillow at the edge of the bed. You sit on the edge in front of him, knees closed. He waits like that until you decide he’s earned the view.',sub:'Kneel. Wait. Don’t ask.'},
+    {dom:'her',phase:'open',title:'The Chair',needs:[['ankles'],['wrists']],props:['a sturdy chair','three ties','music'],min:3,max:4,
+      text:'Tie him to a chair: wrists behind, ankles to the legs. Put music on. You’re going to give him the slowest lap dance of his life, and he’s going to feel every second of not being able to touch you.',sub:'Not one word unless it’s Yellow or Red.'},
+    {dom:'her',phase:'open',title:'Inspection',needs:[['humiliation']],min:2,max:3,
+      text:'Walk around him slowly. Touch nothing. Comment on everything. Decide, out loud, whether he’s worth using tonight — and make him ask to be.',sub:'He asks. Politely.'},
+    {dom:'her',phase:'open',title:'Rules of the Night',needs:[],min:2,max:3,
+      text:'No ties yet. Stand him in front of you, strip him yourself, and set the rules out loud, making him repeat each one back: he speaks when spoken to; he comes when you say, where you say; Yellow pauses, Red stops, and you obey those instantly.',sub:'Repeat every rule back, word for word.'},
+
+    {dom:'her',phase:'build',title:'Three Edges',needs:[['edging']],min:4,max:6,
+      text:'Your mouth or your hand. Take him to the edge and stop the instant he flinches. Wait ten seconds. Again. Three times. He counts each one out loud; if he comes without permission, he’s done for the night and you’re not.',sub:'Count. Hold it.'},
+    {dom:'her',phase:'build',title:'The Show',needs:[['clone','her'],['watch','her']],props:['the clone'],min:4,max:6,
+      text:'Take the clone — the copy of him — and use it on yourself inches from his face. Slowly. Eye contact. Tell him it’s better behaved than he is. He watches; he does not touch; he does not get to help.',sub:'Watch. Don’t speak.'},
+    {dom:'her',phase:'build',title:'The Throne',needs:[['oral_her','her']],min:4,max:6,
+      text:'Sit on his face. You set the rhythm, you set the pressure, you decide when he’s done — and he isn’t done when you come the first time.',sub:'He serves until told to stop.'},
+    {dom:'her',phase:'build',title:'Wand on Him',needs:[['toys_him']],props:['the wand'],min:3,max:5,
+      text:'The wand on the underside of him, lowest setting, your other hand flat on his chest to feel him try not to move. Take it away every time he gets close. He can beg. Begging is adorable and changes nothing.',sub:'Hips still.'},
+    {dom:'her',phase:'build',title:'Spank Him',needs:[['spank_hand']],min:3,max:4,
+      text:'Over your lap or bent over the bed. Twenty, open hand, building from a pat, lower ass and thighs only. He counts every one and thanks you for the last.',sub:'Count. Thank her.'},
+    {dom:'her',phase:'build',title:'His Nipples',needs:[['pinch']],min:2,max:3,
+      text:'Your mouth first, then your nails, then pinch and hold while you kiss him. Watch which one makes his breath catch. Do that one again, longer.',sub:'Breathe. Don’t flinch away.'},
+    {dom:'her',phase:'build',title:'Clothespins on Him',needs:[['clamps']],props:['clothespins'],min:3,max:5,
+      text:'One clothespin on each nipple, after warming them with your mouth. Leave them on through the next step. Take them off during something good — that’s the part he’ll remember. Fifteen minutes maximum.',sub:'Eyes on hers while they go on.'},
+    {dom:'her',phase:'build',title:'Cold, Then Warm',needs:[['ice']],props:['ice'],min:3,max:4,
+      text:'An ice cube held against the inside of his thigh, then his balls, then — right before your mouth — the length of him. Cold, then warm. Repeat until he can’t predict which is next.',sub:'No guessing out loud.'},
+    {dom:'her',phase:'build',title:'Body Writing',needs:[['writing']],props:['lipstick'],min:2,max:3,
+      text:'Lipstick. Write on his chest what he is tonight. Make him read it upside down. Add a word every time he does something right.',sub:'Read it aloud on request.'},
+    {dom:'her',phase:'build',title:'Make Him Beg',needs:[['humiliation']],min:3,max:4,
+      text:'He gets nothing until you’re convinced. Make him ask for the specific thing he wants, in detail. Then make him ask better. Be very hard to convince.',sub:'Ask. Then ask better.'},
+    {dom:'her',phase:'build',title:'Hands Tied, Tongue Busy',needs:[['wrists'],['oral_her','her']],props:['one tie'],min:5,max:8,
+      text:'His wrists tied behind his back, you on the bed with your legs over his shoulders. He goes down on you with no hands until you come. Then tell him you’re not sure it counted, and make him do it again.',sub:'No hands. No stopping.'},
+    {dom:'her',phase:'build',title:'Watch Me',needs:[['watch','her'],['edging']],props:['the wand'],min:4,max:6,
+      text:'Lie next to him and get yourself off — wand, fingers, whatever you like — close enough that he can smell you. Twice. He’s not allowed to touch you or himself. Narrate.',sub:'Hands flat on the bed.'},
+    {dom:'her',phase:'build',title:'Cheek',needs:[['face_slap']],min:2,max:3,intense:true,
+      text:'Open palm, cheek only, light, and never near the ear. Look him in the eye after each one and ask if he wants another. He says “yes, please” or he says Yellow.',sub:'“Yes, please” — or Yellow.'},
+    {dom:'her',phase:'build',title:'Good Boy',needs:[['praise']],min:3,max:4,
+      text:'Tell him exactly what he’s doing right in the filthiest words you own, and reward each thing you praise with sixty seconds of your mouth. “Good boy” is a sentence, not a summary.',sub:'Say thank you every time.'},
+    {dom:'her',phase:'build',title:'Ma’am',needs:[['titles']],min:2,max:3,
+      text:'For the rest of the scene he calls you Ma’am — or the title you chose. Every slip adds a minute of denial to the peak. Ask him questions that need long answers.',sub:'Ma’am. Every time.'},
+    {dom:'her',phase:'build',title:'What He Is Tonight',needs:[['degrade']],min:2,max:3,
+      text:'Tell him what he is tonight — yours, and the words you both agreed to. Make him say it back, looking at you. Then kiss him like you mean the opposite.',sub:'Say it back. Eyes up.'},
+    {dom:'her',phase:'build',title:'Mirror',needs:[['mirror']],min:3,max:4,
+      text:'Turn him to face the mirror and stand behind him. Your hands, his body, his eyes on both of you. Every time he closes his eyes, you stop.',sub:'Eyes on the mirror.'},
+    {dom:'her',phase:'build',title:'Three Orders',needs:[['orders']],min:3,max:4,
+      text:'Three commands, no explanations: a position to hold, something to say, something to do to himself while you watch. He holds each one until released.',sub:'Obey the first time.'},
+    {dom:'her',phase:'build',title:'Three Frames',needs:[['photos']],props:['your phone'],min:2,max:3,
+      text:'Three photos of him like this, from the angles he chooses. Show him. Together, right now: keep or delete. His word is final.',sub:'His angles. His call.'},
+    {dom:'her',phase:'build',title:'Blind and Waiting',needs:[['blindfold']],props:['blindfold'],min:3,max:4,
+      text:'Blindfold on. Leave the room for a full minute. Come back silently and touch him once, somewhere unexpected, then wait again. Make him guess: your nails, ice, your mouth, the clone.',sub:'Guess out loud.'},
+    {dom:'her',phase:'build',title:'On His Toes',needs:[['predicament']],min:3,max:4,
+      text:'Standing, hands flat on the wall, on his toes. As long as he holds it, your hand stays on him. Heels drop — thirty seconds of nothing.',sub:'Heels up.'},
+    {dom:'her',phase:'build',title:'Dress Him',needs:[['dress']],min:3,max:4,
+      text:'Choose what he wears — a tie and nothing else counts. Watch him put it on. Then undress him one piece at a time, with a full minute of looking between each piece.',sub:'He dresses slowly. He undresses slower.'},
+    {dom:'her',phase:'build',title:'Hold Still',needs:[['counting']],min:3,max:4,
+      text:'His job is to not move and not make a sound while you do exactly what you like with your hands and mouth. Every flinch, every sound: you stop, you count to ten out loud, you start again from the beginning.',sub:'Statue.'},
+
+    {dom:'her',phase:'peak',title:'Furniture',needs:[['permission']],min:5,max:8,
+      text:'Untie his ankles if you need to. Ride him at exactly the pace you like; he does not thrust. Every time his hips move, stop for thirty seconds. He asks before he comes, and the first two answers are no.',sub:'Hips still. Ask first.'},
+    {dom:'her',phase:'peak',title:'Cowgirl, Wand On',needs:[['toys_her','her']],props:['the wand'],min:5,max:8,
+      text:'You on top, the wand on yourself. He is the furniture. Come as many times as you want; he’s allowed to watch and he’s allowed to wait.',sub:'Watch. Wait.'},
+    {dom:'her',phase:'peak',title:'Ruined',needs:[['ruined']],min:4,max:6,intense:true,
+      text:'Bring him to the edge with your hand and, at the exact moment, let go completely and watch. Don’t touch him again. Then — if you’re feeling kind — do it properly. If not, don’t.',sub:'No hands. No hips.'},
+    {dom:'her',phase:'peak',title:'Denied',needs:[['denial_night'],['edging']],min:4,max:6,intense:true,
+      text:'He doesn’t come tonight. Get yourself there one more time — on him, next to him, with the clone — then untie him and hold him. Tomorrow he gets whatever he wants, first thing.',sub:'Watch. Don’t touch yourself.'},
+    {dom:'her',phase:'peak',title:'Where You Say',needs:[['finish_control']],min:4,max:7,
+      text:'You decide where he finishes, and you tell him now — your chest, your mouth, inside you — and he asks permission when he’s close. Grant it, or don’t.',sub:'Ask when you’re close. Accept the answer.'},
+    {dom:'her',phase:'peak',title:'Sixty Seconds After',needs:[['overstim']],props:['the wand'],min:4,max:6,intense:true,
+      text:'Let him come — however you like. Then keep the wand or your hand on him for sixty seconds after. He can say Red. He’ll think about it.',sub:'Red is right there. Red is allowed.'},
+    {dom:'her',phase:'peak',title:'Earn the Second',needs:[['edging'],['permission']],min:6,max:10,
+      text:'He comes only after you’ve finished twice. Make him earn the second one with whatever part of himself you haven’t used yet. Then tell him exactly how he’s allowed to finish.',sub:'Two for her. Then ask.'},
+    {dom:'her',phase:'peak',title:'Your Choice',needs:[],min:5,max:8,
+      text:'Untie one limb if you need to, and take him in the position you’ve been thinking about since the first step. Your pace, your rules. Tell him when he’s allowed to let go — he waits for it.',sub:'Wait for the word.'},
+
+    /* ===== closing, either way ===== */
+    {dom:'him',phase:'close',title:'Aftercare',needs:[],min:5,max:5,
+      text:'Untie everything, checking each wrist and ankle as you go. Water for both of you. Skin to skin for five minutes, no phones. Say three things you loved. Ask what she needs. Nobody explains, nobody apologizes.',sub:'Nothing. She has no rules now.'},
+    {dom:'her',phase:'close',title:'Aftercare',needs:[],min:5,max:5,
+      text:'Untie everything, checking each wrist and ankle as you go. Water for both of you. Skin to skin for five minutes, no phones. Say three things you loved. Ask what he needs. Nobody explains, nobody apologizes.',sub:'Nothing. He has no rules now.'}
+  ];
+  STEPS.forEach(function(s,i){ s.id='s'+i; });
+
   /* ---------- state ---------- */
-  var acts, settings, stats, turn;
-  function defSettings(){return {mode:'classic',startHeat:0,specials:true,twists:true,plot:true,gamble:true,mysteryTimer:false,sound:true,her:'Her',him:'Him',toys:DEF_TOYS.slice()};}
-  function defStats(){return {rounds:0,seconds:0,twists:0,plot:0,jackpots:0,vetoes:0,longest:0,peakHeat:0,gambles:0,gWon:0,spinsHer:0,spinsHim:0};}
+  var acts, settings, stats, turn, sheet;
+  function defSheet(){ return {her:{recv:{},give:{},done:false},him:{recv:{},give:{},done:false}}; }
+  function defSettings(){return {mode:'classic',startHeat:0,specials:true,twists:true,plot:true,gamble:true,mysteryTimer:false,sound:true,dominion:true,her:'Her',him:'Him',toys:DEF_TOYS.slice()};}
+  function defStats(){return {rounds:0,seconds:0,twists:0,plot:0,jackpots:0,vetoes:0,longest:0,peakHeat:0,gambles:0,gWon:0,spinsHer:0,spinsHim:0,scenes:0,scenesHer:0,scenesHim:0};}
   function load(){
-    acts=defaults(); settings=defSettings(); stats=defStats(); turn='her';
+    acts=defaults(); settings=defSettings(); stats=defStats(); turn='her'; sheet=defSheet();
     try{
       var raw=localStorage.getItem(STORE_KEY);
       if(raw){
@@ -480,22 +820,26 @@
         if(s.settings) for(var k in s.settings) if(Object.prototype.hasOwnProperty.call(s.settings,k)) settings[k]=s.settings[k];
         if(s.stats) for(var j in s.stats) if(Object.prototype.hasOwnProperty.call(s.stats,j)) stats[j]=s.stats[j];
         if(s.turn==='him') turn='him';
+        if(s.sheet&&s.sheet.her&&s.sheet.him) sheet=s.sheet;
       }
     }catch(e){}
     if(!Array.isArray(settings.toys)) settings.toys=DEF_TOYS.slice();
   }
-  function save(){ try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,settings:settings,stats:stats,turn:turn}));}catch(e){} }
+  function save(){ try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,settings:settings,stats:stats,turn:turn,sheet:sheet}));}catch(e){} }
   load();
 
   function tierFor(r){ return r<HEAT_AT[1]?0: r<HEAT_AT[2]?1: r<HEAT_AT[3]?2:3; }
   function tier(){ return Math.max(tierFor(stats.rounds), settings.startHeat|0); }
-  function eligibleActs(t){ if(t==null) t=tier(); return acts.filter(function(a){return a.on!==false && ((a.heat||1)-1)<=t;}); }
-  function enabledActs(){ return acts.filter(function(a){return a.on!==false;}); }
+  function eligibleActs(t){ if(t==null) t=tier(); return acts.filter(function(a){return a.on!==false && ((a.heat||1)-1)<=t && actAllowed(a);}); }
+  function enabledActs(){ return acts.filter(function(a){return a.on!==false && actAllowed(a);}); }
   function specialsFor(t){
-    if(!settings.specials) return [];
-    var s=[{kind:'confession',label:'Confess',tag:'confession'}];
-    if(t>=1){ s.push({kind:'dare',label:'Dare',tag:'dare'}); s.push({kind:'mystery',label:'???',tag:'mystery'}); }
-    if(t>=2) s.push({kind:'jackpot',label:'JACKPOT',tag:'jackpot'});
+    var s=[];
+    if(settings.specials){
+      s.push({kind:'confession',label:'Confess',tag:'confession'});
+      if(t>=1){ s.push({kind:'dare',label:'Dare',tag:'dare'}); s.push({kind:'mystery',label:'???',tag:'mystery'}); }
+      if(t>=2) s.push({kind:'jackpot',label:'JACKPOT',tag:'jackpot'});
+    }
+    if(settings.dominion && t>=1) s.push({kind:'dominion',label:'DOMINION',tag:'dominion'});
     return s;
   }
   function slices(){
@@ -593,6 +937,7 @@
       ctx.textAlign='right'; ctx.textBaseline='middle';
       if(s.kind==='jackpot'){ ctx.fillStyle='#2A0A14'; ctx.font='700 '+(fs+1)+'px Outfit, sans-serif'; }
       else if(s.kind==='mystery'){ ctx.fillStyle='#D9A360'; ctx.font='700 '+(fs+3)+'px Outfit, sans-serif'; }
+      else if(s.kind==='dominion'){ ctx.fillStyle='#FF6B85'; ctx.font='700 '+fs+'px Outfit, sans-serif'; }
       else { ctx.fillStyle='#F0DFE2'; ctx.font='500 '+fs+'px Outfit, sans-serif'; }
       ctx.fillText(s.label, r-14, 0);
       ctx.restore();
@@ -689,6 +1034,7 @@
   }
   function land(s,spinner){
     var p;
+    if(s.kind==='dominion'){ save(); showSceneSetup(); return; }
     if(s.kind==='act'){ p=buildFromAct(s.act); }
     else if(s.kind==='mystery'){ p=buildFromAct(pick(eligibleActs()),{hidden:true}); }
     else if(s.kind==='confession'){ p={kind:'confession',name:pick(CONFESSIONS),tag:'confession',note:pronoun(spinner)+' answers first — honestly. The other gets two follow-up questions, then answers the same one.',sec:rollSec(1.5,3,1)}; }
@@ -870,8 +1216,9 @@
       ['III.','','His back door is closed. Permanently. Not up for a vote.'],
       ['IV.','','Her back door: his lips only, nothing more — and never the other way around.'],
       ['V.','','Twists, dares and plot twists obey every rule above. The wheel can be creative, not cruel.'],
-      ['VI.','','When the bell rings, ','everything stops.',' Yes, even then. Especially then.'],
-      ['VII.','','No winners, no losers. Except whoever finishes. That’s the winner.']
+      ['VI.','','Dominion runs on the Limits Sheet. ','Yellow pauses. Red ends it',' — instantly, no discussion, no debrief until everyone is untied.'],
+      ['VII.','','When the bell rings, ','everything stops.',' Yes, even then. Especially then.'],
+      ['VIII.','','No winners, no losers. Except whoever finishes. That’s the winner.']
     ];
     var ul=el('ul','rules');
     rules.forEach(function(r){
@@ -906,6 +1253,7 @@
       [String(stats.jackpots),'Jackpots hit'],
       [String(stats.vetoes),'Vetoes used'],
       [stats.gambles?stats.gWon+' / '+stats.gambles:'—','Coin flips won'],
+      [stats.scenes?stats.scenesHer+' · '+stats.scenesHim:'0','Scenes led (her · him)'],
       [stats.spinsHer+' · '+stats.spinsHim,(settings.her==='Her'?'Her':settings.her)+' · '+(settings.him==='Him'?'him':settings.him)+' spins']
     ];
     rows.forEach(function(r){ var s=el('div','stat'); s.appendChild(el('b',null,r[0])); s.appendChild(el('span',null,r[1])); grid.appendChild(s); });
@@ -966,6 +1314,7 @@
 
       panel.appendChild(el('h3','sec-title','Chaos dials'));
       panel.appendChild(toggleRow('Special slices','specials','Jackpot, Mystery, Confession and Dare on the wheel'));
+      panel.appendChild(toggleRow('Dominion slice','dominion','A crown on the wheel from Sizzle onward'));
       panel.appendChild(toggleRow('Twists','twists','About a third of spins get a modifier'));
       panel.appendChild(toggleRow('Plot twists','plot','Random interruptions mid-round'));
       panel.appendChild(toggleRow('Double or nothing','gamble','A coin flip for overtime when the bell rings'));
@@ -1033,6 +1382,253 @@
     document.body.appendChild(d);
   }
 
+
+  /* ---------- limits sheet: answers & gating ---------- */
+  var KINK_BY={}; KINKS.forEach(function(k){ KINK_BY[k.id]=k; });
+  function other(w){ return w==='her'?'him':'her'; }
+  function nameOf(w){ return w==='her'?(settings.her==='Her'?'Her':settings.her):(settings.him==='Him'?'Him':settings.him); }
+  function ans(person,dir,k){ var v=sheet[person][dir][k]; if(v==null){ var item=KINK_BY[k]; return item?(item.def||null):null; } return v; }
+  /* an act done to `recv` is allowed when the receiver accepts it AND the other wants to do it */
+  function pair(k,recv,strict){
+    var giver=other(recv), r=ans(recv,'recv',k), g=ans(giver,'give',k);
+    var okv=strict?['yes']:['yes','maybe'];
+    if(okv.indexOf(r)<0||okv.indexOf(g)<0) return {ok:false};
+    return {ok:true,maybe:r==='maybe'||g==='maybe'};
+  }
+  /* needs: array of [kinkId, recv] where recv is 'her' | 'him' | 'any' */
+  function needsOk(needs,strict){
+    var maybe=false;
+    for(var i=0;i<(needs||[]).length;i++){
+      var k=needs[i][0], who=needs[i][1], p;
+      if(who==='any'){ var a=pair(k,'her',strict), b=pair(k,'him',strict); if(!a.ok&&!b.ok) return {ok:false}; p=a.ok?a:b; }
+      else { p=pair(k,who,strict); if(!p.ok) return {ok:false}; }
+      if(p.maybe) maybe=true;
+    }
+    return {ok:true,maybe:maybe};
+  }
+  function actAllowed(a){ return !a.needs || needsOk(a.needs,false).ok; }
+  function sheetReady(){ return !!(sheet.her.done&&sheet.him.done); }
+
+  function showLimits(){
+    var o=el('div','overlay gate'); var box=el('div','sheet');
+    box.appendChild(el('h1',null,'The Limits Sheet'));
+    box.appendChild(el('p','lede','Each of you answers alone — what may be done to you, and what you’d do to them. Then the phone shows only the overlap: the things you both said yes (or maybe) to. If it isn’t on the overlap, it doesn’t exist tonight, and nobody has to explain why.'));
+    var st=el('div','gather'); st.appendChild(el('b',null,'Status'));
+    st.appendChild(document.createTextNode(nameOf('her')+': '+(sheet.her.done?'answered':'not yet')+' · '+nameOf('him')+': '+(sheet.him.done?'answered':'not yet')+'. '+(sheetReady()?'The wheel and the scenes follow your overlap.':'Until both of you answer, the house defaults apply.')));
+    box.appendChild(st);
+    var btns=el('div','card-btns'); btns.style.flexDirection='column';
+    ['her','him'].forEach(function(w){
+      var b=el('button',sheet[w].done?'quiet-btn':'primary-btn',(sheet[w].done?'Edit ':'')+nameOf(w)+'’s answers');
+      b.addEventListener('click',function(){ o.remove(); handoff(w,function(){ sheetFor(w,function(){ if(sheetReady()) showOverlap(); else showLimits(); }); }); });
+      btns.appendChild(b);
+    });
+    if(sheetReady()){ var v=el('button','primary-btn gold','View the overlap'); v.addEventListener('click',function(){ o.remove(); showOverlap(); }); btns.appendChild(v); }
+    var reset=el('button','quiet-btn','Reset the whole sheet'), armed=false;
+    reset.addEventListener('click',function(){ if(!armed){ armed=true; reset.textContent='Tap again to wipe both sets of answers'; return; } sheet=defSheet(); save(); draw(); o.remove(); toast('Sheet wiped. House defaults apply.'); });
+    btns.appendChild(reset);
+    var close=el('button','quiet-btn','Back to the wheel'); close.addEventListener('click',function(){ o.remove(); }); btns.appendChild(close);
+    box.appendChild(btns); o.appendChild(box); document.body.appendChild(o);
+  }
+  function handoff(w,then){
+    var o=el('div','overlay gate'); var box=el('div','handoff');
+    box.appendChild(el('h1',null,'Hand the phone to '+nameOf(w)+'.'));
+    box.appendChild(el('p',null,nameOf(other(w))+', eyes elsewhere. Nothing '+nameOf(w)+' answers will ever be shown to you — only what you both agree on.'));
+    var b=el('button','primary-btn','I’m '+nameOf(w)+' — begin'); b.addEventListener('click',function(){ o.remove(); then(); });
+    box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
+  }
+  function sheetFor(w,then){
+    var o=el('div','overlay gate'); o.style.justifyContent='flex-start'; var box=el('div','sheet');
+    var me=sheet[w], oth=other(w);
+    box.appendChild(el('h1',null,nameOf(w)+'’s sheet'));
+    box.appendChild(el('p','lede','Yes = bring it. Maybe = I’m curious, check in first. No = not tonight, not up for discussion. Unanswered counts as No. Everything here can change any night.'));
+    function pass(dir,title,subtitle){
+      box.appendChild(el('div','sheet-pass',title)); box.appendChild(el('p','sheet-pass-sub',subtitle));
+      var recvPerson=dir==='recv'?w:oth;
+      KCATS.forEach(function(cat){
+        var items=KINKS.filter(function(k){ return k.cat===cat && k.recv.indexOf(recvPerson)>=0; });
+        if(!items.length) return;
+        var head=el('div','cat'); head.appendChild(el('h3',null,cat));
+        var quick=el('div','quick'), painters=[];
+        ['yes','maybe','no'].forEach(function(v){ var qb=el('button',null,'all '+v); qb.type='button'; qb.addEventListener('click',function(){ items.forEach(function(k){ if(!k.locked) me[dir][k.id]=v; }); save(); painters.forEach(function(fn){fn();}); }); quick.appendChild(qb); });
+        head.appendChild(quick); box.appendChild(head);
+        items.forEach(function(k){
+          var row=el('div','kink'), kl=el('div','kl'); kl.appendChild(el('b',null,k.label));
+          if(k.desc) kl.appendChild(el('small',null,k.desc));
+          if(k.note) kl.appendChild(el('small','risk',k.note));
+          if(k.locked) kl.appendChild(el('small','lock','House rule. Prefilled No — change it only if you both mean it.'));
+          row.appendChild(kl);
+          var tri=el('div','tri'), bs={};
+          ['yes','maybe','no'].forEach(function(v){ var b=el('button',v,v); b.type='button'; b.addEventListener('click',function(){ me[dir][k.id]=v; save(); paint(); }); tri.appendChild(b); bs[v]=b; });
+          function paint(){ var cur=ans(w,dir,k.id); ['yes','maybe','no'].forEach(function(v){ bs[v].className=v+(cur===v?' on':''); bs[v].setAttribute('aria-pressed',cur===v?'true':'false'); }); }
+          paint(); painters.push(paint); row.appendChild(tri); box.appendChild(row);
+        });
+      });
+    }
+    pass('recv','Part one · done to me','What '+nameOf(oth)+' may do to my body.');
+    pass('give','Part two · I’d do this to '+nameOf(oth),'What I want to do to '+(oth==='her'?'her':'him')+' when I hold the power.');
+    var foot=el('div','sheet-foot');
+    var lock=el('button','primary-btn','Lock my answers'); lock.addEventListener('click',function(){ me.done=true; save(); draw(); updateHeatUI(); o.remove(); then(); });
+    foot.appendChild(lock); foot.appendChild(el('small',null,'Locking hides this screen. You can edit any time from the Limits button.'));
+    box.appendChild(foot); o.appendChild(box); document.body.appendChild(o); o.scrollTop=0;
+  }
+  function showOverlap(){
+    var o=el('div','overlay gate'); o.style.justifyContent='flex-start'; var box=el('div','sheet overlap');
+    box.appendChild(el('h1',null,'The overlap'));
+    box.appendChild(el('p','lede','Only mutual yeses and maybes appear. Anything either of you said no to is simply not here — and never will be.'));
+    [['him','her'],['her','him']].forEach(function(d){
+      var giver=d[0], recv=d[1], yes=[], maybe=[];
+      box.appendChild(el('h2',null,nameOf(giver)+' → '+nameOf(recv)));
+      KINKS.forEach(function(k){ if(k.recv.indexOf(recv)<0) return; var p=pair(k.id,recv,false); if(!p.ok) return; (p.maybe?maybe:yes).push(k); });
+      if(!yes.length&&!maybe.length) box.appendChild(el('p','o-empty','Nothing yet. That’s an answer too.'));
+      function list(arr,cls,label){ if(!arr.length) return; box.appendChild(el('div','o-sub',label)); arr.forEach(function(k){ var r=el('div','o-item'), l=el('div'); l.appendChild(document.createTextNode(k.label)); if(k.note) l.appendChild(el('small','risk',k.note)); r.appendChild(l); r.appendChild(el('span','st '+cls,cls==='yes'?'yes · yes':'talk first')); box.appendChild(r); }); }
+      list(yes,'yes','Both said yes'); list(maybe,'maybe','One of you said maybe — check in before it happens');
+      if(pair('breath',recv,false).ok){ var s=el('div','safety'); s.appendChild(el('b',null,'Breath play — read this together')); s.appendChild(document.createTextNode(KINK_BY.breath.note)); box.appendChild(s); }
+    });
+    var b=el('button','primary-btn','Take it to the wheel'); b.style.marginTop='24px'; b.addEventListener('click',function(){ o.remove(); draw(); updateHeatUI(); });
+    box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
+  }
+
+  /* ---------- dominion: setup, build, run ---------- */
+  function showSceneSetup(){
+    clearResult();
+    var o=el('div','overlay gate'); var box=el('div','setup');
+    box.appendChild(el('h1',null,'Dominion'));
+    box.appendChild(el('p','lede','One of you holds the power. The other follows. The one in charge follows the script — every step, in order, for as long as the bell says. Yellow pauses everything. Red ends it, instantly. '+(sheetReady()?'Built only from your Limits Sheet overlap.':'You haven’t both filled the Limits Sheet, so the house defaults apply — fill it for the full menu.')));
+    var dom=null, len=5, inten='firm', begin;
+    box.appendChild(el('h3','sec-title','Who holds the power?'));
+    var who=el('div','who'), wb={};
+    ['her','him'].forEach(function(w){ var b=el('button',null,nameOf(w)+' dominates'); b.addEventListener('click',function(){ dom=w; paintWho(); }); who.appendChild(b); wb[w]=b; });
+    var coin=el('button',null,'Coin decides'); coin.addEventListener('click',function(){ dom=Math.random()<.5?'her':'him'; sting(); paintWho(); toast('The coin says: '+nameOf(dom)+'.'); }); who.appendChild(coin);
+    function paintWho(){ ['her','him'].forEach(function(w){ wb[w].className=dom===w?'on':''; }); begin.disabled=!dom; }
+    box.appendChild(who);
+    function segment(opts,cur,onpick){ var seg=el('div','seg'); opts.forEach(function(m){ var b=el('button',cur===m[0]?'on':'',m[1]); b.addEventListener('click',function(){ onpick(m[0]); Array.prototype.forEach.call(seg.children,function(c){c.className='';}); b.className='on'; }); seg.appendChild(b); }); return seg; }
+    box.appendChild(el('h3','sec-title','How long'));
+    box.appendChild(segment([[3,'Short · 3'],[5,'Full · 5'],[7,'Long · 7']],len,function(v){len=v;}));
+    box.appendChild(el('h3','sec-title','How hard'));
+    box.appendChild(segment([['soft','Soft'],['firm','Firm'],['ruthless','Ruthless']],inten,function(v){inten=v;}));
+    box.appendChild(el('small',null,'Soft skips the intense steps. Firm allows them when you both said yes. Ruthless prefers them.'));
+    var btns=el('div','card-btns'); btns.style.marginTop='22px';
+    begin=el('button','primary-btn','Build the scene'); begin.disabled=true;
+    begin.addEventListener('click',function(){ var steps=buildScene(dom,len,inten); o.remove(); showGather(dom,steps); });
+    var back=el('button','quiet-btn','Not tonight'); back.addEventListener('click',function(){ o.remove(); });
+    btns.appendChild(begin); btns.appendChild(back); box.appendChild(btns);
+    o.appendChild(box); document.body.appendChild(o);
+  }
+  function stepOk(s,sub,inten){
+    var chk=needsOk((s.needs||[]).map(function(n){ return [n[0], n[1]||sub]; }),!!s.intense);
+    if(!chk.ok) return null;
+    if(s.intense&&inten==='soft') return null;
+    return {step:s,maybe:chk.maybe};
+  }
+  function buildScene(dom,len,inten){
+    var sub=other(dom);
+    function take(phase,n){
+      var p=STEPS.filter(function(s){ return s.dom===dom&&s.phase===phase; }).map(function(s){ return stepOk(s,sub,inten); }).filter(Boolean);
+      p.forEach(function(x){ x.score=Math.random()+(x.step.intense&&inten==='ruthless'?2:0)-((x.step.needs||[]).length?0:5); });
+      p.sort(function(a,b){ return b.score-a.score; });
+      return p.slice(0,n);
+    }
+    return [].concat(take('open',1),take('build',Math.max(1,len-2)),take('peak',1),take('close',1));
+  }
+  function showGather(dom,steps){
+    var o=el('div','overlay gate'); var box=el('div','setup');
+    box.appendChild(el('h1',null,nameOf(dom)+' holds the power.'));
+    box.appendChild(el('p','lede',steps.length+' steps, sealed. '+nameOf(dom)+' sees each one only when it begins and may not skip ahead. '+nameOf(other(dom))+' can veto any step, call Yellow to pause, or call Red to end it — at any moment, for any reason.'));
+    var props={}, ties=false;
+    steps.forEach(function(s){ (s.step.props||[]).forEach(function(p){ props[p]=1; if(/tie/.test(p)) ties=true; }); });
+    var list=Object.keys(props); if(ties) list.push('safety shears'); list.push('water');
+    var g=el('div','gather'); g.appendChild(el('b',null,'Have within reach')); g.appendChild(document.createTextNode(list.join(' · '))); box.appendChild(g);
+    var s=el('div','safety'); s.appendChild(el('b',null,'Before the first knot'));
+    s.appendChild(document.createTextNode('Two fingers under every tie, nothing around the neck, hands and feet checked for warmth every few minutes. Agree the signals out loud now: Yellow pauses, Red stops, and two taps means “lift” whenever a mouth is busy.'));
+    box.appendChild(s);
+    var b=el('button','primary-btn','Begin — hand the phone to '+nameOf(dom)); b.addEventListener('click',function(){ o.remove(); runScene(dom,steps); });
+    box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
+  }
+  var sceneEl=null, sceneInt=null;
+  function runScene(dom,steps){
+    var sub=other(dom), i=0, paused=false;
+    stats.scenes++; if(dom==='her') stats.scenesHer++; else stats.scenesHim++; save();
+    sceneEl=el('div','overlay scene'); document.body.appendChild(sceneEl);
+    var PHASES={open:'Opening',build:'Building',peak:'The peak',close:'Aftercare'};
+    function stopInt(){ if(sceneInt){ clearInterval(sceneInt); sceneInt=null; } }
+    function endScene(reason){
+      stopInt(); sceneEl.innerHTML=''; sceneEl.classList.remove('scene');
+      var a=el('div','after');
+      a.appendChild(el('h1',null,reason==='red'?'Red. Scene over.':'Scene complete.'));
+      a.appendChild(el('p','lede',reason==='red'?'No questions, no explanations, no apologies. '+nameOf(dom)+': untie first, talk later.':'The power goes back in the drawer. Aftercare is not optional — it is the last step.'));
+      var ul=el('ul');
+      ['Untie everything now, checking each wrist and ankle as you go.','Water for both of you. Something sweet if you have it.','Skin to skin for five minutes. No phones after this one.',nameOf(dom)+' says three things they loved.',nameOf(sub)+' says how they feel — one word first, then as many as they want.'].forEach(function(t){ ul.appendChild(el('li',null,t)); });
+      a.appendChild(ul);
+      var b=el('button','primary-btn','Back to the wheel'); b.addEventListener('click',function(){ sceneEl.remove(); sceneEl=null; updateHeatUI(); });
+      a.appendChild(b); sceneEl.appendChild(a);
+      if(reason!=='red') bell();
+    }
+    function replacement(cur){
+      var used={}; steps.forEach(function(x){ used[x.step.id]=1; });
+      var cands=STEPS.filter(function(s){ return s.dom===dom&&s.phase===cur.phase&&!used[s.id]; }).map(function(s){ return stepOk(s,sub,'firm'); }).filter(Boolean);
+      return cands.length?pick(cands):null;
+    }
+    function show(){
+      if(i>=steps.length){ endScene('done'); return; }
+      var it=steps[i], s=it.step, isClose=s.phase==='close';
+      var total=isClose?300:rollSec(s.min,s.max,1), left=total, endAt=Date.now()+total*1000, pauseAt=null;
+      sceneEl.innerHTML='';
+      sceneEl.appendChild(el('div','s-head','Dominion · '+nameOf(dom)+' holds the power'));
+      sceneEl.appendChild(el('div','s-step','Step '+(i+1)+' of '+steps.length+' · '+PHASES[s.phase]));
+      var card=el('div','s-card '+s.phase);
+      var chips=el('div','chips'); chips.style.justifyContent='flex-start';
+      if(s.intense) chips.appendChild(el('span','tag dare','Intense'));
+      if(it.maybe) chips.appendChild(el('span','tag him','Maybe on the sheet — check in first'));
+      if(chips.childNodes.length) card.appendChild(chips);
+      card.appendChild(el('h2',null,s.title));
+      card.appendChild(el('p',null,s.text));
+      if(s.sub){ var r=el('div','sub-rule'); r.appendChild(el('b',null,'Rule for '+nameOf(sub))); r.appendChild(document.createTextNode(s.sub)); card.appendChild(r); }
+      var tm=el('div','s-timer'), mini=el('div','mini');
+      mini.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="'+RING_R+'"/><circle class="ring-fill" cx="50" cy="50" r="'+RING_R+'" stroke-dasharray="'+CIRC+'" stroke-dashoffset="0"/></svg>';
+      var big=el('div','big',fmt(left)); mini.appendChild(big); tm.appendChild(mini);
+      var note=el('div','s-note',isClose?'Five minutes. Then the phone goes away.':'The bell decides when you may move on.'); tm.appendChild(note);
+      card.appendChild(tm);
+      var btns=el('div','s-btns');
+      var next=el('button','primary-btn',isClose?'End the scene':'Next step'); next.disabled=!isClose;
+      next.addEventListener('click',function(){ stopInt(); i++; show(); });
+      btns.appendChild(next);
+      if(!isClose){
+        var veto=el('button','quiet-btn',nameOf(sub)+' vetoes this step');
+        veto.addEventListener('click',function(){ stopInt(); stats.vetoes++; save(); var alt=replacement(s); if(alt){ steps[i]=alt; toast('Step replaced. No questions.'); } else { steps.splice(i,1); toast('Step removed.'); } show(); });
+        btns.appendChild(veto);
+      }
+      card.appendChild(btns); sceneEl.appendChild(card);
+      var sw=el('div','safewords');
+      var y=el('button','yellow'); y.appendChild(document.createTextNode('Yellow')); y.appendChild(el('small',null,'pause & check in'));
+      var rd=el('button','red'); rd.appendChild(document.createTextNode('Red')); rd.appendChild(el('small',null,'stop everything'));
+      sw.appendChild(y); sw.appendChild(rd); sceneEl.appendChild(sw);
+      rd.addEventListener('click',function(){ endScene('red'); });
+      y.addEventListener('click',function(){
+        if(paused) return; paused=true; pauseAt=Date.now(); alarm();
+        var ci=el('div','overlay'); ci.style.zIndex='75'; var box=el('div','checkin');
+        box.appendChild(el('h2',null,'Yellow.'));
+        box.appendChild(el('p',null,nameOf(dom)+': stop what you’re doing. Don’t untie unless asked. Ask, out loud: “Are you okay? What do you need?” Then listen. The clock is paused.'));
+        var b1=el('button','primary-btn','Continue'), b2=el('button','quiet-btn','Skip this step'), b3=el('button','quiet-btn','Red — end it');
+        var bb=el('div','card-btns'); bb.appendChild(b1); bb.appendChild(b2); bb.appendChild(b3); box.appendChild(bb); ci.appendChild(box); document.body.appendChild(ci);
+        b1.addEventListener('click',function(){ endAt+=Date.now()-pauseAt; paused=false; ci.remove(); });
+        b2.addEventListener('click',function(){ paused=false; ci.remove(); stopInt(); i++; show(); });
+        b3.addEventListener('click',function(){ ci.remove(); endScene('red'); });
+      });
+      var lastShown=left;
+      sceneInt=setInterval(function(){
+        if(paused) return;
+        left=Math.max(0,Math.round((endAt-Date.now())/1000));
+        if(left!==lastShown){
+          lastShown=left; big.textContent=fmt(left);
+          mini.querySelector('.ring-fill').setAttribute('stroke-dashoffset',String(CIRC*(1-left/total)));
+          if(left<=10){ mini.classList.add('hot'); if(left>0) heartbeat(); }
+        }
+        if(left<=0){ stopInt(); bell(); vibrate([120,80,120]); next.disabled=false; next.textContent=isClose?'End the scene':'Next step — the bell says so'; note.textContent='Bell. Finish the sentence you were on, then move on.'; }
+      },200);
+    }
+    show();
+  }
+
   /* ---------- wire up ---------- */
   hub.addEventListener('pointerdown',chargeBegin);
   window.addEventListener('pointerup',chargeEnd);
@@ -1044,6 +1640,8 @@
   document.getElementById('rulesBtn').addEventListener('click',function(){ showGate(false); });
   document.getElementById('editBtn').addEventListener('click',showSettings);
   document.getElementById('finishBtn').addEventListener('click',showFinish);
+  document.getElementById('limitsBtn').addEventListener('click',showLimits);
+  document.getElementById('domBtn').addEventListener('click',showSceneSetup);
   window.addEventListener('resize',sizeCanvas);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
   updateHeatUI(); updateTurn(); sizeCanvas();
