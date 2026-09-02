@@ -26,6 +26,16 @@ A private spin-the-wheel game for two, in a single `index.html` — no build, no
 - **Limits Sheet** — each partner answers privately (the app shows a hand-the-phone screen in between): *done to me* and *I'd do this to them*, across restraint, impact, sensation, control & denial, words & power, toys & penetration, mouths, exhibition, throat & breath, and rituals — every item with a plain description and a safety note where one matters. The house rules are the prefilled defaults. Part one (what you want done to you) is shared with your partner so they know what you want; part two (what you're willing to do to them) stays private. The reveal shows both wishlists, then the **overlap** where a want meets a willing partner — that's tonight's menu. The wheel itself obeys the sheet: rounds that need something one of you declined simply disappear.
 - **Dominion scenes** — pick who holds the power (or flip a coin), a length (3 / 5 / 7 steps) and an intensity (Soft / Firm / Ruthless). The Dom gets a sealed, step-by-step script built only from the overlap — opening tie, build-up, peak, aftercare — one step at a time, each timed by the bell. The sub can veto any step, tap **Yellow** to pause for a check-in, or **Red** to end the scene instantly and go straight to the aftercare checklist.
 - Breath play appears on the sheet with a safety card but is never scripted; the only throat item the scripts use is "hand resting on the throat, zero pressure".
+- **Plan ahead** — in scene setup choose *Plan ahead* instead of *Tonight*: the scene is sealed for a date (default two nights out) and you get a preparation checklist with tick-boxes — *buy or find* (derived from what the sealed steps actually need, without revealing their order), *the day before*, *that day*, *one hour before*. The Dominion button shows the countdown; run the planned scene from there.
+- Exhibition also lists *watched by strangers (not joined)* and *a stranger joins* — both prefilled No, both for the conversation only; the wheel and scenes never schedule them.
+
+**Skip the timers**
+
+A menu toggle removes the bell everywhere: rounds show the activity with a *Done* button, scene steps let you move on when you're ready, and the coin flip is skipped. Rounds and heat still count.
+
+**Backup & transfer**
+
+Menu → *Backup & transfer* gives you a backup code (sheet, plan, menu, names, stats — encoded, not encrypted) to copy and paste on any device, plus *Save as file* where the page can offer one. *Restore* accepts a pasted code or a backup file and replaces everything on that device after a second tap.
 
 **Customizing (Menu)**
 

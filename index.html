@@ -370,6 +370,22 @@
   .after li{display:flex;gap:12px;font-size:15px;line-height:1.45}
   .after li::before{content:'—';color:var(--rose);flex:none}
 
+  /* ---------- plan-ahead / backup ---------- */
+  .plan-box{background:var(--surface);border:1px solid #5A1424;border-radius:14px;padding:14px 16px;margin:0 0 18px;text-align:left;font-size:13px;line-height:1.5}
+  .plan-box b{display:block;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:#FF6B85;margin-bottom:4px}
+  .plan-box .card-btns{justify-content:flex-start;margin-top:10px}
+  .plan-box .card-btns button{padding:10px 16px;font-size:11px}
+  .chk-group{margin:18px 0 6px;text-align:left}
+  .chk-group h3{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin:0 0 6px;font-weight:600}
+  .chk{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--edge);font-size:14px;line-height:1.4;cursor:pointer}
+  .chk input{accent-color:var(--rose);width:18px;height:18px;flex:none;margin-top:1px}
+  .chk.done span{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(169,132,146,.5)}
+  .date-row{display:flex;gap:10px;align-items:center;justify-content:center;margin:6px 0 10px}
+  .date-row label{color:var(--dim);font-size:12px;letter-spacing:.08em}
+  .date-row input[type=date]{background:var(--surface-2);border:1px solid var(--edge);color:var(--cream);border-radius:10px;padding:10px 12px;font-family:inherit;font-size:14px;color-scheme:dark}
+  .progress{font-family:'DM Mono',monospace;font-size:12px;color:var(--dim);text-align:center;margin:0 0 6px}
+  .backup-code{font-family:'DM Mono',monospace;font-size:11px;min-height:64px;word-break:break-all;margin-top:10px}
+  .power-row .quiet-btn.crown.planned{border-color:var(--gold);color:var(--gold-bright)}
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation-duration:.01ms !important;transition-duration:.01ms !important}
     .halo.flicker{animation:none}
@@ -623,6 +639,8 @@
     {id:'curtains',cat:'Exhibition',label:'Curtains open, lights on',note:'Your window, your night. Never aimed at anyone who didn’t ask to see.',recv:BOTH_P,def:'no'},
     {id:'public_tease',cat:'Exhibition',label:'Public teasing',desc:'A hand under the table. A remote toy at dinner.',note:'Plausible deniability is the whole game. Nobody else gets involved.',recv:BOTH_P,def:'maybe'},
     {id:'texts',cat:'Exhibition',label:'Filthy texts and photos during the day',recv:BOTH_P,def:'maybe'},
+    {id:'strangers_watch',cat:'Exhibition',label:'Exhibition in front of strangers — watched, not joined',desc:'A play party, a sex-positive club, a hotel balcony everyone knows about. Strangers who chose to look. Nobody touches, nobody joins.',note:'Only where people have opted in to see it — never anyone who didn’t ask. The wheel and the scenes won’t schedule this; it’s here so you both know it’s on the table.',recv:BOTH_P,def:'no'},
+    {id:'third_person',cat:'Exhibition',label:'A stranger joins — third-person involvement',desc:'A third person, chosen together, with their own yes and their own limits.',note:'Negotiated sober and in advance: who, what, protection, and a veto for all three that ends it instantly. Never sprung on anyone, never a surprise guest. The wheel and the scenes won’t schedule this; it’s for the conversation.',recv:BOTH_P,def:'no'},
     {id:'throat_hand',cat:'Throat & breath',label:'A hand resting on the throat — zero pressure',note:'The look without the risk: palm barely touching, fingers on the jaw. Any squeeze at all and it’s the item below.',recv:BOTH_P,def:'maybe'},
     {id:'breath',cat:'Throat & breath',label:'Breath play, choking',note:'This game will never script this, even if you both say yes. The danger has nothing to do with lung capacity or holding your breath: pressure on the neck cuts blood to the brain and can trip the vagus nerve, and people black out or go into cardiac arrest with zero warning — a partner cannot tell “fine” from “about to pass out”. If you ever do it anyway: never the front of the throat, never both sides at once, seconds not tens of seconds, never while restrained, never during orgasm, and stop at the first dizziness, ringing or spots.',recv:BOTH_P,def:'no'},
     {id:'writing',cat:'Rituals',label:'Body writing',desc:'Lipstick, marker.',recv:BOTH_P,def:'yes'},
@@ -806,12 +824,12 @@
   STEPS.forEach(function(s,i){ s.id='s'+i; });
 
   /* ---------- state ---------- */
-  var acts, settings, stats, turn, sheet;
+  var acts, settings, stats, turn, sheet, plan;
   function defSheet(){ return {her:{recv:{},give:{},done:false},him:{recv:{},give:{},done:false}}; }
-  function defSettings(){return {mode:'classic',startHeat:0,specials:true,twists:true,plot:true,gamble:true,mysteryTimer:false,sound:true,dominion:true,her:'Her',him:'Him',toys:DEF_TOYS.slice()};}
+  function defSettings(){return {mode:'classic',startHeat:0,specials:true,twists:true,plot:true,gamble:true,mysteryTimer:false,sound:true,dominion:true,noTimer:false,her:'Her',him:'Him',toys:DEF_TOYS.slice()};}
   function defStats(){return {rounds:0,seconds:0,twists:0,plot:0,jackpots:0,vetoes:0,longest:0,peakHeat:0,gambles:0,gWon:0,spinsHer:0,spinsHim:0,scenes:0,scenesHer:0,scenesHim:0};}
   function load(){
-    acts=defaults(); settings=defSettings(); stats=defStats(); turn='her'; sheet=defSheet();
+    acts=defaults(); settings=defSettings(); stats=defStats(); turn='her'; sheet=defSheet(); plan=null;
     try{
       var raw=localStorage.getItem(STORE_KEY);
       if(raw){
@@ -821,11 +839,12 @@
         if(s.stats) for(var j in s.stats) if(Object.prototype.hasOwnProperty.call(s.stats,j)) stats[j]=s.stats[j];
         if(s.turn==='him') turn='him';
         if(s.sheet&&s.sheet.her&&s.sheet.him) sheet=s.sheet;
+        if(s.plan&&s.plan.stepIds) plan=s.plan;
       }
     }catch(e){}
     if(!Array.isArray(settings.toys)) settings.toys=DEF_TOYS.slice();
   }
-  function save(){ try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,settings:settings,stats:stats,turn:turn,sheet:sheet}));}catch(e){} }
+  function save(){ try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,settings:settings,stats:stats,turn:turn,sheet:sheet,plan:plan}));}catch(e){} }
   load();
 
   function tierFor(r){ return r<HEAT_AT[1]?0: r<HEAT_AT[2]?1: r<HEAT_AT[3]?2:3; }
@@ -1077,12 +1096,13 @@
     if(ex.childNodes.length) card.appendChild(ex);
 
     var cl=el('p','clock-line');
-    if(p.hidden||settings.mysteryTimer){ cl.textContent='The bell knows. You don’t.'; }
+    if(settings.noTimer){ cl.textContent='No clock tonight. It ends when you both say so.'; }
+    else if(p.hidden||settings.mysteryTimer){ cl.textContent='The bell knows. You don’t.'; }
     else { cl.appendChild(document.createTextNode('The bell rings in ')); cl.appendChild(el('b',null,fmt(p.sec))); }
     card.appendChild(cl);
 
     var btns2=el('div','card-btns');
-    var start=el('button','primary-btn'+(p.jackpot?' gold':''),p.hidden?'Reveal & start':'Start the clock');
+    var start=el('button','primary-btn'+(p.jackpot?' gold':''),settings.noTimer?(p.hidden?'Reveal & begin':'Begin'):(p.hidden?'Reveal & start':'Start the clock'));
     start.addEventListener('click',function(){ startTimer(p,{}); });
     btns2.appendChild(start); btns2.appendChild(vetoBtn());
     card.appendChild(btns2);
@@ -1098,8 +1118,48 @@
   /* ---------- timer ---------- */
   var timerEl=null, timerInt=null;
   var RING_R=46, CIRC=2*Math.PI*RING_R;
+  function extrasFor(p){
+    var ex=el('div','t-extras');
+    if(p.twist){ var tw=el('div','twist'); tw.appendChild(el('b',null,'Twist')); tw.appendChild(document.createTextNode(p.twist.t)); ex.appendChild(tw); }
+    if(p.focus){ var f=el('p','focus'); f.appendChild(document.createTextNode('Focus: ')); f.appendChild(el('b',null,p.focus)); ex.appendChild(f); }
+    if(p.toy){ var ty=el('p','focus'); ty.appendChild(document.createTextNode('From the drawer: ')); ty.appendChild(el('b',null,p.toy)); ex.appendChild(ty); }
+    return ex;
+  }
+  function accountRound(total,opts){
+    var before=tier();
+    if(!opts.penalty){ stats.seconds+=total; if(!opts.overtime){ stats.rounds++; stats.longest=Math.max(stats.longest,total); } }
+    var after=tier(); stats.peakHeat=Math.max(stats.peakHeat,after); save(); updateHeatUI(); draw();
+    return {before:before,after:after};
+  }
+  function showHeatUp(before,after){
+    var o=el('div','overlay'), box=el('div','stopped');
+    var hu=el('div','heat-up'); hu.appendChild(el('b',null,'🔥 Heat rising — '+HEAT_NAMES[after]+' unlocked'));
+    var added=sliceCount(after)-sliceCount(before);
+    hu.appendChild(el('span',null,added>0?added+' new slice'+(added===1?'':'s')+' just landed on the wheel.':'The wheel is getting ideas.'));
+    box.appendChild(hu);
+    var b=el('button','primary-btn','Back to the wheel'); b.addEventListener('click',function(){ o.remove(); }); box.appendChild(b);
+    o.appendChild(box); document.body.appendChild(o); fanfare();
+  }
+  /* no-timer mode: the round shows, and ends when they say so */
+  function startUntimed(p,opts){
+    clearResult();
+    timerEl=el('div','overlay');
+    if(p.jackpot) timerEl.appendChild(el('div','t-label','Jackpot round'));
+    else if(p.hidden) timerEl.appendChild(el('div','t-label','Mystery revealed'));
+    var chips=el('div','chips'); chips.appendChild(el('span','tag '+p.tag,TAGS[p.tag]||p.tag)); timerEl.appendChild(chips);
+    timerEl.appendChild(el('h2','t-name',p.name));
+    var ex=extrasFor(p); if(ex.childNodes.length) timerEl.appendChild(ex);
+    timerEl.appendChild(el('p','t-hint','No bell tonight. It ends when you both say so — then come back and spin.'));
+    var done=el('button','primary-btn t-end','Done · back to the wheel');
+    done.addEventListener('click',function(){ var acc=accountRound(0,opts); closeTimer(); if(acc.after>acc.before) showHeatUp(acc.before,acc.after); else toast('Round '+stats.rounds+' in the books.'); });
+    timerEl.appendChild(done);
+    var stop=el('button','quiet-btn','Stop — this one doesn’t count'); stop.style.marginTop='12px'; stop.addEventListener('click',function(){ closeTimer(); });
+    timerEl.appendChild(stop);
+    document.body.appendChild(timerEl);
+  }
   function startTimer(p,opts){
     opts=opts||{};
+    if(settings.noTimer){ startUntimed(p,opts); return; }
     var total=p.sec, left=total, veiled=settings.mysteryTimer && !opts.overtime;
     clearResult();
     timerEl=el('div','overlay');
@@ -1108,11 +1168,7 @@
     else if(p.hidden) timerEl.appendChild(el('div','t-label','Mystery revealed'));
     var chips=el('div','chips'); chips.appendChild(el('span','tag '+p.tag,TAGS[p.tag]||p.tag)); timerEl.appendChild(chips);
     timerEl.appendChild(el('h2','t-name',p.name));
-    var ex=el('div','t-extras');
-    if(p.twist){ var tw=el('div','twist'); tw.appendChild(el('b',null,'Twist')); tw.appendChild(document.createTextNode(p.twist.t)); ex.appendChild(tw); }
-    if(p.focus){ var f=el('p','focus'); f.appendChild(document.createTextNode('Focus: ')); f.appendChild(el('b',null,p.focus)); ex.appendChild(f); }
-    if(p.toy){ var ty=el('p','focus'); ty.appendChild(document.createTextNode('From the drawer: ')); ty.appendChild(el('b',null,p.toy)); ex.appendChild(ty); }
-    if(ex.childNodes.length) timerEl.appendChild(ex);
+    var ex=extrasFor(p); if(ex.childNodes.length) timerEl.appendChild(ex);
 
     var ring=el('div','ring-wrap'+(veiled?' veiled':'')); ring.id='ringWrap';
     ring.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="'+RING_R+'"/><circle class="ring-fill" id="ringFill" cx="50" cy="50" r="'+RING_R+'" stroke-dasharray="'+CIRC+'" stroke-dashoffset="0"/></svg>';
@@ -1153,9 +1209,7 @@
     clearInterval(timerInt); timerInt=null;
     bell(); vibrate([120,80,120,80,240]);
     timerEl.classList.add('flash');
-    var before=tier();
-    if(!opts.penalty){ stats.seconds+=total; if(!opts.overtime){ stats.rounds++; stats.longest=Math.max(stats.longest,total); } }
-    var after=tier(); stats.peakHeat=Math.max(stats.peakHeat,after); save(); updateHeatUI(); draw();
+    var acc=accountRound(total,opts), before=acc.before, after=acc.after;
 
     timerEl.innerHTML='';
     var box=el('div','stopped');
@@ -1167,7 +1221,7 @@
       hu.appendChild(el('span',null,added>0?added+' new slice'+(added===1?'':'s')+' just landed on the wheel.':'The wheel is getting ideas.'));
       box.appendChild(hu);
     }
-    var offer=settings.gamble && !opts.overtime && p.kind!=='confession' && Math.random()<.38;
+    var offer=settings.gamble && !settings.noTimer && !opts.overtime && p.kind!=='confession' && Math.random()<.38;
     if(offer){
       var g=el('div','gamble');
       g.appendChild(el('h3',null,'Double or nothing?'));
@@ -1319,6 +1373,7 @@
       panel.appendChild(toggleRow('Plot twists','plot','Random interruptions mid-round'));
       panel.appendChild(toggleRow('Double or nothing','gamble','A coin flip for overtime when the bell rings'));
       panel.appendChild(toggleRow('Hide the clock','mysteryTimer','No countdown shown — the bell just rings'));
+      panel.appendChild(toggleRow('Skip the timers','noTimer','No bell anywhere — rounds and scene steps end when you say so'));
       panel.appendChild(toggleRow('Sound','sound','Ticks, heartbeat, bell'));
 
       panel.appendChild(el('h3','sec-title','Names'));
@@ -1372,6 +1427,36 @@
         save(); draw(); updateHeatUI(); render(); panel.scrollTop=panel.scrollHeight;
       });
       panel.appendChild(form);
+
+      panel.appendChild(el('h3','sec-title','Backup & transfer'));
+      panel.appendChild(el('small',null,'Your sheet, plan, menu, names and stats in one code. It’s encoded, not encrypted — keep it somewhere private. Paste it on any device to get everything back.'));
+      var bk=el('div','drawer-foot'); bk.style.marginTop='10px';
+      var codeTa=el('textarea','backup-code'); codeTa.readOnly=true; codeTa.hidden=true; codeTa.setAttribute('aria-label','Backup code');
+      var copyB=el('button','primary-btn','Copy backup code');
+      copyB.addEventListener('click',function(){
+        var code=encodeBackup(); codeTa.value=code; codeTa.hidden=false;
+        var done=function(ok){ toast(ok?'Backup code copied. Paste it somewhere safe.':'Copy blocked here — select the code below and copy it by hand.'); };
+        if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(code).then(function(){done(true);},function(){done(false);}); else done(false);
+      });
+      bk.appendChild(copyB);
+      var dlB=el('button','quiet-btn','Save as file'); dlB.hidden=true; bk.appendChild(dlB);
+      panel.appendChild(bk); panel.appendChild(codeTa);
+      var fname='velvet-roulette-backup.json';
+      if(window.claude&&typeof window.claude.use==='function'){
+        /* hosted viewer: a real save dialog, if this view can offer one */
+        window.claude.use('downloads').then(function(dl){ if(!dl||!document.body.contains(dlB)) return; dlB.hidden=false; dlB.addEventListener('click',function(){ dl.save({filename:fname,data:JSON.stringify(backupObject(),null,2)}).then(function(){ toast('Saved.'); },function(err){ if(err&&err.code==='declined') return; toast('Couldn’t save a file here — use the backup code instead.'); }); }); },function(){});
+      } else if(window.URL&&URL.createObjectURL){
+        dlB.hidden=false; dlB.addEventListener('click',function(){ var blob=new Blob([JSON.stringify(backupObject(),null,2)],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500); });
+      }
+      panel.appendChild(el('h3','sec-title','Restore'));
+      var restoreTa=el('textarea','backup-code'); restoreTa.placeholder='Paste a backup code, or the contents of a backup file'; restoreTa.setAttribute('aria-label','Paste backup'); panel.appendChild(restoreTa);
+      var rs=el('div','drawer-foot'); rs.style.marginTop='10px';
+      var fileIn=el('input'); fileIn.type='file'; fileIn.accept='.json,.txt,application/json,text/plain'; fileIn.hidden=true;
+      var pickB=el('button','quiet-btn','Choose a backup file'); pickB.addEventListener('click',function(){ fileIn.click(); });
+      fileIn.addEventListener('change',function(){ var f=fileIn.files&&fileIn.files[0]; if(!f) return; var rd=new FileReader(); rd.onload=function(){ restoreTa.value=String(rd.result||''); toast('File loaded — tap Restore.'); }; rd.readAsText(f); });
+      var restoreB=el('button','primary-btn','Restore'), armedR=false;
+      restoreB.addEventListener('click',function(){ var obj=decodeBackup(restoreTa.value); if(!obj){ toast('That doesn’t look like a Velvet & Roulette backup.'); return; } if(!armedR){ armedR=true; restoreB.textContent='Tap again to replace everything on this device'; return; } applyBackup(obj); d.remove(); toast('Restored — sheet, plan, menu and all.'); });
+      rs.appendChild(pickB); rs.appendChild(restoreB); panel.appendChild(rs); panel.appendChild(fileIn);
 
       var foot=el('div','drawer-foot');
       var reset=el('button','quiet-btn','Reset to house menu'); reset.addEventListener('click',function(){ acts=defaults(); save(); draw(); updateHeatUI(); render(); toast('House menu restored.'); });
@@ -1506,7 +1591,16 @@
     var o=el('div','overlay gate'); var box=el('div','setup');
     box.appendChild(el('h1',null,'Dominion'));
     box.appendChild(el('p','lede','One of you holds the power. The other follows. The one in charge follows the script — every step, in order, for as long as the bell says. Yellow pauses everything. Red ends it, instantly. '+(sheetReady()?'Built only from your Limits Sheet overlap.':'You haven’t both filled the Limits Sheet, so the house defaults apply — fill it for the full menu.')));
-    var dom=null, len=5, inten='firm', begin;
+    if(plan){
+      var pb=el('div','plan-box'); pb.appendChild(el('b',null,'Planned scene · '+planWhen()));
+      pb.appendChild(document.createTextNode(nameOf(plan.dom)+' holds the power · '+plan.stepIds.length+' steps sealed · '+plan.inten));
+      var pbb=el('div','card-btns');
+      var runB=el('button','primary-btn','Run the planned scene'); runB.addEventListener('click',function(){ o.remove(); runPlanned(); });
+      var ckB=el('button','quiet-btn','Checklist'); ckB.addEventListener('click',function(){ o.remove(); showChecklist(false); });
+      var scB=el('button','quiet-btn','Scrap it'); scB.addEventListener('click',function(){ plan=null; save(); updatePlanBadge(); o.remove(); toast('Plan scrapped.'); showSceneSetup(); });
+      pbb.appendChild(runB); pbb.appendChild(ckB); pbb.appendChild(scB); pb.appendChild(pbb); box.appendChild(pb);
+    }
+    var dom=null, len=5, inten='firm', when='tonight', begin;
     box.appendChild(el('h3','sec-title','Who holds the power?'));
     var who=el('div','who'), wb={};
     ['her','him'].forEach(function(w){ var b=el('button',null,nameOf(w)+' dominates'); b.addEventListener('click',function(){ dom=w; paintWho(); }); who.appendChild(b); wb[w]=b; });
@@ -1514,6 +1608,9 @@
     function paintWho(){ ['her','him'].forEach(function(w){ wb[w].className=dom===w?'on':''; }); begin.disabled=!dom; }
     box.appendChild(who);
     function segment(opts,cur,onpick){ var seg=el('div','seg'); opts.forEach(function(m){ var b=el('button',cur===m[0]?'on':'',m[1]); b.addEventListener('click',function(){ onpick(m[0]); Array.prototype.forEach.call(seg.children,function(c){c.className='';}); b.className='on'; }); seg.appendChild(b); }); return seg; }
+    box.appendChild(el('h3','sec-title','When'));
+    box.appendChild(segment([['tonight','Tonight'],['plan','Plan ahead']],when,function(v){ when=v; begin.textContent=v==='plan'?'Seal it & plan':'Build the scene'; }));
+    box.appendChild(el('small',null,'Plan ahead seals the scene for a night of your choosing and hands you a preparation checklist.'));
     box.appendChild(el('h3','sec-title','How long'));
     box.appendChild(segment([[3,'Short · 3'],[5,'Full · 5'],[7,'Long · 7']],len,function(v){len=v;}));
     box.appendChild(el('h3','sec-title','How hard'));
@@ -1521,7 +1618,7 @@
     box.appendChild(el('small',null,'Soft skips the intense steps. Firm allows them when you both said yes. Ruthless prefers them.'));
     var btns=el('div','card-btns'); btns.style.marginTop='22px';
     begin=el('button','primary-btn','Build the scene'); begin.disabled=true;
-    begin.addEventListener('click',function(){ var steps=buildScene(dom,len,inten); o.remove(); showGather(dom,steps); });
+    begin.addEventListener('click',function(){ var steps=buildScene(dom,len,inten); o.remove(); if(when==='plan') showPlan(dom,len,inten,steps); else showGather(dom,steps); });
     var back=el('button','quiet-btn','Not tonight'); back.addEventListener('click',function(){ o.remove(); });
     btns.appendChild(begin); btns.appendChild(back); box.appendChild(btns);
     o.appendChild(box); document.body.appendChild(o);
@@ -1582,7 +1679,7 @@
     }
     function show(){
       if(i>=steps.length){ endScene('done'); return; }
-      var it=steps[i], s=it.step, isClose=s.phase==='close';
+      var it=steps[i], s=it.step, isClose=s.phase==='close', untimed=!!settings.noTimer;
       var total=isClose?300:rollSec(s.min,s.max,1), left=total, endAt=Date.now()+total*1000, pauseAt=null;
       sceneEl.innerHTML='';
       sceneEl.appendChild(el('div','s-head','Dominion · '+nameOf(dom)+' holds the power'));
@@ -1598,10 +1695,11 @@
       var tm=el('div','s-timer'), mini=el('div','mini');
       mini.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="'+RING_R+'"/><circle class="ring-fill" cx="50" cy="50" r="'+RING_R+'" stroke-dasharray="'+CIRC+'" stroke-dashoffset="0"/></svg>';
       var big=el('div','big',fmt(left)); mini.appendChild(big); tm.appendChild(mini);
-      var note=el('div','s-note',isClose?'Five minutes. Then the phone goes away.':'The bell decides when you may move on.'); tm.appendChild(note);
+      var note=el('div','s-note',untimed?'No clock tonight. Move on when you’re both ready.':isClose?'Five minutes. Then the phone goes away.':'The bell decides when you may move on.'); tm.appendChild(note);
+      if(untimed) mini.hidden=true;
       card.appendChild(tm);
       var btns=el('div','s-btns');
-      var next=el('button','primary-btn',isClose?'End the scene':'Next step'); next.disabled=!isClose;
+      var next=el('button','primary-btn',isClose?'End the scene':'Next step'); next.disabled=!isClose&&!untimed;
       next.addEventListener('click',function(){ stopInt(); i++; show(); });
       btns.appendChild(next);
       if(!isClose){
@@ -1627,7 +1725,7 @@
         b3.addEventListener('click',function(){ ci.remove(); endScene('red'); });
       });
       var lastShown=left;
-      sceneInt=setInterval(function(){
+      if(!untimed) sceneInt=setInterval(function(){
         if(paused) return;
         left=Math.max(0,Math.round((endAt-Date.now())/1000));
         if(left!==lastShown){
@@ -1639,6 +1737,87 @@
       },200);
     }
     show();
+  }
+
+  /* ---------- plan ahead ---------- */
+  function isoDate(d){ var m=d.getMonth()+1, day=d.getDate(); return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(day<10?'0':'')+day; }
+  function daysUntil(dateStr){ var d=new Date(dateStr+'T00:00:00'), now=new Date(); now.setHours(0,0,0,0); return Math.round((d-now)/86400000); }
+  function planWhen(){ var n=daysUntil(plan.date); return n>1?'in '+n+' days':n===1?'tomorrow':n===0?'tonight':'overdue by '+(-n)+' day'+(n===-1?'':'s'); }
+  function updatePlanBadge(){ var b=document.getElementById('domBtn'); if(plan){ b.textContent='👑 Dominion · '+planWhen(); b.classList.add('planned'); } else { b.textContent='👑 Dominion scene'; b.classList.remove('planned'); } }
+  function showPlan(dom,len,inten,steps){
+    var d=new Date(); d.setDate(d.getDate()+2);
+    plan={dom:dom,len:len,inten:inten,date:isoDate(d),stepIds:steps.map(function(s){return s.step.id;}),checks:{},created:Date.now()};
+    save(); updatePlanBadge(); showChecklist(true);
+  }
+  function planSteps(){
+    var sub=other(plan.dom), out=[];
+    plan.stepIds.forEach(function(id){ var s=STEPS.filter(function(x){return x.id===id;})[0]; if(!s) return; var ok=stepOk(s,sub,plan.inten); if(ok) out.push(ok); });
+    return out;
+  }
+  function checklistItems(){
+    var steps=planSteps(), props={}, ties=0, WORDS={one:1,two:2,three:3,four:4};
+    steps.forEach(function(x){ (x.step.props||[]).forEach(function(p){ var m=/^(one|two|three|four) ties?$/.exec(p); if(m) ties=Math.max(ties,WORDS[m[1]]); else props[p]=1; }); });
+    var MAP={'the clone':'The clone — washed, with toy cleaner to hand','the wand':'The wand — charged','lube':'Lube (water-based works with every toy)','a lot of lube':'A lot of lube (water-based)','a smaller toy':'A smaller toy to start with','towel':'Towels','clothespins':'Wooden clothespins — six or more','low-temp massage candle':'A low-temperature massage candle (not a normal candle — that burns)','blindfold':'A blindfold or sleep mask','lipstick or marker':'Lipstick or a body-safe marker','lipstick':'Lipstick','ice':'A full ice tray','a sturdy chair':'A sturdy armless chair','a pillow':'A spare pillow','music':'A playlist that lasts an hour','paddle or hairbrush':'A paddle or a flat wooden hairbrush','your phone':'Phone charged and on Do Not Disturb'};
+    var buy=[];
+    if(ties){ buy.push(ties+' soft tie'+(ties>1?'s':'')+' — silk scarves, soft cotton rope, or cuffs; nothing that tightens under load'); buy.push('Blunt-tip safety shears, to live within arm’s reach of the bed'); }
+    Object.keys(props).forEach(function(p){ buy.push(MAP[p]||p); });
+    buy.push('Two bottles of water and something sweet for after','Clean sheets');
+    var before=['Read the reveal together one more time — out loud, the whole overlap',nameOf(other(plan.dom))+' picks the title '+nameOf(plan.dom)+' answers to, if titles are on the menu','Wash the ties and toys; test the candle on your own forearm from thirty centimetres','Charge the wand; put it and the shears together on the nightstand',nameOf(plan.dom)+': trim your nails','Decide the room, and whether the curtains matter'];
+    var day=['Clear the whole evening — no visitors, no alarms','One drink at most: rope and drunk do not mix','Shower; warm the room; dim the lights','Water, shears, lube and towels on the nightstand','Phones on Do Not Disturb — except this one, face down','Say the signals out loud together: Yellow pauses, Red stops, two taps means lift'];
+    var hour=[nameOf(plan.dom)+': lay every prop out within reach — the order is sealed, so lay out all of it',nameOf(other(plan.dom))+': nothing to prepare. Show up.','Playlist on. Open this page. Tap “Run the planned scene”.'];
+    return [['Buy or find',buy],['The day before',before],['That day',day],['One hour before',hour]];
+  }
+  function showChecklist(fresh){
+    if(!plan) return;
+    var o=el('div','overlay gate'); o.style.justifyContent='flex-start'; var box=el('div','sheet');
+    box.appendChild(el('h1',null,fresh?'Sealed. Now prepare.':'The plan'));
+    box.appendChild(el('p','lede',nameOf(plan.dom)+' holds the power · '+plan.stepIds.length+' steps sealed · '+plan.inten+'. The order stays sealed until you run it. The checklist knows what the steps need without telling you which is which.'));
+    var prog=el('p','progress','');
+    function progressText(){ var t=0,d=0; checklistItems().forEach(function(g){ g[1].forEach(function(_,i){ t++; if(plan.checks[g[0]+'#'+i]) d++; }); }); return d+' / '+t+' ready · '+planWhen(); }
+    var dr=el('div','date-row'); dr.appendChild(el('label',null,'Scene night')); var inp=el('input'); inp.type='date'; inp.value=plan.date;
+    inp.addEventListener('change',function(){ if(inp.value){ plan.date=inp.value; save(); updatePlanBadge(); prog.textContent=progressText(); } });
+    dr.appendChild(inp); box.appendChild(dr); box.appendChild(prog);
+    checklistItems().forEach(function(g){
+      var gb=el('div','chk-group'); gb.appendChild(el('h3',null,g[0]));
+      g[1].forEach(function(text,i){ var key=g[0]+'#'+i; var row=el('label','chk'+(plan.checks[key]?' done':'')); var cb=el('input'); cb.type='checkbox'; cb.checked=!!plan.checks[key];
+        cb.addEventListener('change',function(){ plan.checks[key]=cb.checked; save(); row.classList.toggle('done',cb.checked); prog.textContent=progressText(); });
+        row.appendChild(cb); row.appendChild(el('span',null,text)); gb.appendChild(row); });
+      box.appendChild(gb);
+    });
+    prog.textContent=progressText();
+    var btns=el('div','card-btns'); btns.style.marginTop='22px';
+    var run=el('button','primary-btn','Run the planned scene'); run.addEventListener('click',function(){ o.remove(); runPlanned(); });
+    var back=el('button','quiet-btn','Back'); back.addEventListener('click',function(){ o.remove(); });
+    btns.appendChild(run); btns.appendChild(back); box.appendChild(btns);
+    o.appendChild(box); document.body.appendChild(o);
+  }
+  function runPlanned(){
+    if(!plan) return;
+    var steps=planSteps();
+    if(steps.length<2){ toast('The sheet changed — not enough of that plan is still allowed. Build a fresh one.'); return; }
+    var dom=plan.dom; plan=null; save(); updatePlanBadge();
+    showGather(dom,steps);
+  }
+
+  /* ---------- backup & restore ---------- */
+  function backupObject(){ return {app:'velvet-roulette',v:2,exported:new Date().toISOString(),acts:acts,settings:settings,stats:stats,sheet:sheet,plan:plan,turn:turn}; }
+  function encodeBackup(){ return btoa(unescape(encodeURIComponent(JSON.stringify(backupObject())))); }
+  function decodeBackup(text){
+    text=String(text||'').trim(); var obj=null;
+    try{ obj=JSON.parse(text); }catch(e){ try{ obj=JSON.parse(decodeURIComponent(escape(atob(text.replace(/\s+/g,''))))); }catch(e2){ obj=null; } }
+    if(!obj||obj.app!=='velvet-roulette'||!Array.isArray(obj.acts)||!obj.acts.length) return null;
+    return obj;
+  }
+  function applyBackup(obj){
+    var k;
+    acts=obj.acts;
+    settings=defSettings(); for(k in (obj.settings||{})) if(Object.prototype.hasOwnProperty.call(obj.settings,k)) settings[k]=obj.settings[k];
+    if(!Array.isArray(settings.toys)) settings.toys=DEF_TOYS.slice();
+    stats=defStats(); for(k in (obj.stats||{})) if(Object.prototype.hasOwnProperty.call(obj.stats,k)) stats[k]=obj.stats[k];
+    sheet=(obj.sheet&&obj.sheet.her&&obj.sheet.him)?obj.sheet:defSheet();
+    plan=(obj.plan&&obj.plan.stepIds)?obj.plan:null;
+    turn=obj.turn==='him'?'him':'her';
+    save(); updateHeatUI(); updateTurn(); updatePlanBadge(); draw();
   }
 
   /* ---------- wire up ---------- */
@@ -1656,7 +1835,7 @@
   document.getElementById('domBtn').addEventListener('click',showSceneSetup);
   window.addEventListener('resize',sizeCanvas);
   if(document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
-  updateHeatUI(); updateTurn(); sizeCanvas();
+  updateHeatUI(); updateTurn(); updatePlanBadge(); sizeCanvas();
   showGate(true);
 })();
 </script>
