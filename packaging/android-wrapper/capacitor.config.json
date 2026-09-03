@@ -1,0 +1,8 @@
+{
+  "appId": "com.scottsart.velvetroulette",
+  "appName": "Velvet & Roulette",
+  "webDir": "www",
+  "android": {
+    "allowMixedContent": true
+  }
+}
