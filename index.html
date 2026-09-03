@@ -1510,7 +1510,8 @@
 
     if(p.kind==='jackpot'){
       var sel=el('select'); sel.setAttribute('aria-label','Pick any activity');
-      var list=enabledActs().filter(function(a){ return !a.prelude && nightOk(a); }).sort(function(a,b){return (a.heat||1)-(b.heat||1);});
+      /* jackpot unlocks every heat level, but the night still only goes one stage further than the wheel would allow right now */
+      var list=enabledActs().filter(function(a){ return !a.prelude && nightOk(a) && stageWindow(a,1); }).sort(function(a,b){return (a.heat||1)-(b.heat||1);});
       list.forEach(function(a){ var o=el('option',null,'🔥'.repeat(a.heat||1)+'  '+a.name); o.value=a.id; sel.appendChild(o); });
       card.appendChild(sel);
       var btns=el('div','card-btns');
