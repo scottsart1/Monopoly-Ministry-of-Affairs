@@ -1,0 +1,13 @@
+{
+  "name": "velvet-roulette-android",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Android WebView wrapper (Capacitor) that packages index.html as an installable .apk",
+  "dependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/android": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  }
+}
