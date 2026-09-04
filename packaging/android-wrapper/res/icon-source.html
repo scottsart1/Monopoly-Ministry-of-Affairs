@@ -1,0 +1,43 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:transparent}svg{display:block}</style></head><body>
+<!-- Velvet & Roulette launcher icon. A roulette wheel in the app palette on the app's ground colour.
+     MODE=fg  : adaptive-icon foreground layer (108dp canvas, art kept inside the 66dp safe circle), transparent bg
+     MODE=full: legacy square icon, wheel on solid ground -->
+<svg id="s" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="432" height="432">
+  <defs>
+    <radialGradient id="hub" cx="50%" cy="45%" r="60%"><stop offset="0" stop-color="#3A1F2C"/><stop offset="1" stop-color="#160A10"/></radialGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset=".55" stop-color="#E4587A" stop-opacity="0"/><stop offset="1" stop-color="#E4587A" stop-opacity=".35"/></radialGradient>
+  </defs>
+  <rect id="bg" width="108" height="108" fill="#160A10"/>
+  <g id="art" transform="translate(54 54)">
+    <circle r="33" fill="url(#glow)"/>
+    <!-- 8 slices, palette: rose, violet, gold, teal -->
+    <g id="slices"></g>
+    <!-- rim -->
+    <circle r="28" fill="none" stroke="#D9A360" stroke-width="2.2"/>
+    <circle r="28" fill="none" stroke="#F2C57C" stroke-width=".6" opacity=".8"/>
+    <!-- hub -->
+    <circle r="8.5" fill="url(#hub)" stroke="#D9A360" stroke-width="1.4"/>
+    <text y="1.9" text-anchor="middle" font-family="Georgia, 'Cormorant', serif" font-style="italic" font-weight="700" font-size="9" fill="#F2C57C">&amp;</text>
+    <!-- pointer -->
+    <path d="M -4.2 -33 L 4.2 -33 L 0 -25.5 Z" fill="#F2C57C" stroke="#160A10" stroke-width=".8" stroke-linejoin="round"/>
+  </g>
+</svg>
+<script>
+  const cols=['#E4587A','#B07BD6','#D9A360','#4FA894'];
+  const g=document.getElementById('slices'); const n=8, R=27.4;
+  for(let i=0;i<n;i++){
+    const a0=(i/n)*Math.PI*2-Math.PI/2, a1=((i+1)/n)*Math.PI*2-Math.PI/2;
+    const x0=Math.cos(a0)*R, y0=Math.sin(a0)*R, x1=Math.cos(a1)*R, y1=Math.sin(a1)*R;
+    const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+    p.setAttribute('d',`M0 0 L${x0.toFixed(3)} ${y0.toFixed(3)} A${R} ${R} 0 0 1 ${x1.toFixed(3)} ${y1.toFixed(3)} Z`);
+    p.setAttribute('fill',cols[i%cols.length]); p.setAttribute('stroke','#160A10'); p.setAttribute('stroke-width','.7');
+    g.appendChild(p);
+  }
+  window.setMode=function(mode,size){
+    const s=document.getElementById('s'); s.setAttribute('width',size); s.setAttribute('height',size);
+    const bg=document.getElementById('bg'); const art=document.getElementById('art');
+    if(mode==='fg'){ bg.setAttribute('fill','none'); art.setAttribute('transform','translate(54 54) scale(.86)'); }       // adaptive fg: fits the 66dp safe zone (r<=33)
+    else if(mode==='full'){ bg.setAttribute('fill','#160A10'); art.setAttribute('transform','translate(54 54) scale(1.32)'); } // legacy square: fill the tile
+    else if(mode==='round'){ bg.setAttribute('fill','#160A10'); art.setAttribute('transform','translate(54 54) scale(1.32)'); }
+  };
+</script></body></html>

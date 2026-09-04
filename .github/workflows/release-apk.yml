@@ -39,20 +39,55 @@ jobs:
           echo "ANDROID_HOME=$ANDROID_HOME" >> "$GITHUB_ENV"
           echo "ANDROID_SDK_ROOT=$ANDROID_HOME" >> "$GITHUB_ENV"
 
+      # With the ANDROID_KEYSTORE_B64 (+ password/alias) secrets set, every build is signed with the same
+      # release key, so a new APK installs straight over the old one and nothing saved is lost.
+      # Without them the build falls back to a debug key that is cached between runs (best effort).
+      - name: Signing key
+        id: sign
+        env:
+          KS_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+        run: |
+          if [ -n "$KS_B64" ]; then
+            echo "$KS_B64" | base64 -d > "$RUNNER_TEMP/vr.jks"
+            echo "VR_KEYSTORE=$RUNNER_TEMP/vr.jks" >> "$GITHUB_ENV"
+            echo "mode=release" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=debug" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Keep the fallback debug key stable between runs
+        if: steps.sign.outputs.mode == 'debug'
+        uses: actions/cache@v4
+        with:
+          path: ~/.android/debug.keystore
+          key: vr-debug-keystore-v1
+
+      - name: Version
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/apk-v* ]]; then NAME="${GITHUB_REF#refs/tags/apk-v}"; else NAME="1.${{ github.run_number }}"; fi
+          echo "VR_VERSION_CODE=${{ github.run_number }}" >> "$GITHUB_ENV"
+          echo "VR_VERSION_NAME=$NAME" >> "$GITHUB_ENV"
+
       - name: Prepare Capacitor wrapper
         working-directory: packaging/android-wrapper
         run: |
           npm install
           mkdir -p www
           cp ../../index.html www/index.html
+          cp -r ../../fonts www/fonts
           npx cap add android
+          bash ./patch-android.sh
 
-      - name: Build debug APK
+      - name: Build APK
         working-directory: packaging/android-wrapper/android
+        env:
+          VR_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          VR_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          VR_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          if [ "${{ steps.sign.outputs.mode }}" = "release" ]; then ./gradlew assembleRelease --no-daemon; else ./gradlew assembleDebug --no-daemon; fi
 
       - name: Determine release tag
         id: tag
@@ -66,8 +101,18 @@ jobs:
       - name: Create release and upload APK
         env:
           GH_TOKEN: ${{ github.token }}
+          MODE: ${{ steps.sign.outputs.mode }}
         run: |
-          cp packaging/android-wrapper/android/app/build/outputs/apk/debug/app-debug.apk VelvetAndRoulette.apk
+          cp "packaging/android-wrapper/android/app/build/outputs/apk/$MODE/app-$MODE.apk" VelvetAndRoulette.apk
+          if [ "$MODE" = "release" ]; then
+            SIGN="Signed with the project's release key — installs straight over the previous version, nothing saved is lost."
+          else
+            SIGN="Signed with a fallback debug key (no ANDROID_KEYSTORE_B64 secret is set). It installs over earlier fallback-signed builds; an APK signed with a different key has to be uninstalled first, which wipes the saved answers. See packaging/android-wrapper/README.md."
+          fi
           gh release create "${{ steps.tag.outputs.tag }}" VelvetAndRoulette.apk \
-            --title "Velvet & Roulette (${{ steps.tag.outputs.tag }})" \
-            --notes "Debug-signed Android APK, built from \`index.html\` at this commit. To install: download on your phone, allow installs from this source when prompted, then open the file. Android will flag it as an unverified developer — expected, since this isn't Play Store-distributed."
+            --title "Velvet & Roulette ${{ env.VR_VERSION_NAME }}" \
+            --notes "Android APK, version ${{ env.VR_VERSION_NAME }} (build ${{ env.VR_VERSION_CODE }}), built from \`index.html\` at this commit.
+
+To install: download on your phone, allow installs from this source when prompted, then open the file. Android flags it as an unverified developer — expected, since this isn't Play Store-distributed.
+
+The app asks for one permission (vibration, for haptics) and has no network access at all — nothing you enter ever leaves the phone. $SIGN"
