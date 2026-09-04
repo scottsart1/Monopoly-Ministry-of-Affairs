@@ -1,0 +1,29 @@
+// Applied at the end of app/build.gradle by patch-android.sh.
+// Version numbers and signing come from the environment so CI and a local build behave the same.
+//   VR_VERSION_CODE / VR_VERSION_NAME        e.g. 42 / "1.42"
+//   VR_KEYSTORE / VR_KEYSTORE_PASSWORD /      path to a .jks and its passwords; when set, both debug and
+//   VR_KEY_ALIAS / VR_KEY_PASSWORD            release builds are signed with it so installs upgrade in place
+def vrKeystore = System.getenv('VR_KEYSTORE')
+def vrCode = (System.getenv('VR_VERSION_CODE') ?: '1').toInteger()
+def vrName = System.getenv('VR_VERSION_NAME') ?: '1.0'
+
+android {
+    defaultConfig {
+        versionCode = vrCode
+        versionName = vrName
+    }
+    if (vrKeystore) {
+        signingConfigs {
+            vr {
+                storeFile = file(vrKeystore)
+                storePassword = System.getenv('VR_KEYSTORE_PASSWORD')
+                keyAlias = System.getenv('VR_KEY_ALIAS')
+                keyPassword = System.getenv('VR_KEY_PASSWORD')
+            }
+        }
+        buildTypes {
+            release { signingConfig = signingConfigs.vr }
+            debug { signingConfig = signingConfigs.vr }
+        }
+    }
+}

@@ -3,6 +3,6 @@
   "appName": "Velvet & Roulette",
   "webDir": "www",
   "android": {
-    "allowMixedContent": true
+    "backgroundColor": "#160A10"
   }
 }

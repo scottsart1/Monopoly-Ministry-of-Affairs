@@ -1,9 +1,13 @@
 <title>Velvet &amp; Roulette</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap">
 <style>
+  /* the fonts ship alongside this file (fonts/), so the page works offline and never touches the network */
+  @font-face{font-family:'Outfit';font-style:normal;font-weight:100 900;font-display:swap;src:url('fonts/Outfit-var.woff2') format('woff2')}
+  @font-face{font-family:'Cormorant';font-style:normal;font-weight:300 700;font-display:swap;src:url('fonts/Cormorant-var.woff2') format('woff2')}
+  @font-face{font-family:'Cormorant';font-style:italic;font-weight:300 700;font-display:swap;src:url('fonts/Cormorant-Italic-var.woff2') format('woff2')}
+  @font-face{font-family:'DM Mono';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/DMMono-Regular.woff2') format('woff2')}
+  @font-face{font-family:'DM Mono';font-style:normal;font-weight:500;font-display:swap;src:url('fonts/DMMono-Medium.woff2') format('woff2')}
   :root{
     --ground:#160A10;
     --surface:#23121B;
@@ -23,7 +27,7 @@
     --charge:0;
   }
   *{box-sizing:border-box}
-  html{color-scheme:dark;overflow-x:hidden}
+  html{color-scheme:dark;overflow-x:hidden;touch-action:manipulation} /* manipulation: no double-tap zoom when Spin is tapped twice fast */
   body{
     margin:0;
     background:var(--ground);
@@ -52,7 +56,7 @@
     font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;
     padding:7px 12px;border-radius:999px;transition:color .2s,border-color .2s;
   }
-  .ghost-btn:hover{color:var(--cream);border-color:var(--gold)}
+  @media (hover:hover){ .ghost-btn:hover{color:var(--cream);border-color:var(--gold)} }
 
   .heatbar{display:flex;align-items:center;justify-content:space-between;margin:14px 0 22px;gap:12px}
   .heat{display:flex;align-items:center;gap:10px}
@@ -70,7 +74,7 @@
     border-radius:999px;padding:8px 16px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;
     display:flex;gap:10px;align-items:center;transition:border-color .2s;
   }
-  .turn:hover{border-color:var(--gold)}
+  @media (hover:hover){ .turn:hover{border-color:var(--gold)} }
   .turn .dot{width:8px;height:8px;border-radius:50%;background:var(--rose)}
   .turn.him .dot{background:var(--gold)}
   .turn small{display:inline;color:var(--dim);letter-spacing:.08em;text-transform:none;font-size:11px;margin:0}
@@ -104,7 +108,7 @@
     display:flex;align-items:center;justify-content:center;z-index:3;
     box-shadow:0 0 24px rgba(217,163,96,.25), inset 0 0 18px rgba(0,0,0,.5);
     transition:transform .12s,box-shadow .3s;
-    touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+    touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none; /* none: a thumb drifting during the long press must not hand the gesture to the browser */
   }
   .hub:disabled{color:var(--dim);border-color:var(--edge);cursor:default;box-shadow:none}
   .hint{margin-top:16px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);text-align:center}
@@ -156,22 +160,28 @@
     padding:14px 26px;transition:transform .15s,box-shadow .2s;
     box-shadow:0 6px 24px rgba(228,88,122,.35);
   }
-  .primary-btn:hover{transform:translateY(-1px)}
+  @media (hover:hover){ .primary-btn:hover{transform:translateY(-1px)} }
   .primary-btn.gold{background:var(--gold);box-shadow:0 6px 24px rgba(217,163,96,.35)}
   .quiet-btn{
     background:none;border:1px solid var(--edge);color:var(--dim);border-radius:999px;
     font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:500;padding:14px 22px;
     transition:color .2s,border-color .2s;
   }
-  .quiet-btn:hover{color:var(--cream);border-color:var(--dim)}
+  @media (hover:hover){ .quiet-btn:hover{color:var(--cream);border-color:var(--dim)} }
   .veto-note{margin-top:14px;color:var(--dim);font-style:italic;font-family:'Cormorant',Georgia,serif;font-size:15px;text-align:center}
 
   /* ---------- timer overlay ---------- */
   .overlay{
     position:fixed;inset:0;background:var(--ground);z-index:40;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:24px;text-align:center;overflow-y:auto;
+    display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+    padding:24px;text-align:center;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
   }
+  /* centred when it fits, scrollable from the very top when it doesn't — justify-content:center would push the top of a tall overlay out of reach on a phone */
+  .overlay>:first-child{margin-top:auto}
+  .overlay>:last-child{margin-bottom:auto}
+  .overlay.scene>:first-child{margin-top:0}
+  .overlay.finish>:first-child{margin-top:0}
+  .overlay.finish .finish-inner{margin-top:auto;margin-bottom:auto}
   .overlay.flash{animation:flash .6s ease-out}
   @keyframes flash{0%{background:#5A1A2C}100%{background:var(--ground)}}
   .t-label{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:10px}
@@ -279,7 +289,7 @@
   .act-row .meta{font-family:'DM Mono',monospace;font-size:11px;color:var(--dim);flex:none;font-variant-numeric:tabular-nums;text-align:right;line-height:1.5}
   .act-row .meta i{font-style:normal;color:var(--ember);letter-spacing:-2px}
   .act-row .del{background:none;border:none;color:var(--dim);font-size:16px;padding:4px 6px}
-  .act-row .del:hover{color:var(--rose)}
+  @media (hover:hover){ .act-row .del:hover{color:var(--rose)} }
   .off label{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(169,132,146,.5)}
   .add-form{margin-top:14px;display:flex;flex-direction:column;gap:10px}
   .drawer-foot{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
@@ -305,7 +315,7 @@
   .cat h3{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--rose-soft);margin:0;font-weight:600}
   .cat .quick{display:flex;gap:4px}
   .cat .quick button{background:none;border:1px solid var(--edge);color:var(--dim);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:999px}
-  .cat .quick button:hover{color:var(--cream);border-color:var(--dim)}
+  @media (hover:hover){ .cat .quick button:hover{color:var(--cream);border-color:var(--dim)} }
   .kink{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--edge)}
   .kink .kl{flex:1;min-width:0}
   .kink .kl b{display:block;font-weight:500;font-size:14px;line-height:1.3}
@@ -570,10 +580,10 @@
   ];}
 
   var TWISTS=[
-    {t:'Blindfold the receiver.'},
+    {t:'Blindfold the receiver.', needs:[['blindfold','any']]},
     {t:'No hands. At all.'},
     {t:'Whispers only. Anything louder costs you a kiss.'},
-    {t:'Swap roles — the giver becomes the receiver.'},
+    {t:'Swap roles — the giver becomes the receiver.', swap:true},
     {t:'Eyes locked the entire time.'},
     {t:'Half speed. If it feels slow, go slower.'},
     {t:'Narrate every move out loud before you make it.'},
@@ -581,10 +591,10 @@
     {t:'Different room first. Go.'},
     {t:'Music on — match the tempo.'},
     {t:'Lights off. Phone torch only.'},
-    {t:'Ice cube in the giver’s mouth.'},
+    {t:'Ice cube in the giver’s mouth.', needs:[['ice','any']]},
     {t:'Receiver’s hands stay above their head.'},
     {t:'One piece of clothing stays on. Receiver chooses which.', clothes:true},
-    {t:'In front of a mirror.'},
+    {t:'In front of a mirror.', needs:[['mirror','any']]},
     {t:'Giver asks permission before every new move. Out loud.'},
     {t:'Receiver may only say “more” or “stop”.'},
     {t:'Every thirty seconds, say one true thing about their body.'},
@@ -636,7 +646,7 @@
     {t:'Go to opposite ends of the room and text each other the filthiest message you dare. Then read them aloud.', min:2, max:3},
     {t:'Kiss anywhere except the lips. Anywhere.', min:1, max:2},
     {t:'Feed each other something sweet. No hands.', min:2, max:3},
-    {t:'Blindfold them and touch them with three different textures. They guess each one.', min:3, max:4},
+    {t:'Blindfold them and touch them with three different textures. They guess each one.', min:3, max:4, needs:[['blindfold','any']]},
     {t:'Massage using only your forearms and your lips.', min:3, max:5},
     {t:'Whisper exactly what you’re about to do to them — then wait a full minute before doing it.', min:2, max:3},
     {t:'Neck and ears only, until the bell.', min:2, max:3},
@@ -1190,8 +1200,7 @@
       var go=el('button','primary-btn',a.rule?'In effect':'Do it');
       go.addEventListener('click',function(){
         if(a.rule){ nightAdvance(a); save(); updateNightUI(); renderPrelude(); toast((a.wheel||a.name)+' — in effect tonight.'); return; }
-        var p=buildFromAct(a); if(p.twist){ p.twist=null; stats.twists=Math.max(0,stats.twists-1); }
-        startTimer(p,{});
+        startTimer(buildFromAct(a,{noTwist:true}),{});
       });
       var no=el('button','quiet-btn','Not tonight'); no.addEventListener('click',function(){ night.preDone.push(a.id); night.last=Date.now(); save(); renderPrelude(); });
       bb.appendChild(go); bb.appendChild(no); row.appendChild(bb); list.appendChild(row);
@@ -1209,7 +1218,7 @@
     var curI=Math.max(1,Math.min(4,night.stage));
     for(var i=1;i<=4;i++){ var st=el('span',(night.stage>=i?'on':'')+(curI===i?' cur':''),NIGHT_STAGES[i]); track.appendChild(st); }
     s.appendChild(track);
-    if(night.finHer) s.appendChild(el('span','night-stage','she’s come '+night.finHer+'×'));
+    if(night.finHer) s.appendChild(el('span','night-stage',nm('her','subj')+'’s come '+night.finHer+'×'));
     var chips=[]; night.rules.forEach(function(id){ var a=actById(id); if(a) chips.push({n:a.wheel||a.name,rule:true}); });
     night.log.slice(-5).forEach(function(e){ if(!e.id||night.rules.indexOf(e.id)<0) chips.push({n:e.n}); });
     if(chips.length){ var lg=el('span','night-log'); chips.forEach(function(c){ lg.appendChild(el('i',c.rule?'rule':null,(c.rule?'⚑ ':'')+c.n)); }); s.appendChild(lg); }
@@ -1219,7 +1228,7 @@
     s.appendChild(nn);
   }
   function roundTwo(){ night.finHim=false; night.stage=2; night.last=Date.now(); save(); updateNightUI(); clearResult(); draw(); toast('Round two. Back to foreplay — clothes stay off.'); }
-  function newNight(){ night=defNight(); played=[]; save(); updateNightUI(); renderPrelude(); clearResult(); draw(); }
+  function newNight(){ night=defNight(); played=[]; stats=defStats(); save(); updateHeatUI(); updateNightUI(); renderPrelude(); clearResult(); draw(); }
   /* once he has finished the wheel stops being random about it */
   function showAfterCard(){
     var slot=document.getElementById('resultSlot'); slot.innerHTML='';
@@ -1230,7 +1239,7 @@
     var btns=el('div','card-btns');
     var r2=el('button','primary-btn','Round two'); r2.addEventListener('click',roundTwo); btns.appendChild(r2);
     var messy=actById('d55');
-    if(messy && messy.on!==false && actAllowed(messy) && played.indexOf('d55')<0){ var m=el('button','quiet-btn','Stay messy and tied'); m.addEventListener('click',function(){ var p=buildFromAct(messy); p.twist=null; startTimer(p,{}); }); btns.appendChild(m); }
+    if(messy && messy.on!==false && actAllowed(messy) && played.indexOf('d55')<0){ var m=el('button','quiet-btn','Stay messy and tied'); m.addEventListener('click',function(){ startTimer(buildFromAct(messy,{noTwist:true}),{}); }); btns.appendChild(m); }
     var fin=el('button','quiet-btn','Call the night 🏁'); fin.addEventListener('click',showFinish); btns.appendChild(fin);
     card.appendChild(btns); slot.appendChild(card);
   }
@@ -1245,12 +1254,12 @@
 
 
   /* ---------- state ---------- */
-  var acts, settings, stats, turn, sheet, plan, recent, played, night;
+  var acts, settings, stats, turn, sheet, plan, recent, played, night, live; /* live: a scene or bound session in progress, so a killed app can pick it back up */
   function defSheet(){ return {her:{recv:{},give:{},done:false},him:{recv:{},give:{},done:false}}; }
-  function defSettings(){return {mode:'classic',startHeat:0,specials:true,twists:true,plot:true,gamble:true,mysteryTimer:false,sound:true,dominion:true,noTimer:false,noRepeat:true,her:'Her',him:'Him',toys:DEF_TOYS.slice()};}
+  function defSettings(){return {mode:'classic',startHeat:0,specials:true,twists:true,plot:true,gamble:true,mysteryTimer:false,sound:true,dominion:true,noTimer:false,noRepeat:true,her:'Her',him:'Him',privateScreen:true,toys:DEF_TOYS.slice()};}
   function defStats(){return {rounds:0,seconds:0,twists:0,plot:0,jackpots:0,vetoes:0,longest:0,peakHeat:0,gambles:0,gWon:0,spinsHer:0,spinsHim:0,scenes:0,scenesHer:0,scenesHim:0};}
   function load(){
-    acts=defaults().map(applyMeta); settings=defSettings(); stats=defStats(); turn='her'; sheet=defSheet(); plan=null; recent=[]; played=[]; night=defNight();
+    acts=defaults().map(applyMeta); settings=defSettings(); stats=defStats(); turn='her'; sheet=defSheet(); plan=null; recent=[]; played=[]; night=defNight(); live=null;
     try{
       var raw=localStorage.getItem(STORE_KEY);
       if(raw){
@@ -1264,14 +1273,15 @@
         if(Array.isArray(s.recent)) recent=s.recent;
         if(Array.isArray(s.played)) played=s.played;
         if(s.night&&s.night.naked) night=s.night;
+        if(s.live&&s.live.kind&&Array.isArray(s.live.ids)&&Date.now()-(s.live.savedAt||0)<12*3600e3) live=s.live;
       }
     }catch(e){}
     if(!Array.isArray(settings.toys)) settings.toys=DEF_TOYS.slice();
     if(!Array.isArray(night.rules)) night.rules=[]; if(!Array.isArray(night.preDone)) night.preDone=[]; if(!Array.isArray(night.log)) night.log=[];
     /* a night left untouched for eight hours is over: the next open starts fresh, setups first */
-    if(Date.now()-(night.last||0)>8*3600e3 && (night.stage>0||played.length||night.preDone.length||night.preSkip)){ night=defNight(); played=[]; }
+    if(Date.now()-(night.last||0)>8*3600e3 && (night.stage>0||played.length||night.preDone.length||night.preSkip)){ night=defNight(); played=[]; stats=defStats(); } /* and the heat starts its slow burn again */
   }
-  function save(){ try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,settings:settings,stats:stats,turn:turn,sheet:sheet,plan:plan,recent:recent,played:played,night:night}));}catch(e){} }
+  function save(){ try{localStorage.setItem(STORE_KEY,JSON.stringify({acts:acts,settings:settings,stats:stats,turn:turn,sheet:sheet,plan:plan,recent:recent,played:played,night:night,live:live}));}catch(e){} }
   load();
 
   function tierFor(r){ return r<HEAT_AT[1]?0: r<HEAT_AT[2]?1: r<HEAT_AT[3]?2:3; }
@@ -1307,6 +1317,7 @@
   function mod(x){ var T=Math.PI*2; return ((x%T)+T)%T; }
   function fmt(sec){ var m=Math.floor(sec/60), s=sec%60; return m+':'+(s<10?'0':'')+s; }
   function rollSec(min,max,mult){
+    min=isFinite(+min)&&+min>0?+min:3; max=isFinite(+max)&&+max>=min?+max:min+2; /* a hand-edited round never gets a NaN clock */
     var m=(MODES[settings.mode]||1)*(mult||1);
     var lo=min*60*m, hi=max*60*m, sec=lo+Math.random()*(hi-lo);
     return Math.max(30,Math.round(sec/15)*15);
@@ -1329,7 +1340,7 @@
   }
   function tick(){ blip(1600,'square',.03,.03); }
   function bell(){ [659.25,987.77,659.25].forEach(function(f,i){ blip(f,'sine',.22,.42,i*.45); }); }
-  function heartbeat(){ blip(55,'sine',.4,.18); blip(50,'sine',.3,.16,.16); }
+  function heartbeat(){ blip(160,'sine',.35,.16); blip(140,'sine',.28,.14,.16); } /* phone speakers lose everything under ~100 Hz */
   function fanfare(){ [523.25,659.25,783.99,1046.5,1318.5].forEach(function(f,i){ blip(f,'triangle',.16,.5,i*.11); }); }
   function sting(){ blip(880,'sawtooth',.06,.12); blip(440,'sawtooth',.06,.2,.1); }
   function alarm(){ [0,.15,.3].forEach(function(at){ blip(1200,'square',.05,.08,at); }); }
@@ -1435,14 +1446,24 @@
     root.style.setProperty('--charge',0); hub.style.transform=''; hub.style.boxShadow='';
     spin(Math.max(.1,c));
   }
+  /* the browser took the gesture away (a scroll, a call, a notification) — let go quietly instead of spinning at random */
+  function chargeCancel(){
+    if(!charging) return;
+    charging=false; cancelAnimationFrame(chargeRAF); humStop();
+    root.style.setProperty('--charge',0); hub.style.transform=''; hub.style.boxShadow='';
+  }
 
   function spin(power){
     if(spinning) return;
     if(night.finHim){ showAfterCard(); toast('That was the finish. Round two, or call the night.'); return; }
-    if(eligibleWide().length<2){ if(settings.noRepeat && played.length){ played=[]; save(); toast('Every round played — bringing them all back.'); } else { toast('Turn on at least two activities in the menu first.'); return; } }
+    if(eligibleWide().length<2){
+      if(settings.noRepeat && played.length){ played=[]; save(); draw(); toast('Every round played — bringing them all back.'); }
+      if(eligibleWide().length<2){ toast('Fewer than two rounds fit right now — check the menu, the Limits Sheet, or start a new night.'); return; }
+    }
     if(night.stage===0 && !night.preSkip){ night.preSkip=true; save(); renderPrelude(); }
     audio();
     var list=slices(), n=list.length, per=Math.PI*2/n;
+    if(!n) return;
     var spinner=turn;
     if(spinner==='her') stats.spinsHer++; else stats.spinsHim++;
     spinning=true; hub.disabled=true; clearResult();
@@ -1474,10 +1495,18 @@
   /* ---------- landing ---------- */
   var pending=null;
   function clearResult(){ document.getElementById('resultSlot').innerHTML=''; pending=null; }
+  /* a twist or dare obeys the same sheet as the round: no blindfold twist for a couple who said no to blindfolds,
+     and “swap roles” never lands on a round that only goes one way (house rule III, and anything the sheet gates) */
+  function twistOk(x,a){
+    if(x.clothes&&anyNaked()) return false;
+    if(x.needs&&!needsOk(x.needs,false).ok) return false;
+    if(x.swap&&a&&((a.needs&&a.needs.length)||a.tag==='her'||a.tag==='him')) return false;
+    return true;
+  }
   function buildFromAct(a,opts){
     opts=opts||{};
     var p={kind:opts.hidden?'mystery':'act',act:a,name:a.name,note:a.note||'',tag:a.tag,hidden:!!opts.hidden,twist:null,focus:null,toy:null,jackpot:!!opts.jackpot};
-    if(settings.twists && !opts.jackpot && Math.random()<.35){ p.twist=pick(TWISTS.filter(function(x){ return !(x.clothes&&anyNaked()); })); stats.twists++; }
+    if(settings.twists && !opts.jackpot && !opts.noTwist && Math.random()<.35){ var tw=TWISTS.filter(function(x){ return twistOk(x,a); }); if(tw.length) p.twist=pick(tw); }
     if(a.zones) p.focus=pick(ZONES);
     if(a.toy && settings.toys.length) p.toy=pick(settings.toys);
     p.sec=rollSec(a.min,a.max,(p.twist&&p.twist.mult||1)*(opts.jackpot?2:1));
@@ -1489,7 +1518,7 @@
     if(s.kind==='act'){ p=buildFromAct(s.act); }
     else if(s.kind==='mystery'){ p=buildFromAct(pick(eligibleWide()),{hidden:true}); }
     else if(s.kind==='confession'){ p={kind:'confession',name:pick(CONFESSIONS),tag:'confession',note:pronoun(spinner)+' answers first — honestly. The other gets two follow-up questions, then answers the same one.',sec:rollSec(1.5,3,1)}; }
-    else if(s.kind==='dare'){ var d=pick(DARES.filter(function(x){ return !(x.clothes&&anyNaked()); })); p={kind:'dare',name:d.t,tag:'dare',note:pronoun(spinner)+' performs. The bell does not negotiate.',sec:rollSec(d.min,d.max,1)}; }
+    else if(s.kind==='dare'){ var dl=DARES.filter(function(x){ return twistOk(x,null); }); var d=pick(dl.length?dl:DARES); p={kind:'dare',name:d.t,tag:'dare',note:pronoun(spinner)+' performs. The bell does not negotiate.',sec:rollSec(d.min,d.max,1)}; }
     else if(s.kind==='jackpot'){ stats.jackpots++; fanfare(); p={kind:'jackpot',name:'Jackpot',tag:'jackpot',note:pronoun(spinner)+' picks anything on the whole menu — every heat level unlocked — and the bell gives double time.'}; }
     save();
     renderCard(p,spinner);
@@ -1512,13 +1541,15 @@
     if(p.kind==='jackpot'){
       var sel=el('select'); sel.setAttribute('aria-label','Pick any activity');
       /* jackpot unlocks every heat level, but the night still only goes one stage further than the wheel would allow right now */
-      var list=enabledActs().filter(function(a){ return !a.prelude && nightOk(a) && stageWindow(a,1); }).sort(function(a,b){return (a.heat||1)-(b.heat||1);});
+      var byHeat=function(a,b){return (a.heat||1)-(b.heat||1);};
+      var list=enabledActs().filter(function(a){ return !a.prelude && nightOk(a) && stageWindow(a,1); }).sort(byHeat);
+      if(!list.length) list=eligibleWide().slice().sort(byHeat);
       list.forEach(function(a){ var o=el('option',null,'🔥'.repeat(a.heat||1)+'  '+a.name); o.value=a.id; sel.appendChild(o); });
       card.appendChild(sel);
       var btns=el('div','card-btns');
-      var claim=el('button','primary-btn gold','Claim it');
-      claim.addEventListener('click',function(){ var a=acts.filter(function(x){return x.id===sel.value;})[0]||list[0]; save(); renderCard(buildFromAct(a,{jackpot:true}),spinner); });
-      btns.appendChild(claim); btns.appendChild(vetoBtn());
+      var claim=el('button','primary-btn gold','Claim it'); claim.disabled=!list.length;
+      claim.addEventListener('click',function(){ var a=acts.filter(function(x){return x.id===sel.value;})[0]||list[0]; if(!a){ toast('Nothing to claim right now.'); return; } save(); renderCard(buildFromAct(a,{jackpot:true}),spinner); });
+      btns.appendChild(claim); btns.appendChild(vetoBtn(spinner));
       card.appendChild(btns);
       slot.appendChild(card); scrollTo(card); return;
     }
@@ -1539,13 +1570,13 @@
     var btns2=el('div','card-btns');
     var start=el('button','primary-btn'+(p.jackpot?' gold':''),settings.noTimer?(p.hidden?'Reveal & begin':'Begin'):(p.hidden?'Reveal & start':'Start the clock'));
     start.addEventListener('click',function(){ startTimer(p,{}); });
-    btns2.appendChild(start); btns2.appendChild(vetoBtn());
+    btns2.appendChild(start); btns2.appendChild(vetoBtn(spinner));
     card.appendChild(btns2);
     slot.appendChild(card); scrollTo(card);
   }
-  function vetoBtn(){
+  function vetoBtn(spinner){
     var v=el('button','quiet-btn','Veto · respin');
-    v.addEventListener('click',function(){ stats.vetoes++; save(); toast('Vetoed. No questions asked.'); clearResult(); spin(.35+Math.random()*.3); });
+    v.addEventListener('click',function(){ stats.vetoes++; if(spinner){ turn=spinner; if(spinner==='her') stats.spinsHer--; else stats.spinsHim--; } save(); updateTurn(); toast('Vetoed. No questions asked.'); clearResult(); spin(.35+Math.random()*.3); }); /* the respin stays with whoever spun */
     return v;
   }
   function scrollTo(node){ try{ node.scrollIntoView({behavior:reduced?'auto':'smooth',block:'nearest'}); }catch(e){} }
@@ -1577,7 +1608,6 @@
   }
   /* no-timer mode: the round shows, and ends when they say so */
   function startUntimed(p,opts){
-    recordPlayed(p);
     clearResult();
     timerEl=el('div','overlay');
     if(p.jackpot) timerEl.appendChild(el('div','t-label','Jackpot round'));
@@ -1587,17 +1617,17 @@
     var ex=extrasFor(p); if(ex.childNodes.length) timerEl.appendChild(ex);
     timerEl.appendChild(el('p','t-hint','No bell tonight. It ends when you both say so — then come back and spin.'));
     var done=el('button','primary-btn t-end','Done · back to the wheel');
-    done.addEventListener('click',function(){ var acc=accountRound(0,opts); closeTimer(); if(acc.after>acc.before) showHeatUp(acc.before,acc.after); else toast('Round '+stats.rounds+' in the books.'); });
+    done.addEventListener('click',function(){ if(!opts.overtime) recordPlayed(p); var acc=accountRound(0,opts); closeTimer(); if(acc.after>acc.before) showHeatUp(acc.before,acc.after); else toast('Round '+stats.rounds+' in the books.'); });
     timerEl.appendChild(done);
     var stop=el('button','quiet-btn','Stop — this one doesn’t count'); stop.style.marginTop='12px'; stop.addEventListener('click',function(){ closeTimer(); });
     timerEl.appendChild(stop);
     document.body.appendChild(timerEl);
   }
-  function recordPlayed(p){ if(p&&p.act&&p.act.id){ if(played.indexOf(p.act.id)<0) played.push(p.act.id); nightAdvance(p.act); save(); draw(); updateNightUI(); renderPrelude(); } }
+  function recordPlayed(p){ if(p&&p.act&&p.act.id){ if(played.indexOf(p.act.id)<0) played.push(p.act.id); if(p.twist) stats.twists++; nightAdvance(p.act); save(); draw(); updateNightUI(); renderPrelude(); } }
   function startTimer(p,opts){
     opts=opts||{};
     if(settings.noTimer){ startUntimed(p,opts); return; }
-    recordPlayed(p);
+    /* the round is recorded when the bell rings, not when the clock starts — a mis-tap and “Stop early” cost nothing */
     var total=p.sec, left=total, veiled=settings.mysteryTimer && !opts.overtime;
     clearResult();
     timerEl=el('div','overlay');
@@ -1629,13 +1659,13 @@
         lastShown=left;
         var dg=document.getElementById('digits'); if(dg) dg.textContent=fmt(left);
         if(!veiled){ var rf=document.getElementById('ringFill'); if(rf) rf.setAttribute('stroke-dashoffset',String(CIRC*(1-left/total))); }
-        if(left<=10){ ring.classList.add('hot'); if(veiled){ ring.classList.remove('veiled'); var v=digits.querySelector('.veil'); if(v) v.textContent='soon'; } }
+        if(left<=10){ ring.classList.add('hot'); if(veiled){ veiled=false; ring.classList.remove('veiled'); var v=digits.querySelector('.veil'); if(v) v.textContent='soon'; var rf2=document.getElementById('ringFill'); if(rf2) rf2.setAttribute('stroke-dashoffset',String(CIRC*(1-left/total))); } }
         if(left<=10 && left>0) heartbeat();
       }
       if(left<=0) bellStop(p,total,opts);
     },200);
   }
-  function closeTimer(){ if(timerInt){clearInterval(timerInt); timerInt=null;} if(timerEl){timerEl.remove(); timerEl=null;} if(night.finHim) showAfterCard(); }
+  function closeTimer(){ if(timerInt){clearInterval(timerInt); timerInt=null;} if(timerEl){timerEl.remove(); timerEl=null;} clearTimeout(bannerT); var bn=document.getElementById('banner'); if(bn) bn.classList.remove('show'); if(night.finHim) showAfterCard(); }
   var bannerT=null;
   function showBanner(text){
     var b=document.getElementById('banner'); document.getElementById('bannerText').textContent=text;
@@ -1645,6 +1675,7 @@
 
   function bellStop(p,total,opts){
     clearInterval(timerInt); timerInt=null;
+    if(!opts.overtime) recordPlayed(p);
     bell(); vibrate([120,80,120,80,240]);
     timerEl.classList.add('flash');
     var acc=accountRound(total,opts), before=acc.before, after=acc.after;
@@ -1723,12 +1754,13 @@
     });
     inner.appendChild(ul);
     var b=el('button','primary-btn',first?'We’re both in':'Back to the wheel');
-    b.addEventListener('click',function(){ audio(); g.remove(); });
+    b.addEventListener('click',function(){ audio(); g.remove(); if(first) offerResume(); });
     inner.appendChild(b); g.appendChild(inner); document.body.appendChild(g);
   }
 
   /* ---------- finish / night report ---------- */
   function showFinish(){
+    if(document.querySelector('.overlay.finish')) return;
     var f=el('div','overlay finish');
     var cv=el('canvas'); cv.id='confetti'; f.appendChild(cv);
     var inner=el('div','finish-inner');
@@ -1745,8 +1777,8 @@
       [String(stats.jackpots),'Jackpots hit'],
       [String(stats.vetoes),'Vetoes used'],
       [stats.gambles?stats.gWon+' / '+stats.gambles:'—','Coin flips won'],
-      [stats.scenes?stats.scenesHer+' · '+stats.scenesHim:'0','Scenes led (her · him)'],
-      [stats.spinsHer+' · '+stats.spinsHim,(settings.her==='Her'?'Her':settings.her)+' · '+(settings.him==='Him'?'him':settings.him)+' spins']
+      [stats.scenes?stats.scenesHer+' · '+stats.scenesHim:'0','Scenes led ('+(isNamed('her')?nameOf('her'):'her')+' · '+(isNamed('him')?nameOf('him'):'him')+')'],
+      [stats.spinsHer+' · '+stats.spinsHim,(isNamed('her')?nameOf('her'):'Her')+' · '+(isNamed('him')?nameOf('him'):'his')+' spins']
     ];
     rows.forEach(function(r){ var s=el('div','stat'); s.appendChild(el('b',null,r[0])); s.appendChild(el('span',null,r[1])); grid.appendChild(s); });
     inner.appendChild(grid);
@@ -1815,6 +1847,7 @@
       panel.appendChild(toggleRow('No repeats tonight','noRepeat','A round drops off the wheel once you’ve played it, until the night resets'));
       if(played.length){ var bb=el('div','drawer-foot'); bb.style.marginTop='10px'; var back=el('button','quiet-btn','Bring back played rounds ('+played.length+')'); back.addEventListener('click',function(){ played=[]; save(); draw(); render(); toast('All rounds back on the wheel.'); }); bb.appendChild(back); panel.appendChild(bb); }
       panel.appendChild(toggleRow('Sound','sound','Ticks, heartbeat, bell'));
+      if(CAP&&CAP.Velvet) panel.appendChild(toggleRow('Private screen','privateScreen','Blank in the app switcher, screenshots blocked',applyPrivacy));
 
       panel.appendChild(el('h3','sec-title','Names'));
       var duo=el('div','duo');
@@ -1862,6 +1895,7 @@
       form.appendChild(name); form.appendChild(d1); form.appendChild(d2); form.appendChild(sub);
       form.addEventListener('submit',function(ev){
         ev.preventDefault();
+        if(!name.value.trim()){ name.focus(); toast('Give the round a name first.'); return; }
         var lo=Math.max(1,parseInt(mn.value,10)||3), hi=Math.max(lo,parseInt(mx.value,10)||6);
         acts.push({id:'c'+Date.now(),name:name.value.trim(),wheel:wheel.value.trim()||name.value.trim().slice(0,14),tag:tag.value,heat:parseInt(heat.value,10)||1,min:lo,max:hi,note:'House special.',on:true});
         save(); draw(); updateHeatUI(); render(); panel.scrollTop=panel.scrollHeight;
@@ -1869,7 +1903,7 @@
       panel.appendChild(form);
 
       panel.appendChild(el('h3','sec-title','Backup & transfer'));
-      panel.appendChild(el('small',null,'Your sheet, plan, menu, names and stats in one code. It’s encoded, not encrypted — keep it somewhere private. Paste it on any device to get everything back.'));
+      panel.appendChild(el('small',null,'Your sheet, plan, menu, names and stats in one code — including both of your private answers. It’s encoded, not encrypted — keep it somewhere private. Paste it on any device to get everything back.'));
       var bk=el('div','drawer-foot'); bk.style.marginTop='10px';
       var codeTa=el('textarea','backup-code'); codeTa.readOnly=true; codeTa.hidden=true; codeTa.setAttribute('aria-label','Backup code');
       var copyB=el('button','primary-btn','Copy backup code');
@@ -1885,7 +1919,7 @@
       if(window.claude&&typeof window.claude.use==='function'){
         /* hosted viewer: a real save dialog, if this view can offer one */
         window.claude.use('downloads').then(function(dl){ if(!dl||!document.body.contains(dlB)) return; dlB.hidden=false; dlB.addEventListener('click',function(){ dl.save({filename:fname,data:JSON.stringify(backupObject(),null,2)}).then(function(){ toast('Saved.'); },function(err){ if(err&&err.code==='declined') return; toast('Couldn’t save a file here — use the backup code instead.'); }); }); },function(){});
-      } else if(window.URL&&URL.createObjectURL){
+      } else if(window.URL&&URL.createObjectURL&&!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())){ /* the app's WebView has no download manager for blob: links — the code is the way there */
         dlB.hidden=false; dlB.addEventListener('click',function(){ var blob=new Blob([JSON.stringify(backupObject(),null,2)],{type:'application/json'}); var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=fname; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500); });
       }
       panel.appendChild(el('h3','sec-title','Restore'));
@@ -1895,11 +1929,13 @@
       var pickB=el('button','quiet-btn','Choose a backup file'); pickB.addEventListener('click',function(){ fileIn.click(); });
       fileIn.addEventListener('change',function(){ var f=fileIn.files&&fileIn.files[0]; if(!f) return; var rd=new FileReader(); rd.onload=function(){ restoreTa.value=String(rd.result||''); toast('File loaded — tap Restore.'); }; rd.readAsText(f); });
       var restoreB=el('button','primary-btn','Restore'), armedR=false;
+      restoreTa.addEventListener('input',function(){ armedR=false; restoreB.textContent='Restore'; });
       restoreB.addEventListener('click',function(){ var obj=decodeBackup(restoreTa.value); if(!obj){ toast('That doesn’t look like a Velvet & Roulette backup.'); return; } if(!armedR){ armedR=true; restoreB.textContent='Tap again to replace everything on this device'; return; } applyBackup(obj); d.remove(); toast('Restored — sheet, plan, menu and all.'); });
       rs.appendChild(pickB); rs.appendChild(restoreB); panel.appendChild(rs); panel.appendChild(fileIn);
 
       var foot=el('div','drawer-foot');
-      var reset=el('button','quiet-btn','Reset to house menu'); reset.addEventListener('click',function(){ acts=defaults(); save(); draw(); updateHeatUI(); render(); toast('House menu restored.'); });
+      var reset=el('button','quiet-btn','Reset to house menu'), armedReset=false;
+      reset.addEventListener('click',function(){ if(!armedReset){ armedReset=true; reset.textContent='Tap again — this also deletes the rounds you added'; return; } acts=defaults().map(applyMeta); played=[]; save(); draw(); updateHeatUI(); renderPrelude(); render(); toast('House menu restored.'); });
       foot.appendChild(reset); panel.appendChild(foot);
     }
     render();
@@ -1912,13 +1948,21 @@
   var KINK_BY={}; KINKS.forEach(function(k){ KINK_BY[k.id]=k; });
   function other(w){ return w==='her'?'him':'her'; }
   function nameOf(w){ return w==='her'?(settings.her==='Her'?'Her':settings.her):(settings.him==='Him'?'Him':settings.him); }
-  function ans(person,dir,k){ var v=sheet[person][dir][k]; if(v==null){ var item=KINK_BY[k]; return item?(item.def||null):null; } return v; }
+  /* nameOf() is a label ('Her' / 'Him' or a chosen name). Inside a sentence the default needs the right pronoun for its role:
+     nm(w,'subj') → she / he / Anna · nm(w,'obj') → her / him / Anna · nm(w,'poss') → her / his / Anna’s · pr() is always the pronoun */
+  function isNamed(w){ return w==='her'?settings.her!=='Her':settings.him!=='Him'; }
+  var PRON={her:{subj:'she',obj:'her',poss:'her'},him:{subj:'he',obj:'him',poss:'his'}};
+  function pr(w,role){ return PRON[w][role]; }
+  function nm(w,role){ if(isNamed(w)) return role==='poss'?nameOf(w)+'’s':nameOf(w); return PRON[w][role]; }
+  function Nm(w,role){ var s=nm(w,role); return s.charAt(0).toUpperCase()+s.slice(1); }
+  /* consent is only ever given directly: anything not answered is a No, whether or not the sheet is locked. There are no house defaults. */
+  function ans(person,dir,k){ var v=sheet[person][dir][k]; return v==null?'no':v; }
   /* an act done to `recv` is allowed when the receiver accepts it AND the other wants to do it */
   function pair(k,recv,strict){
     var giver=other(recv), r=ans(recv,'recv',k), g=ans(giver,'give',k);
-    var okv=strict?['yes']:['yes','maybe'];
-    if(okv.indexOf(r)<0||okv.indexOf(g)<0) return {ok:false};
-    return {ok:true,maybe:r==='maybe'||g==='maybe'};
+    /* only a Yes from both sides puts something on the menu; a Maybe is a conversation, not a permission */
+    if(r!=='yes'||g!=='yes') return {ok:false};
+    return {ok:true,maybe:false};
   }
   /* needs: array of [kinkId, recv] where recv is 'her' | 'him' | 'any' */
   function needsOk(needs,strict){
@@ -1939,33 +1983,33 @@
     box.appendChild(el('h1',null,'The Limits Sheet'));
     box.appendChild(el('p','lede','Each of you answers alone, in two parts. Part one — what you want done to you — is shared with your partner, so they know what you want. Part two — what you’re willing to do to them — stays private. The reveal shows both wishlists and the overlap where they meet; if it isn’t on the overlap, it isn’t on tonight’s menu, and nobody has to explain why.'));
     var st=el('div','gather'); st.appendChild(el('b',null,'Status'));
-    st.appendChild(document.createTextNode(nameOf('her')+': '+(sheet.her.done?'answered':'not yet')+' · '+nameOf('him')+': '+(sheet.him.done?'answered':'not yet')+'. '+(sheetReady()?'The wheel and the scenes follow your overlap.':'Until both of you answer, the house defaults apply.')));
+    st.appendChild(document.createTextNode(nameOf('her')+': '+(sheet.her.done?'answered':'not yet')+' · '+nameOf('him')+': '+(sheet.him.done?'answered':'not yet')+'. '+(sheetReady()?'The wheel and the scenes follow your overlap.':'Only a Yes from both of you puts something on the menu — until then the wheel keeps to its plain rounds.')));
     box.appendChild(st);
     var btns=el('div','card-btns'); btns.style.flexDirection='column';
     ['her','him'].forEach(function(w){
-      var b=el('button',sheet[w].done?'quiet-btn':'primary-btn',(sheet[w].done?'Edit ':'')+nameOf(w)+'’s answers');
+      var b=el('button',sheet[w].done?'quiet-btn':'primary-btn',(sheet[w].done?'Edit '+nm(w,'poss'):Nm(w,'poss'))+' answers');
       b.addEventListener('click',function(){ o.remove(); handoff(w,function(){ sheetFor(w,function(){ if(sheetReady()) showOverlap(); else showLimits(); }); }); });
       btns.appendChild(b);
     });
     if(sheetReady()){ var v=el('button','primary-btn gold','View the reveal'); v.addEventListener('click',function(){ o.remove(); showOverlap(); }); btns.appendChild(v); }
     var reset=el('button','quiet-btn','Reset the whole sheet'), armed=false;
-    reset.addEventListener('click',function(){ if(!armed){ armed=true; reset.textContent='Tap again to wipe both sets of answers'; return; } sheet=defSheet(); save(); draw(); o.remove(); toast('Sheet wiped. House defaults apply.'); });
+    reset.addEventListener('click',function(){ if(!armed){ armed=true; reset.textContent='Tap again to wipe both sets of answers'; return; } sheet=defSheet(); save(); draw(); updateHeatUI(); renderPrelude(); updatePlanBadge(); o.remove(); toast('Sheet wiped. House defaults apply.'); });
     btns.appendChild(reset);
     var close=el('button','quiet-btn','Back to the wheel'); close.addEventListener('click',function(){ o.remove(); }); btns.appendChild(close);
     box.appendChild(btns); o.appendChild(box); document.body.appendChild(o);
   }
   function handoff(w,then){
     var o=el('div','overlay gate'); var box=el('div','handoff');
-    box.appendChild(el('h1',null,'Hand the phone to '+nameOf(w)+'.'));
-    box.appendChild(el('p',null,nameOf(other(w))+', eyes elsewhere. You’ll see what '+nameOf(w)+' wants done to them once you’ve both finished — never what they’re willing to do to you, unless it matches what you want.'));
+    box.appendChild(el('h1',null,'Hand the phone to '+nm(w,'obj')+'.'));
+    box.appendChild(el('p',null,'Then look away. You’ll see what '+nm(w,'subj')+' wants done to '+pr(w,'obj')+' once you’ve both finished — never what '+nm(w,'subj')+' is willing to do to you, unless it matches what you want.'));
     var b=el('button','primary-btn','I’m '+nameOf(w)+' — begin'); b.addEventListener('click',function(){ o.remove(); then(); });
     box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
   }
   function sheetFor(w,then){
     var o=el('div','overlay gate'); o.style.justifyContent='flex-start'; var box=el('div','sheet');
     var me=sheet[w], oth=other(w);
-    box.appendChild(el('h1',null,nameOf(w)+'’s sheet'));
-    box.appendChild(el('p','lede','Yes = bring it. Maybe = I’m curious, check in first. No = not tonight, not up for discussion. Unanswered counts as No. Everything here can change any night.'));
+    box.appendChild(el('h1',null,Nm(w,'poss')+' sheet'));
+    box.appendChild(el('p','lede','Yes = bring it — the only answer that puts something on the menu. Maybe = I’m curious, talk to me about it; it stays off until it becomes a Yes. No = not tonight, not up for discussion. Unanswered counts as No. Everything here can change any night.'));
     function pass(dir,title,subtitle){
       box.appendChild(el('div','sheet-pass',title)); box.appendChild(el('p','sheet-pass-sub',subtitle));
       var recvPerson=dir==='recv'?w:oth;
@@ -1984,15 +2028,15 @@
           row.appendChild(kl);
           var tri=el('div','tri'), bs={};
           ['yes','maybe','no'].forEach(function(v){ var b=el('button',v,v); b.type='button'; b.addEventListener('click',function(){ me[dir][k.id]=v; save(); paint(); }); tri.appendChild(b); bs[v]=b; });
-          function paint(){ var cur=ans(w,dir,k.id); ['yes','maybe','no'].forEach(function(v){ bs[v].className=v+(cur===v?' on':''); bs[v].setAttribute('aria-pressed',cur===v?'true':'false'); }); }
+          function paint(){ var cur=me[dir][k.id]||(k.locked?'no':null); /* untouched stays visibly blank so nothing gets skipped by accident; it still counts as No */ ['yes','maybe','no'].forEach(function(v){ bs[v].className=v+(cur===v?' on':''); bs[v].setAttribute('aria-pressed',cur===v?'true':'false'); }); }
           paint(); painters.push(paint); row.appendChild(tri); box.appendChild(row);
         });
       });
     }
-    pass('recv','Part one · done to me · shared','What I want '+nameOf(oth)+' to do to my body. '+nameOf(oth)+' will see this list.');
+    pass('recv','Part one · done to me · shared','What I want '+nm(oth,'obj')+' to do to my body. '+Nm(oth,'subj')+' will see this list.');
     pass('give','Part two · I’d do this to '+nameOf(oth)+' · private','What I’m willing to do to '+(oth==='her'?'her':'him')+'. Only shown where it matches something they want.');
     var foot=el('div','sheet-foot');
-    var lock=el('button','primary-btn','Lock my answers'); lock.addEventListener('click',function(){ me.done=true; save(); draw(); updateHeatUI(); o.remove(); then(); });
+    var lock=el('button','primary-btn','Lock my answers'); lock.addEventListener('click',function(){ me.done=true; save(); draw(); updateHeatUI(); renderPrelude(); updatePlanBadge(); o.remove(); then(); });
     foot.appendChild(lock); foot.appendChild(el('small',null,'Locking hides this screen. You can edit any time from the Limits button.'));
     box.appendChild(foot); o.appendChild(box); document.body.appendChild(o); o.scrollTop=0;
   }
@@ -2005,23 +2049,23 @@
     ['her','him'].forEach(function(w){
       var wants=[], curious=[];
       KINKS.forEach(function(k){ if(k.recv.indexOf(w)<0) return; var a=ans(w,'recv',k.id); if(a==='yes') wants.push(k); else if(a==='maybe') curious.push(k); });
-      box.appendChild(el('h2',null,'What '+nameOf(w)+' wants done to '+(w==='her'?'her':'him')));
+      box.appendChild(el('h2',null,'What '+nm(w,'subj')+' wants done to '+pr(w,'obj')));
       if(!wants.length&&!curious.length) box.appendChild(el('p','o-empty','Nothing marked yet.'));
       if(wants.length){ box.appendChild(el('div','o-sub','Yes, please')); wants.forEach(function(k){ var p=pair(k.id,w,false); box.appendChild(item(k,p.ok?'on tonight’s menu':'','yes')); }); }
       if(curious.length){ box.appendChild(el('div','o-sub','Curious — would try it')); curious.forEach(function(k){ var p=pair(k.id,w,false); box.appendChild(item(k,p.ok?'on tonight’s menu':'','maybe')); }); }
     });
     /* the overlap */
     [['him','her'],['her','him']].forEach(function(d){
-      var giver=d[0], recv=d[1], yes=[], maybe=[];
+      var giver=d[0], recv=d[1], yes=[], talk=[];
       box.appendChild(el('h2',null,'Tonight’s menu · '+nameOf(giver)+' → '+nameOf(recv)));
-      KINKS.forEach(function(k){ if(k.recv.indexOf(recv)<0) return; var p=pair(k.id,recv,false); if(!p.ok) return; (p.maybe?maybe:yes).push(k); });
-      if(!yes.length&&!maybe.length) box.appendChild(el('p','o-empty','Nothing yet. That’s an answer too.'));
-      if(yes.length){ box.appendChild(el('div','o-sub','Both said yes')); yes.forEach(function(k){ box.appendChild(item(k,'yes · yes','yes')); }); }
-      if(maybe.length){ box.appendChild(el('div','o-sub','One of you said maybe — check in before it happens')); maybe.forEach(function(k){ box.appendChild(item(k,'talk first','maybe')); }); }
+      KINKS.forEach(function(k){ if(k.recv.indexOf(recv)<0) return; var r=ans(recv,'recv',k.id), g=ans(giver,'give',k.id); if(r==='yes'&&g==='yes') yes.push(k); else if((r==='yes'||r==='maybe')&&(g==='yes'||g==='maybe')) talk.push(k); });
+      if(!yes.length&&!talk.length) box.appendChild(el('p','o-empty','Nothing yet. That’s an answer too.'));
+      if(yes.length){ box.appendChild(el('div','o-sub','Both said yes — on the menu')); yes.forEach(function(k){ box.appendChild(item(k,'yes · yes','yes')); }); }
+      if(talk.length){ box.appendChild(el('div','o-sub','One of you is curious — talk about it. It joins the menu only when you both change it to Yes')); talk.forEach(function(k){ box.appendChild(item(k,'talk first','maybe')); }); }
       if(pair('breath',recv,false).ok||ans(recv,'recv','breath')==='yes'||ans(recv,'recv','breath')==='maybe'){ var sc=el('div','safety'); sc.appendChild(el('b',null,'Breath play — read this together')); sc.appendChild(document.createTextNode(KINK_BY.breath.note)); box.appendChild(sc); }
     });
     box.appendChild(el('p','lede','A want that isn’t on the menu means the other person didn’t say yes to doing it — tonight. Nobody has to explain. Be kind about it.'));
-    var b=el('button','primary-btn','Take it to the wheel'); b.style.marginTop='12px'; b.addEventListener('click',function(){ o.remove(); draw(); updateHeatUI(); });
+    var b=el('button','primary-btn','Take it to the wheel'); b.style.marginTop='12px'; b.addEventListener('click',function(){ o.remove(); draw(); updateHeatUI(); renderPrelude(); updatePlanBadge(); });
     box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
   }
 
@@ -2030,10 +2074,10 @@
     clearResult();
     var o=el('div','overlay gate'); var box=el('div','setup');
     box.appendChild(el('h1',null,'Dominion'));
-    box.appendChild(el('p','lede','One of you holds the power. The other follows. The one in charge follows the script — every step, in order, for as long as the bell says. Yellow pauses everything. Red ends it, instantly. '+(sheetReady()?'Built only from your Limits Sheet overlap.':'You haven’t both filled the Limits Sheet, so the house defaults apply — fill it for the full menu.')));
+    box.appendChild(el('p','lede','One of you holds the power. The other follows. The one in charge follows the script — every step, in order, for as long as the bell says. Yellow pauses everything. Red ends it, instantly. '+(sheetReady()?'Built only from your Limits Sheet overlap.':'Nothing is on the menu until you both tick it Yes on the Limits Sheet — fill it in for the full scene.')));
     if(plan){
       var pb=el('div','plan-box'); pb.appendChild(el('b',null,'Planned scene · '+planWhen()));
-      pb.appendChild(document.createTextNode(nameOf(plan.dom)+' holds the power · '+plan.stepIds.length+' steps sealed · '+plan.inten));
+      pb.appendChild(document.createTextNode(Nm(plan.dom,'subj')+' holds the power · '+plan.stepIds.length+' steps sealed · '+plan.inten));
       var pbb=el('div','card-btns');
       var runB=el('button','primary-btn','Run the planned scene'); runB.addEventListener('click',function(){ o.remove(); runPlanned(); });
       var ckB=el('button','quiet-btn','Checklist'); ckB.addEventListener('click',function(){ o.remove(); showChecklist(false); });
@@ -2043,8 +2087,8 @@
     var dom=null, len=5, inten='firm', want='medium', when='tonight', begin;
     box.appendChild(el('h3','sec-title','Who holds the power?'));
     var who=el('div','who'), wb={};
-    ['her','him'].forEach(function(w){ var b=el('button',null,nameOf(w)+' dominates'); b.addEventListener('click',function(){ dom=w; paintWho(); }); who.appendChild(b); wb[w]=b; });
-    var coin=el('button',null,'Coin decides'); coin.addEventListener('click',function(){ dom=Math.random()<.5?'her':'him'; sting(); paintWho(); toast('The coin says: '+nameOf(dom)+'.'); }); who.appendChild(coin);
+    ['her','him'].forEach(function(w){ var b=el('button',null,Nm(w,'subj')+' dominates'); b.addEventListener('click',function(){ dom=w; paintWho(); }); who.appendChild(b); wb[w]=b; });
+    var coin=el('button',null,'Coin decides'); coin.addEventListener('click',function(){ dom=Math.random()<.5?'her':'him'; sting(); paintWho(); toast('The coin says: '+nm(dom,'obj')+'.'); }); who.appendChild(coin);
     function paintWho(){ ['her','him'].forEach(function(w){ wb[w].className=dom===w?'on':''; }); begin.disabled=!dom; }
     box.appendChild(who);
     function segment(opts,cur,onpick){ var seg=el('div','seg'); opts.forEach(function(m){ var b=el('button',cur===m[0]?'on':'',m[1]); b.addEventListener('click',function(){ onpick(m[0]); Array.prototype.forEach.call(seg.children,function(c){c.className='';}); b.className='on'; }); seg.appendChild(b); }); return seg; }
@@ -2107,37 +2151,41 @@
     }
     return [].concat(take('open',1),byStage(take('build',Math.max(1,len-2))),take('peak',1),take('close',1));
   }
-  function showGather(dom,steps,inten){
+  function showGather(dom,steps,inten,opts){
+    opts=opts||{};
     var o=el('div','overlay gate'); var box=el('div','setup');
-    box.appendChild(el('h1',null,nameOf(dom)+' holds the power.'));
-    box.appendChild(el('p','lede',steps.length+' steps, sealed. '+nameOf(dom)+' sees each one only when it begins and may not skip ahead. '+nameOf(other(dom))+' can veto any step, call Yellow to pause, or call Red to end it — at any moment, for any reason.'));
+    box.appendChild(el('h1',null,Nm(dom,'subj')+' holds the power.'));
+    box.appendChild(el('p','lede',steps.length+' steps, sealed. '+Nm(dom,'subj')+' sees each one only when it begins and may not skip ahead. '+Nm(other(dom),'subj')+' can veto any step, call Yellow to pause, or call Red to end it — at any moment, for any reason.'));
     var props={}, ties=false;
-    steps.forEach(function(s){ (s.step.props||[]).forEach(function(p){ props[p]=1; if(/tie/.test(p)) ties=true; }); });
+    steps.forEach(function(s){ (s.step.props||[]).forEach(function(p){ props[p]=1; if(/tie|rope|cuff/.test(p)) ties=true; }); });
     var list=Object.keys(props); if(ties) list.push('safety shears'); list.push('water');
     var g=el('div','gather'); g.appendChild(el('b',null,'Have within reach')); g.appendChild(document.createTextNode(list.join(' · '))); box.appendChild(g);
     var s=el('div','safety'); s.appendChild(el('b',null,'Before the first knot'));
     s.appendChild(document.createTextNode('Two fingers under every tie, nothing around the neck, hands and feet checked for warmth every few minutes. Agree the signals out loud now: Yellow pauses, Red stops, and two taps means “lift” whenever a mouth is busy.'));
     box.appendChild(s);
     if(inten==='devout'){ var pr=el('div','safety'); pr.appendChild(el('b',null,'Protocol scene')); pr.appendChild(document.createTextNode('Agree the honorifics and the three rules before step one, and set a check-in for tomorrow now. Heavier bondage means the shears stay in reach and nothing goes over the throat. Yellow slows the headspace, not just the body — the Dom answers it every single time.')); box.appendChild(pr); }
-    var b=el('button','primary-btn','Begin — hand the phone to '+nameOf(dom)); b.addEventListener('click',function(){ o.remove(); runScene(dom,steps,inten); });
-    box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
+    var b=el('button','primary-btn','Begin — hand the phone to '+nm(dom,'obj'));
+    b.addEventListener('click',function(){ o.remove(); if(opts.fromPlan){ plan=null; save(); updatePlanBadge(); } runScene(dom,steps,inten); });
+    var nt=el('button','quiet-btn','Not tonight'); nt.style.marginTop='10px'; nt.addEventListener('click',function(){ o.remove(); });
+    box.appendChild(b); box.appendChild(nt); o.appendChild(box); document.body.appendChild(o);
   }
   var sceneEl=null, sceneInt=null;
-  function runScene(dom,steps,inten){
-    var sub=other(dom), i=0, paused=false;
-    stats.scenes++; if(dom==='her') stats.scenesHer++; else stats.scenesHim++;
-    recent=steps.map(function(x){return x.step.id;}).concat(recent).slice(0,16); save();
+  function runScene(dom,steps,inten,resumeAt){
+    var sub=other(dom), i=resumeAt||0, paused=false;
+    if(resumeAt==null){ stats.scenes++; if(dom==='her') stats.scenesHer++; else stats.scenesHim++; recent=steps.map(function(x){return x.step.id;}).concat(recent).slice(0,16); }
+    save();
+    function persist(){ live={kind:'scene',dom:dom,ids:steps.map(function(x){return x.step.id;}),i:i,inten:inten,savedAt:Date.now()}; save(); }
     sceneEl=el('div','overlay scene'); document.body.appendChild(sceneEl);
     var PHASES={open:'Opening',build:'Building',peak:'The peak',close:'Aftercare'};
     function stopInt(){ if(sceneInt){ clearInterval(sceneInt); sceneInt=null; } }
     function endScene(reason){
-      stopInt(); sceneEl.innerHTML=''; sceneEl.classList.remove('scene');
-      nightAfterScene('Dominion scene');
+      stopInt(); sceneEl.innerHTML=''; sceneEl.classList.remove('scene'); live=null; save();
+      if(!(reason==='red'&&i===0)) nightAfterScene('Dominion scene'); /* Red before the first step finishes is a false start, not a scene */
       var a=el('div','after');
       a.appendChild(el('h1',null,reason==='red'?'Red. Scene over.':'Scene complete.'));
       a.appendChild(el('p','lede',reason==='red'?'No questions, no explanations, no apologies. '+nameOf(dom)+': untie first, talk later.':'The power goes back in the drawer. Aftercare is not optional — it is the last step.'));
       var ul=el('ul');
-      ['Untie everything now, checking each wrist and ankle as you go.','Water for both of you. Something sweet if you have it.','Skin to skin for five minutes. No phones after this one.',nameOf(dom)+' says three things they loved.',nameOf(sub)+' says how they feel — one word first, then as many as they want.'].forEach(function(t){ ul.appendChild(el('li',null,t)); });
+      ['Untie everything now, checking each wrist and ankle as you go.','Water for both of you. Something sweet if you have it.','Skin to skin for five minutes. No phones after this one.',Nm(dom,'subj')+' says three things '+pr(dom,'subj')+' loved.',Nm(sub,'subj')+' says how '+pr(sub,'subj')+' feels — one word first, then as many as '+pr(sub,'subj')+' wants.'].forEach(function(t){ ul.appendChild(el('li',null,t)); });
       a.appendChild(ul);
       if(inten==='devout'){ var dn=el('div','safety'); dn.appendChild(el('b',null,'After a heavy scene')); dn.appendChild(document.createTextNode('Drop is real and can arrive tomorrow, not tonight — for either of you. Eat something, sleep warm, check in again in the morning. If the sub goes quiet or the Dom feels guilty, that’s the drop talking, not the truth.')); a.appendChild(dn); }
       var b=el('button','primary-btn','Back to the wheel'); b.addEventListener('click',function(){ sceneEl.remove(); sceneEl=null; updateHeatUI(); });
@@ -2146,15 +2194,16 @@
     }
     function replacement(cur){
       var used={}; steps.forEach(function(x){ used[x.step.id]=1; });
-      var cands=STEPS.filter(function(s){ return s.dom===dom&&s.phase===cur.phase&&!used[s.id]; }).map(function(s){ return stepOk(s,sub,'firm'); }).filter(Boolean);
+      var cands=STEPS.filter(function(s){ return s.dom===dom&&s.phase===cur.phase&&!used[s.id]; }).map(function(s){ return stepOk(s,sub,inten); }).filter(Boolean);
       return cands.length?pick(cands):null;
     }
     function show(){
       if(i>=steps.length){ endScene('done'); return; }
+      persist();
       var it=steps[i], s=it.step, isClose=s.phase==='close', untimed=!!settings.noTimer;
       var total=isClose?300:rollSec(s.min,s.max,1), left=total, endAt=Date.now()+total*1000, pauseAt=null;
       sceneEl.innerHTML='';
-      sceneEl.appendChild(el('div','s-head','Dominion · '+nameOf(dom)+' holds the power'));
+      sceneEl.appendChild(el('div','s-head','Dominion · '+Nm(dom,'subj')+' holds the power'));
       sceneEl.appendChild(el('div','s-step','Step '+(i+1)+' of '+steps.length+' · '+PHASES[s.phase]));
       var card=el('div','s-card '+s.phase);
       var chips=el('div','chips'); chips.style.justifyContent='flex-start';
@@ -2164,7 +2213,7 @@
       if(chips.childNodes.length) card.appendChild(chips);
       card.appendChild(el('h2',null,s.title));
       card.appendChild(el('p',null,fillN(s.text)));
-      if(s.sub){ var r=el('div','sub-rule'); r.appendChild(el('b',null,'Rule for '+nameOf(sub))); r.appendChild(document.createTextNode(fillN(s.sub))); card.appendChild(r); }
+      if(s.sub){ var r=el('div','sub-rule'); r.appendChild(el('b',null,'Rule for '+nm(sub,'obj'))); r.appendChild(document.createTextNode(fillN(s.sub))); card.appendChild(r); }
       var tm=el('div','s-timer'), mini=el('div','mini');
       mini.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="'+RING_R+'"/><circle class="ring-fill" cx="50" cy="50" r="'+RING_R+'" stroke-dasharray="'+CIRC+'" stroke-dashoffset="0"/></svg>';
       var big=el('div','big',fmt(left)); mini.appendChild(big); tm.appendChild(mini);
@@ -2176,7 +2225,7 @@
       next.addEventListener('click',function(){ stopInt(); i++; show(); });
       btns.appendChild(next);
       if(!isClose){
-        var veto=el('button','quiet-btn',nameOf(sub)+' vetoes this step');
+        var veto=el('button','quiet-btn',Nm(sub,'subj')+' vetoes this step');
         veto.addEventListener('click',function(){ stopInt(); stats.vetoes++; save(); var alt=replacement(s); if(alt){ steps[i]=alt; toast('Step replaced. No questions.'); } else { steps.splice(i,1); toast('Step removed.'); } show(); });
         btns.appendChild(veto);
       }
@@ -2236,7 +2285,7 @@
     Object.keys(props).forEach(function(p){ buy.push(MAP[p]||p); });
     buy.push('Two bottles of water and something sweet for after','Clean sheets');
     var usesK=function(k){ return steps.some(function(x){ return (x.step.needs||[]).some(function(n){ return n[0]===k; }); }); };
-    var before=['Read the reveal together one more time — out loud, the whole overlap',nameOf(other(plan.dom))+' picks the title '+nameOf(plan.dom)+' answers to, if titles are on the menu','Wash the ties and toys; test the candle on your own forearm from thirty centimetres','Charge the wand; put it and the shears together on the nightstand',nameOf(plan.dom)+': trim your nails','Decide the room, and whether the curtains matter'];
+    var before=['Read the reveal together one more time — out loud, the whole overlap',Nm(other(plan.dom),'subj')+' picks the title '+nm(plan.dom,'subj')+' answers to, if titles are on the menu','Wash the ties and toys; test the candle on your own forearm from thirty centimetres','Charge the wand; put it and the shears together on the nightstand',nameOf(plan.dom)+': trim your nails','Decide the room, and whether the curtains matter'];
     if(usesK('strangers_watch')) before.push('Shortlist two sex-positive club nights within an hour — the scene will assign the booking');
     if(usesK('third_person')) before.push('Agree, sober, the three non-negotiables for any message to a third: protection, a veto for all three, no surprises');
     if(usesK('anal_toys_her')||usesK('anal_him_her')||usesK('fist_her')) before.push('Anal or fisting on the menu: smallest first, twice the lube, a towel, short smooth nails — it stops at pain, never just slows');
@@ -2252,7 +2301,7 @@
     if(!plan) return;
     var o=el('div','overlay gate'); o.style.justifyContent='flex-start'; var box=el('div','sheet');
     box.appendChild(el('h1',null,fresh?'Sealed. Now prepare.':'The plan'));
-    box.appendChild(el('p','lede',nameOf(plan.dom)+' holds the power · '+plan.stepIds.length+' steps sealed · '+plan.inten+'. The order stays sealed until you run it. The checklist knows what the steps need without telling you which is which.'));
+    box.appendChild(el('p','lede',Nm(plan.dom,'subj')+' holds the power · '+plan.stepIds.length+' steps sealed · '+plan.inten+'. The order stays sealed until you run it. The checklist knows what the steps need without telling you which is which.'));
     var prog=el('p','progress','');
     function progressText(){ var t=0,d=0; checklistItems().forEach(function(g){ g[1].forEach(function(_,i){ t++; if(plan.checks[g[0]+'#'+i]) d++; }); }); return d+' / '+t+' ready · '+planWhen(); }
     var dr=el('div','date-row'); dr.appendChild(el('label',null,'Scene night')); var inp=el('input'); inp.type='date'; inp.value=plan.date;
@@ -2260,7 +2309,7 @@
     dr.appendChild(inp); box.appendChild(dr); box.appendChild(prog);
     checklistItems().forEach(function(g){
       var gb=el('div','chk-group'); gb.appendChild(el('h3',null,g[0]));
-      g[1].forEach(function(text,i){ var key=g[0]+'#'+i; var row=el('label','chk'+(plan.checks[key]?' done':'')); var cb=el('input'); cb.type='checkbox'; cb.checked=!!plan.checks[key];
+      g[1].forEach(function(text,i){ var key=g[0]+'#'+text; var row=el('label','chk'+(plan.checks[key]?' done':'')); var cb=el('input'); cb.type='checkbox'; cb.checked=!!plan.checks[key];
         cb.addEventListener('change',function(){ plan.checks[key]=cb.checked; save(); row.classList.toggle('done',cb.checked); prog.textContent=progressText(); });
         row.appendChild(cb); row.appendChild(el('span',null,text)); gb.appendChild(row); });
       box.appendChild(gb);
@@ -2276,8 +2325,8 @@
     if(!plan) return;
     var steps=planSteps();
     if(steps.length<2){ toast('The sheet changed — not enough of that plan is still allowed. Build a fresh one.'); return; }
-    var dom=plan.dom, inten=plan.inten; plan=null; save(); updatePlanBadge();
-    showGather(dom,steps,inten);
+    /* the sealed plan survives until the scene actually begins — backing out here costs nothing */
+    showGather(plan.dom,steps,plan.inten,{fromPlan:true});
   }
 
   /* ---------- backup & restore ---------- */
@@ -2298,6 +2347,7 @@
     sheet=(obj.sheet&&obj.sheet.her&&obj.sheet.him)?obj.sheet:defSheet();
     plan=(obj.plan&&obj.plan.stepIds)?obj.plan:null; recent=Array.isArray(obj.recent)?obj.recent:[]; played=Array.isArray(obj.played)?obj.played:[];
     night=(obj.night&&obj.night.naked)?obj.night:defNight(); if(!Array.isArray(night.rules)) night.rules=[]; if(!Array.isArray(night.preDone)) night.preDone=[]; if(!Array.isArray(night.log)) night.log=[];
+    if(Date.now()-(night.last||0)>8*3600e3){ night=defNight(); played=[]; } /* a backup from another night starts fresh, same as a reload would */
     turn=obj.turn==='him'?'him':'her';
     save(); updateHeatUI(); updateTurn(); updatePlanBadge(); updateNightUI(); renderPrelude(); draw();
   }
@@ -2315,12 +2365,13 @@
   var LADDER_NAMES=['Warming','Wandering','Wanting','Reckless','The edge'];
   function showLadder(){
     audio();
-    var allowed=acts.filter(function(a){ return a.on!==false && !a.prelude && actAllowed(a) && nightOk(a); });
+    var allowed=acts.filter(function(a){ return a.on!==false && !a.prelude && actAllowed(a) && nightOk(a) && !(settings.noRepeat && played.indexOf(a.id)>=0); });
     if(allowed.length<2){ toast('Turn on more activities, or fill the Limits Sheet, first.'); return; }
+    clearResult();
     var byLevel={1:[],2:[],3:[],4:[],5:[]};
     allowed.forEach(function(a){ byLevel[ladderLevel(a)].push(a); });
     var top=Math.max.apply(null,allowed.map(ladderLevel)), bottom=Math.min.apply(null,allowed.map(ladderLevel));
-    var level=bottom, shown=[], curP=null, int=null;
+    var level=bottom, shown=[], curP=null, int=null, rungStart=0;
     var ov=el('div','overlay ladder'); document.body.appendChild(ov);
     function candidates(L){
       var recentIds=shown.slice(-4);
@@ -2355,14 +2406,16 @@
       if(level>=top) ov.appendChild(el('p','veto-note','You are at the top of what your sheet allows tonight. Stay here as long as you like.'));
       var leave=el('button','quiet-btn','Leave the ladder'); leave.style.marginTop='18px'; leave.addEventListener('click',function(){ cleanup(); ov.remove(); }); ov.appendChild(leave);
     }
-    function finishRung(){
+    function finishRung(early){
       recordPlayed(curP);
-      var acc=accountRound(curP.sec||0,{});
-      if(acc.after>acc.before){ choices(); var hu=el('div','heat-up'); hu.appendChild(el('b',null,'🔥 '+HEAT_NAMES[acc.after]+' unlocked')); hu.appendChild(el('span',null,'Hotter rungs just opened up.')); ov.insertBefore(hu, ov.querySelector('.ladder-choices')); top=Math.max(top,5); }
+      if(settings.noRepeat && curP.act){ Object.keys(byLevel).forEach(function(L){ byLevel[L]=byLevel[L].filter(function(a){ return a.id!==curP.act.id; }); }); }
+      var spent=early?Math.min(curP.sec||0,Math.round((Date.now()-rungStart)/1000)):(curP.sec||0);
+      var acc=accountRound(spent,{});
+      if(acc.after>acc.before){ choices(); var hu=el('div','heat-up'); hu.appendChild(el('b',null,'🔥 '+HEAT_NAMES[acc.after]+' unlocked')); hu.appendChild(el('span',null,'The wheel runs hotter when you go back to it.')); ov.insertBefore(hu, ov.querySelector('.ladder-choices')); }
       else choices();
     }
     function renderRung(){
-      cleanup(); ov.innerHTML='';
+      cleanup(); ov.innerHTML=''; rungStart=Date.now();
       ov.appendChild(el('div','t-label','Escalation ladder · '+LADDER_NAMES[level-1]));
       ov.appendChild(meter());
       var chips=el('div','chips'); chips.appendChild(el('span','tag '+curP.tag,TAGS[curP.tag]||curP.tag)); ov.appendChild(chips);
@@ -2370,13 +2423,13 @@
       var ex=extrasFor(curP); if(ex.childNodes.length) ov.appendChild(ex);
       if(settings.noTimer){
         ov.appendChild(el('p','t-hint','No clock tonight. When you are both done, choose where next.'));
-        var done=el('button','primary-btn t-end','Done'); done.addEventListener('click',finishRung); ov.appendChild(done);
+        var done=el('button','primary-btn t-end','Done'); done.addEventListener('click',function(){ finishRung(false); }); ov.appendChild(done);
       } else {
         var total=curP.sec, left=total;
         var ring=el('div','ring-wrap'); ring.innerHTML='<svg viewBox="0 0 100 100" aria-hidden="true"><circle class="ring-track" cx="50" cy="50" r="'+RING_R+'"/><circle class="ring-fill" id="lFill" cx="50" cy="50" r="'+RING_R+'" stroke-dasharray="'+CIRC+'" stroke-dashoffset="0"/></svg>';
         var dig=el('div','t-digits'); var big=el('span','big',fmt(left)); dig.appendChild(big); ring.appendChild(dig); ov.appendChild(ring);
         ov.appendChild(el('p','t-hint','When the bell rings, stop — then choose where next.'));
-        var endEarly=el('button','quiet-btn t-end','Stop early'); endEarly.addEventListener('click',finishRung); ov.appendChild(endEarly);
+        var endEarly=el('button','quiet-btn t-end','Stop early'); endEarly.addEventListener('click',function(){ finishRung(true); }); ov.appendChild(endEarly);
         var endAt=Date.now()+left*1000, lastShown=left;
         int=setInterval(function(){
           left=Math.max(0,Math.round((endAt-Date.now())/1000));
@@ -2448,7 +2501,7 @@
     var who=el('div','who'), wb={};
     ['her','him'].forEach(function(w){ var b=el('button',null,pn(w,true)+' is bound'); b.addEventListener('click',function(){ dom=other(w); paint(); }); who.appendChild(b); wb[w]=b; });
     var coin=el('button',null,'Coin decides'); coin.addEventListener('click',function(){ dom=Math.random()<.5?'her':'him'; sting(); paint(); toast(pn(other(dom),true)+' goes into the ties.'); }); who.appendChild(coin);
-    function paint(){ ['her','him'].forEach(function(w){ wb[w].className=(dom&&other(dom)===w)?'on':''; }); renderTerms(); }
+    function paint(){ ['her','him'].forEach(function(w){ wb[w].className=(dom&&other(dom)===w)?'on':''; }); renderWings(); renderTerms(); }
     box.appendChild(who);
     function segment(opts,cur,onpick){ var seg=el('div','seg'); opts.forEach(function(m){ var b=el('button',cur===m[0]?'on':'',m[1]); b.addEventListener('click',function(){ onpick(m[0]); Array.prototype.forEach.call(seg.children,function(c){c.className='';}); b.className='on'; renderTerms(); }); seg.appendChild(b); }); return seg; }
     box.appendChild(el('h3','sec-title','How long in the ties'));
@@ -2456,23 +2509,31 @@
     box.appendChild(el('h3','sec-title','How much the bound one wants'));
     box.appendChild(segment([['light','Light'],['medium','Medium'],['heavy','Heavy']],want,function(v){want=v;}));
     box.appendChild(el('h3','sec-title','Wings'));
-    [['doll','Doll rules','No speaking, helping or performing — only the signal and the safewords','fuck_doll'],
+    var WINGS=[['doll','Doll rules','No speaking, helping or performing — only the signal and the safewords','fuck_doll'],
      ['nocap','No cap','As many times as they decide, with no number agreed in advance','used_repeatedly'],
      ['denial','Denial','No finishing until the very end, if at all','edging'],
-     ['display','Display','Positioned to watch, or photographed, decided on the spot','mirror']].forEach(function(w){
-      var allowed=pair(w[3],'her',false).ok||pair(w[3],'him',false).ok;
-      var row=el('label','tog'); var sp=el('span'); sp.appendChild(el('b',null,w[1])); sp.appendChild(el('small',null,allowed?w[2]:'Not on your sheet yet'));
-      var cb=el('input'); cb.type='checkbox'; cb.disabled=!allowed;
-      cb.addEventListener('change',function(){ wings[w[0]]=cb.checked; renderTerms(); });
-      row.appendChild(sp); row.appendChild(cb); box.appendChild(row);
-    });
+     ['display','Display','Positioned to watch, or photographed, decided on the spot','mirror']];
+    var wingBox=el('div'); box.appendChild(wingBox);
+    /* a wing is only on offer if it is on the sheet for the person actually going into the ties, so it follows the choice above */
+    function renderWings(){
+      wingBox.innerHTML='';
+      WINGS.forEach(function(w){
+        var allowed=!!dom&&pair(w[3],other(dom),false).ok;
+        if(!allowed) wings[w[0]]=false;
+        var row=el('label','tog'); var sp=el('span'); sp.appendChild(el('b',null,w[1])); sp.appendChild(el('small',null,!dom?'Pick who goes into the ties first':allowed?w[2]:'Not on the sheet for the one being tied'));
+        var cb=el('input'); cb.type='checkbox'; cb.disabled=!allowed; cb.checked=!!wings[w[0]];
+        cb.addEventListener('change',function(){ wings[w[0]]=cb.checked; renderTerms(); });
+        row.appendChild(sp); row.appendChild(cb); wingBox.appendChild(row);
+      });
+    }
+    renderWings();
     var termsBox=el('div','safety'); box.appendChild(termsBox);
     function renderTerms(){
       termsBox.innerHTML='';
       termsBox.appendChild(el('b',null,'The contract — read it out loud, both of you'));
       if(!dom){ termsBox.appendChild(document.createTextNode('Pick who goes into the ties first.')); begin.disabled=true; return; }
       if(!pair('long_bound',other(dom),false).ok){
-        termsBox.appendChild(document.createTextNode('This mode needs “Kept in restraints for hours, not minutes” ticked on the Limits Sheet — by '+pn(other(dom))+' under done to me, and by '+pn(dom)+' under I’d do this. It is off by default. Tick it, come back, and the contract appears here.'));
+        termsBox.appendChild(document.createTextNode('This mode needs “Kept in restraints for hours, not minutes” ticked on the Limits Sheet — by '+pn(other(dom))+' under done to me, and by '+ob(dom)+' under I’d do this. It is off by default. Tick it, come back, and the contract appears here.'));
         var openS=el('button','primary-btn','Open the Limits Sheet'); openS.style.marginTop='12px';
         openS.addEventListener('click',function(){ o.remove(); showLimits(); });
         termsBox.appendChild(openS);
@@ -2499,7 +2560,7 @@
     box.appendChild(el('h1',null,pn(other(dom),true)+' goes under.'));
     box.appendChild(el('p','lede',plan.length+' waves over '+(mins/60)+' hour'+(mins>60?'s':'')+'. '+pn(dom,true)+' sees each wave only when it starts. The ties do not come off until the end — or until Red.'));
     var props={}, ties=false;
-    plan.forEach(function(x){ (x.step.props||[]).forEach(function(p){ props[p]=1; if(/tie|rope/.test(p)) ties=true; }); });
+    plan.forEach(function(x){ (x.step.props||[]).forEach(function(p){ props[p]=1; if(/tie|rope|cuff/.test(p)) ties=true; }); });
     var list=Object.keys(props); list.push(ties?'safety shears (for the ties)':'safety shears');
     list.push('water for both of you','a blanket for after','snacks within reach','phone charged, alarm off');
     var g=el('div','gather'); g.appendChild(el('b',null,'Within arm’s reach before the first knot')); g.appendChild(document.createTextNode(list.join(' · '))); box.appendChild(g);
@@ -2508,21 +2569,25 @@
     box.appendChild(s);
     var b=el('button','primary-btn','Start the session — hand the phone to '+ob(dom));
     b.addEventListener('click',function(){ o.remove(); runTotal(dom,plan,mins,wings); });
-    box.appendChild(b); o.appendChild(box); document.body.appendChild(o);
+    var nt=el('button','quiet-btn','Not tonight'); nt.style.marginTop='10px'; nt.addEventListener('click',function(){ o.remove(); });
+    box.appendChild(b); box.appendChild(nt); o.appendChild(box); document.body.appendChild(o);
   }
   var totalEl=null, totalInt=null;
-  function runTotal(dom,plan,mins,wings){
-    var sub=other(dom), i=0, paused=false, untimed=!!settings.noTimer;
+  function runTotal(dom,plan,mins,wings,resume){
+    var sub=other(dom), i=resume?resume.i:0, paused=false, untimed=!!settings.noTimer;
     var totalSec=mins*60, waveSec=Math.round(totalSec/plan.length);
-    var startedAt=Date.now(), endAt=startedAt+totalSec*1000, waveEnd=Date.now()+waveSec*1000;
-    var nextCheck=20*60, checks=0, wavesDone=0;
-    stats.scenes++; if(dom==='her') stats.scenesHer++; else stats.scenesHim++;
-    recent=plan.map(function(x){return x.step.id;}).concat(recent).slice(0,20); save();
+    var startedAt=resume?resume.startedAt:Date.now(), endAt=resume?resume.endAt:startedAt+totalSec*1000, waveEnd=resume?resume.waveEnd:Date.now()+waveSec*1000;
+    /* circulation checks run on the wall clock, not on paused game time — a tied limb does not know about Yellow */
+    var nextCheckAt=resume?resume.nextCheckAt:Date.now()+20*60e3, checks=0, wavesDone=0, checkOpen=false, checkTimer=null;
+    if(!resume){ stats.scenes++; if(dom==='her') stats.scenesHer++; else stats.scenesHim++; recent=plan.map(function(x){return x.step.id;}).concat(recent).slice(0,20); }
+    save();
+    /* written down at every wave and every pause, so a killed app comes back with the same clock and the same check schedule */
+    function persist(){ live={kind:'total',dom:dom,ids:plan.map(function(x){return x.step.id;}),i:i,mins:mins,wings:wings,startedAt:startedAt,endAt:endAt,waveEnd:waveEnd,nextCheckAt:nextCheckAt,savedAt:Date.now()}; save(); }
     totalEl=el('div','overlay scene total'); document.body.appendChild(totalEl);
     function stop(){ if(totalInt){ clearInterval(totalInt); totalInt=null; } }
     function release(reason){
-      stop(); totalEl.innerHTML=''; totalEl.classList.remove('total');
-      nightAfterScene('Total domination');
+      stop(); if(checkTimer){ clearInterval(checkTimer); checkTimer=null; } totalEl.innerHTML=''; totalEl.classList.remove('total'); live=null; save();
+      if(!(reason==='red'&&Date.now()-startedAt<5*60e3)) nightAfterScene('Total domination'); /* Red inside the first five minutes is a false start */
       var a=el('div','after');
       a.appendChild(el('h1',null,reason==='red'?'Red. Ties off now.':'Session over.'));
       a.appendChild(el('p','lede',reason==='red'?'Untie first. Everything else — talking, checking, apologising — comes after the last knot is gone.':'Take the ties off slowly, one limb at a time, and support each one as it comes free.'));
@@ -2536,6 +2601,7 @@
       totalEl.appendChild(a); if(reason!=='red') bell();
     }
     function safetyCheck(){
+      if(checkOpen) return; checkOpen=true;
       paused=true; alarm(); vibrate([100,60,100]);
       var ci=el('div','overlay'); ci.style.zIndex='75'; var box=el('div','checkin');
       box.appendChild(el('h2',null,'Circulation check'));
@@ -2544,7 +2610,7 @@
       var bb=el('div','card-btns'); bb.appendChild(ok); bb.appendChild(loose); bb.appendChild(rd); box.appendChild(bb);
       ci.appendChild(box); document.body.appendChild(ci);
       var pausedAt=Date.now();
-      function resume(){ var d=Date.now()-pausedAt; endAt+=d; waveEnd+=d; paused=false; checks++; nextCheck+=20*60; ci.remove(); }
+      function resume(){ var d=Date.now()-pausedAt; endAt+=d; waveEnd+=d; paused=false; checks++; nextCheckAt=Date.now()+20*60e3; checkOpen=false; ci.remove(); persist(); }
       ok.addEventListener('click',resume);
       loose.addEventListener('click',function(){ resume(); toast('Loosen it now, then carry on.'); });
       rd.addEventListener('click',function(){ ci.remove(); release('red'); });
@@ -2553,11 +2619,11 @@
       paused=true; alarm();
       var ci=el('div','overlay'); ci.style.zIndex='75'; var box=el('div','checkin');
       box.appendChild(el('h2',null,'Yellow.'));
-      box.appendChild(el('p',null,pn(dom,true)+': stop what you’re doing. Don’t untie unless asked. Ask, out loud: “Are you okay? What do you need?” Then listen. The clock is paused; the next circulation check is unchanged.'));
+      box.appendChild(el('p',null,pn(dom,true)+': stop what you’re doing. Don’t untie unless asked. Ask, out loud: “Are you okay? What do you need?” Then listen. The clock is paused; the circulation check still comes on time — a tied limb doesn’t know about pauses.'));
       var b1=el('button','primary-btn','Continue'), b2=el('button','quiet-btn','Skip this wave'), b3=el('button','quiet-btn','Red — end it');
       var bb=el('div','card-btns'); bb.appendChild(b1); bb.appendChild(b2); bb.appendChild(b3); box.appendChild(bb); ci.appendChild(box); document.body.appendChild(ci);
       var pausedAt=Date.now();
-      function resume(){ var d=Date.now()-pausedAt; endAt+=d; waveEnd+=d; paused=false; ci.remove(); }
+      function resume(){ var d=Date.now()-pausedAt; endAt+=d; waveEnd+=d; paused=false; ci.remove(); persist(); }
       b1.addEventListener('click',resume);
       b2.addEventListener('click',function(){ resume(); i++; waveEnd=Date.now()+waveSec*1000; showWave(); });
       b3.addEventListener('click',function(){ ci.remove(); release('red'); });
@@ -2565,6 +2631,7 @@
     function showWave(){
       if(i>=plan.length){ release('done'); return; }
       var x=plan[i], s=x.step;
+      persist();
       totalEl.innerHTML='';
       totalEl.appendChild(el('div','s-head','Total Domination · '+pn(sub,true)+' is bound'));
       var bar=el('div','sess-bar'); var fill=el('div','sess-fill'); bar.appendChild(fill); totalEl.appendChild(bar);
@@ -2603,7 +2670,7 @@
       rd.addEventListener('click',function(){ release('red'); });
       y.addEventListener('click',function(){ if(!paused) yellowPause(); });
       if(untimed){
-        if(i>0&&i%3===0) setTimeout(safetyCheck,50);
+        if(!checkTimer) checkTimer=setInterval(function(){ if(!paused) safetyCheck(); },20*60e3); /* no game clock, but the twenty-minute check still runs */
         return;
       }
       stop();
@@ -2612,7 +2679,7 @@
         var now=Date.now(), leftAll=Math.max(0,Math.round((endAt-now)/1000)), elapsed=totalSec-leftAll;
         elapsedEl.textContent=fmtLong(elapsed)+' / '+fmtLong(totalSec);
         fill.style.width=Math.min(100,(elapsed/totalSec)*100)+'%';
-        if(elapsed>=nextCheck){ safetyCheck(); return; }
+        if(now>=nextCheckAt){ safetyCheck(); return; }
         var wLeft=Math.max(0,Math.round((waveEnd-now)/1000));
         waveEl.textContent='Wave '+(i+1)+' of '+plan.length+' · '+fmtLong(wLeft);
         if(wLeft<=0){ next.disabled=false; waveEl.textContent='Wave '+(i+1)+' of '+plan.length+' · bell'; if(!next.dataset.rang){ next.dataset.rang='1'; bell(); vibrate([120,80,120]); } }
@@ -2622,10 +2689,59 @@
     showWave();
   }
 
+  /* ---------- a scene or session that was running when the app died ---------- */
+  function offerResume(){
+    if(!live||!live.kind) return;
+    var l=live, isTotal=l.kind==='total';
+    var o=el('div','overlay gate'); var box=el('div','setup');
+    box.appendChild(el('h1',null,isTotal?'A session was running.':'A scene was running.'));
+    box.appendChild(el('p','lede',isTotal?Nm(other(l.dom),'subj')+' may still be in the ties. Pick it up where the clock left off — the circulation checks keep their schedule.':'Pick it up at the step you were on, or call it over.'));
+    var go=el('button','primary-btn',isTotal?'Resume the session':'Resume the scene');
+    go.addEventListener('click',function(){
+      o.remove();
+      var steps=l.ids.map(function(id){ var st=STEPS.filter(function(s){ return s.id===id; })[0]; return st?{step:st,maybe:false}:null; }).filter(Boolean);
+      if(!steps.length){ live=null; save(); toast('That one could not be restored.'); return; }
+      if(isTotal) runTotal(l.dom,steps,l.mins||120,l.wings||{},l); else runScene(l.dom,steps,l.inten||'firm',Math.min(l.i||0,steps.length-1));
+    });
+    var over=el('button','quiet-btn',isTotal?'It’s over — everyone is untied':'It’s over');
+    over.style.marginTop='10px'; over.addEventListener('click',function(){ live=null; save(); o.remove(); });
+    box.appendChild(go); box.appendChild(over); o.appendChild(box); document.body.appendChild(o);
+  }
+
+  /* ---------- on a phone: screen stays on, the back button behaves, the screen can be private ----------
+     All of it is guarded: in a plain browser the Capacitor bridge is absent and the page behaves as before. */
+  var CAP=(window.Capacitor&&window.Capacitor.Plugins)?window.Capacitor.Plugins:null;
+  var wakeLock=null, wakeWanted=false;
+  /* keep the screen awake while any round, scene or session overlay is open — a bell nobody sees is not a bell */
+  function keepAwake(on){
+    wakeWanted=on;
+    try{
+      if(CAP&&CAP.Velvet&&CAP.Velvet.keepAwake){ CAP.Velvet.keepAwake({on:on}).catch(function(){}); return; }
+      if(on){ if(!wakeLock&&navigator.wakeLock&&document.visibilityState==='visible') navigator.wakeLock.request('screen').then(function(l){ wakeLock=l; l.addEventListener('release',function(){ wakeLock=null; }); }).catch(function(){}); }
+      else if(wakeLock){ wakeLock.release().catch(function(){}); wakeLock=null; }
+    }catch(e){}
+  }
+  new MutationObserver(function(){ var want=!!document.querySelector('.overlay'); if(want!==wakeWanted) keepAwake(want); }).observe(document.body,{childList:true});
+  document.addEventListener('visibilitychange',function(){ if(document.visibilityState==='visible'&&wakeWanted){ wakeWanted=false; keepAwake(true); } });
+  /* the Android back button closes the top layer through its own harmless button, never ends a round or a scene, and at the wheel just sends the app to the background */
+  var BACK_OK=/^(done|back to the wheel|not tonight|leave the ladder|take it to the wheel|we’re done \(for now\)|we’re both in)$/i;
+  function backPress(){
+    var layers=document.querySelectorAll('.overlay, .drawer'), top=layers[layers.length-1];
+    if(!top) return false;
+    var btns=top.querySelectorAll('button'), hit=null;
+    for(var i=0;i<btns.length;i++){ if(BACK_OK.test(btns[i].textContent.trim())){ hit=btns[i]; break; } }
+    if(hit) hit.click();
+    return true;
+  }
+  if(CAP&&CAP.App&&CAP.App.addListener){ CAP.App.addListener('backButton',function(){ if(!backPress()&&CAP.App.minimizeApp) CAP.App.minimizeApp(); }); }
+  /* private screen: hidden in the app switcher, screenshots blocked (the app's own Velvet plugin; nothing to do on the web) */
+  function applyPrivacy(){ if(CAP&&CAP.Velvet&&CAP.Velvet.setSecure) CAP.Velvet.setSecure({on:settings.privateScreen!==false}).catch(function(){}); }
+  applyPrivacy();
+
   /* ---------- wire up ---------- */
   hub.addEventListener('pointerdown',chargeBegin);
   window.addEventListener('pointerup',chargeEnd);
-  window.addEventListener('pointercancel',chargeEnd);
+  window.addEventListener('pointercancel',chargeCancel);
   hub.addEventListener('contextmenu',function(e){ e.preventDefault(); });
   hub.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); spin(.5); } });
   canvas.addEventListener('click',function(){ spin(.3+Math.random()*.5); });
