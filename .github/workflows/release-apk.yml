@@ -102,6 +102,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           MODE: ${{ steps.sign.outputs.mode }}
+          TAG: ${{ steps.tag.outputs.tag }}
         run: |
           cp "packaging/android-wrapper/android/app/build/outputs/apk/$MODE/app-$MODE.apk" VelvetAndRoulette.apk
           if [ "$MODE" = "release" ]; then
@@ -109,10 +110,11 @@ jobs:
           else
             SIGN="Signed with a fallback debug key (no ANDROID_KEYSTORE_B64 secret is set). It installs over earlier fallback-signed builds; an APK signed with a different key has to be uninstalled first, which wipes the saved answers. See packaging/android-wrapper/README.md."
           fi
-          gh release create "${{ steps.tag.outputs.tag }}" VelvetAndRoulette.apk \
-            --title "Velvet & Roulette ${{ env.VR_VERSION_NAME }}" \
-            --notes "Android APK, version ${{ env.VR_VERSION_NAME }} (build ${{ env.VR_VERSION_CODE }}), built from \`index.html\` at this commit.
-
-To install: download on your phone, allow installs from this source when prompted, then open the file. Android flags it as an unverified developer — expected, since this isn't Play Store-distributed.
-
-The app asks for one permission (vibration, for haptics) and has no network access at all — nothing you enter ever leaves the phone. $SIGN"
+          {
+            echo "Android APK, version ${VR_VERSION_NAME} (build ${VR_VERSION_CODE}), built from \`index.html\` at this commit."
+            echo
+            echo "To install: download on your phone, allow installs from this source when prompted, then open the file. Android flags it as an unverified developer — expected, since this isn't Play Store-distributed."
+            echo
+            echo "The app asks for one permission (vibration, for haptics) and has no network access at all — nothing you enter ever leaves the phone. ${SIGN}"
+          } > release-notes.md
+          gh release create "$TAG" VelvetAndRoulette.apk --title "Velvet & Roulette ${VR_VERSION_NAME}" --notes-file release-notes.md
